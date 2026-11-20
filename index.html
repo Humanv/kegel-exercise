@@ -1309,6 +1309,10 @@
       gap: 9px;
     }
 
+    .brand-sub {
+      display: none;
+    }
+
     .score-num {
       font-size: 34px;
     }
@@ -1368,23 +1372,52 @@
     gap: 14px;
   }
 
+  .sound-controls {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+
   .sound-toggle {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     min-height: 34px;
-    padding: 7px 12px;
+    padding: 7px 9px;
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--pill-bg);
     color: var(--muted);
     font-family: var(--font-body);
-    font-size: 10.5px;
+    font-size: 10px;
     line-height: 1;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+  }
+
+  .sound-state {
+    margin-left: -2px;
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: 0;
+    opacity: 0.62;
+  }
+
+  .sound-toggle[aria-pressed="true"] .sound-state {
+    opacity: 1;
+  }
+
+  .sfx-icon {
+    display: block;
+    width: 13px;
+    height: 13px;
+    flex: none;
   }
 
   .sound-toggle:hover:not(:disabled) {
@@ -2036,10 +2069,18 @@
       display: none;
     }
 
+    .sound-controls {
+      gap: 4px;
+    }
+
     .sound-toggle {
       min-height: 36px;
-      padding: 7px 10px;
-      font-size: 10px;
+      padding: 7px 8px;
+      font-size: 9.5px;
+    }
+
+    .sound-state {
+      font-size: 7.5px;
     }
 
     .safety-note {
@@ -2134,10 +2175,21 @@
     </div>
     <div class="top-actions">
       <p class="top-meta"><span id="todayLabel">今天</span></p>
-      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="关闭音乐">
-        <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>
-        <span>音乐</span>
-      </button>
+      <div class="sound-controls" role="group" aria-label="声音控制">
+        <button class="sound-toggle" id="musicToggle" type="button" aria-pressed="true" aria-label="关闭背景音乐">
+          <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>音乐</span>
+          <span class="sound-state" id="musicState">开</span>
+        </button>
+        <button class="sound-toggle sfx-toggle" id="sfxToggle" type="button" aria-pressed="true" aria-label="关闭收放音效">
+          <svg class="sfx-icon" viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M2.2 6.1h2.4L8 3.2v9.6L4.6 9.9H2.2z" fill="currentColor"></path>
+            <path d="M10.3 5.5a3.8 3.8 0 0 1 0 5M12.2 3.6a6.4 6.4 0 0 1 0 8.8" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round"></path>
+          </svg>
+          <span>音效</span>
+          <span class="sound-state" id="sfxState">开</span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -2285,7 +2337,7 @@
   </main>
 
   <footer class="footer">
-    <p>建议收紧 3 秒、放松 3 秒。按住鼠标、触屏或空格键均可；出现疼痛请停止。</p>
+    <p>建议收紧 3 秒、放松 3 秒。按住鼠标、触屏或空格键均可；声音在首次点击后开始。出现疼痛请停止。</p>
     <div class="footer-actions">
       <button class="guide-btn" type="button" data-open-guide>练法与人群</button>
       <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
@@ -2358,7 +2410,7 @@
       </section>
 
       <p class="guide-disclaimer">这是通用健康教育，不构成诊断或个体化处方。不同指南的保持时长和次数略有差异，请以专业评估为准。</p>
-      <p class="guide-music-note">背景音乐由浏览器实时合成，不加载外部音轨；可随时用右上角的“音乐”按钮关闭。</p>
+      <p class="guide-music-note">背景音乐和收放音效分开控制，都在右上角。浏览器要求首次点击后才能播放声音。所有声音都由浏览器实时合成，不加载外部音轨。</p>
 
       <div class="guide-sources" lang="en">
         <strong lang="zh-CN">资料参考</strong>
@@ -2378,7 +2430,8 @@
   "use strict";
 
   const STORE_KEY = "tiqi-kegel-v1";
-  const SOUND_KEY = "tiqi-kegel-sound-v1";
+  const MUSIC_KEY = "tiqi-kegel-music-v2";
+  const SFX_KEY = "tiqi-kegel-sfx-v2";
   const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
   const HOLD_TARGET = 3;
   const DAILY_GOAL = 30;
@@ -2404,7 +2457,10 @@
     resetBtn: document.getElementById("resetBtn"),
     fx: document.getElementById("fx"),
     todayLabel: document.getElementById("todayLabel"),
-    soundToggle: document.getElementById("soundToggle"),
+    musicToggle: document.getElementById("musicToggle"),
+    musicState: document.getElementById("musicState"),
+    sfxToggle: document.getElementById("sfxToggle"),
+    sfxState: document.getElementById("sfxState"),
     rewardToast: document.getElementById("rewardToast"),
     rewardSeal: document.getElementById("rewardSeal"),
     rewardTitle: document.getElementById("rewardTitle"),
@@ -2437,10 +2493,10 @@
   let rewardHideTimer = 0;
   let rewardCleanupTimer = 0;
   let lastGuideTrigger = null;
-  let soundEnabled = true;
-  let soundPrimed = false;
+  let musicEnabled = true;
+  let sfxEnabled = true;
 
-  const ambient = createAmbientEngine();
+  const sound = createSoundSystem();
 
   function localDateKey(date = new Date()) {
     const year = date.getFullYear();
@@ -2487,28 +2543,28 @@
     return validCount(data.count);
   }
 
-  function readSoundPreference() {
+  function readTogglePreference(key) {
     try {
-      const stored = window.localStorage.getItem(SOUND_KEY);
+      const stored = window.localStorage.getItem(key);
       return stored !== "off";
     } catch (error) {
       return true;
     }
   }
 
-  function saveSoundPreference() {
+  function saveTogglePreference(key, enabled) {
     try {
-      window.localStorage.setItem(SOUND_KEY, soundEnabled ? "on" : "off");
+      window.localStorage.setItem(key, enabled ? "on" : "off");
     } catch (error) {
       // Ignore storage failures.
     }
   }
 
-  function createAmbientEngine() {
+  function createSoundSystem() {
     const AudioCtor = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtor) return null;
 
-    const padNotes = [73.416, 110, 146.832];
+    const padNotes = [73.416, 110, 146.832, 185];
     const melody = [
       293.66, 369.99, 440, 493.88, 440, 369.99, 329.63, 293.66,
       null, 440, 369.99, 329.63
@@ -2516,13 +2572,18 @@
 
     let ctx = null;
     let master = null;
+    let compressor = null;
+    let analyser = null;
     let musicBus = null;
+    let sfxBus = null;
     let delayNode = null;
     let padNodes = [];
     let scheduler = 0;
-    let running = false;
     let nextNoteAt = 0;
     let noteIndex = 0;
+    let musicOn = false;
+    let sfxOn = false;
+    let userStarted = false;
     let suspendTimer = 0;
 
     function init() {
@@ -2530,13 +2591,31 @@
 
       try {
         ctx = new AudioCtor();
+
         master = ctx.createGain();
         master.gain.value = 0;
-        master.connect(ctx.destination);
+
+        compressor = ctx.createDynamicsCompressor();
+        compressor.threshold.value = -16;
+        compressor.knee.value = 16;
+        compressor.ratio.value = 4;
+        compressor.attack.value = 0.004;
+        compressor.release.value = 0.24;
+
+        analyser = ctx.createAnalyser();
+        analyser.fftSize = 1024;
+
+        master.connect(compressor);
+        compressor.connect(analyser);
+        analyser.connect(ctx.destination);
 
         musicBus = ctx.createGain();
-        musicBus.gain.value = 0.75;
+        musicBus.gain.value = 0;
         musicBus.connect(master);
+
+        sfxBus = ctx.createGain();
+        sfxBus.gain.value = 0.9;
+        sfxBus.connect(master);
 
         delayNode = ctx.createDelay(1.4);
         delayNode.delayTime.value = 0.42;
@@ -2551,10 +2630,10 @@
 
         const padFilter = ctx.createBiquadFilter();
         padFilter.type = "lowpass";
-        padFilter.frequency.value = 430;
-        padFilter.Q.value = 0.25;
+        padFilter.frequency.value = 650;
+        padFilter.Q.value = 0.2;
         const padGain = ctx.createGain();
-        padGain.gain.value = 0.055;
+        padGain.gain.value = 0.12;
         padFilter.connect(padGain);
         padGain.connect(musicBus);
 
@@ -2563,7 +2642,7 @@
           const gain = ctx.createGain();
           oscillator.type = index === 0 ? "sine" : "triangle";
           oscillator.frequency.value = frequency;
-          gain.gain.value = index === 0 ? 0.45 : 0.2;
+          gain.gain.value = index === 0 ? 0.34 : 0.12;
           oscillator.connect(gain);
           gain.connect(padFilter);
           oscillator.start();
@@ -2577,7 +2656,7 @@
       }
     }
 
-    function playPluck(frequency, when) {
+    function playMusicNote(frequency, when) {
       if (!ctx || !musicBus || !delayNode) return;
 
       const at = Math.max(when, ctx.currentTime);
@@ -2591,15 +2670,15 @@
       oscillator.type = "sine";
       oscillator.frequency.value = frequency;
       shimmer.type = "sine";
-      shimmer.frequency.value = frequency * 2;
+      shimmer.frequency.value = frequency * 2.01;
       shimmerGain.gain.value = 0.1;
       filter.type = "lowpass";
-      filter.frequency.value = 1800;
-      send.gain.value = 0.25;
+      filter.frequency.value = 2200;
+      send.gain.value = 0.24;
 
       gain.gain.setValueAtTime(0.0001, at);
-      gain.gain.exponentialRampToValueAtTime(0.085, at + 0.18);
-      gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.1);
+      gain.gain.exponentialRampToValueAtTime(0.16, at + 0.2);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.15);
 
       oscillator.connect(filter);
       shimmer.connect(shimmerGain);
@@ -2611,8 +2690,8 @@
 
       oscillator.start(at);
       shimmer.start(at);
-      oscillator.stop(at + 3.2);
-      shimmer.stop(at + 3.2);
+      oscillator.stop(at + 3.25);
+      shimmer.stop(at + 3.25);
 
       oscillator.addEventListener("ended", () => {
         try {
@@ -2628,67 +2707,79 @@
       }, { once: true });
     }
 
-    function schedule() {
-      if (!ctx || !running || ctx.state !== "running") return;
+    function scheduleMusic() {
+      if (!ctx || !musicOn || ctx.state !== "running") return;
 
       while (nextNoteAt < ctx.currentTime + 1.6) {
         const frequency = melody[noteIndex % melody.length];
-        if (frequency) playPluck(frequency, nextNoteAt);
+        if (frequency) playMusicNote(frequency, nextNoteAt);
         noteIndex += 1;
-        nextNoteAt += 2.8;
+        nextNoteAt += 2.7;
       }
     }
 
-    function start() {
+    function startMusicSchedule() {
+      if (!ctx || !musicOn || ctx.state !== "running" || scheduler) return;
+      nextNoteAt = ctx.currentTime + 0.25;
+      scheduler = window.setInterval(scheduleMusic, 420);
+      scheduleMusic();
+    }
+
+    function stopMusicSchedule() {
+      if (scheduler) {
+        window.clearInterval(scheduler);
+        scheduler = 0;
+      }
+    }
+
+    function unlock() {
       if (!init()) return false;
 
-      running = true;
+      userStarted = true;
       window.clearTimeout(suspendTimer);
 
+      let resumePromise = null;
       try {
-        const resumeResult = ctx.resume();
-        if (resumeResult && typeof resumeResult.catch === "function") {
-          resumeResult.catch(() => {});
+        resumePromise = ctx.resume();
+        if (resumePromise && typeof resumePromise.catch === "function") {
+          resumePromise.catch(() => {});
         }
       } catch (error) {
-        // The user can retry from the sound button.
+        // The next gesture can try again.
       }
 
       const now = ctx.currentTime;
       master.gain.cancelScheduledValues(now);
-      master.gain.setTargetAtTime(0.72, now, 0.42);
+      master.gain.setTargetAtTime(0.88, now, 0.2);
+      musicBus.gain.cancelScheduledValues(now);
+      musicBus.gain.setTargetAtTime(musicOn ? 0.55 : 0.0001, now, 0.22);
 
-      if (!scheduler) {
-        noteIndex = 0;
-        nextNoteAt = now + 0.25;
-        scheduler = window.setInterval(schedule, 450);
-        schedule();
+      if (musicOn) {
+        if (ctx.state === "running") {
+          startMusicSchedule();
+        } else if (resumePromise && typeof resumePromise.then === "function") {
+          resumePromise.then(() => {
+            if (ctx && musicOn) startMusicSchedule();
+          }).catch(() => {});
+        }
       }
 
       return true;
     }
 
-    function stop() {
-      running = false;
-      if (scheduler) {
-        window.clearInterval(scheduler);
-        scheduler = 0;
-      }
+    function maybeSuspend() {
+      if (!ctx || musicOn || sfxOn) return;
 
-      if (!ctx) return;
-
+      stopMusicSchedule();
       const now = ctx.currentTime;
       master.gain.cancelScheduledValues(now);
       master.gain.setTargetAtTime(0.0001, now, 0.06);
-
       window.clearTimeout(suspendTimer);
       suspendTimer = window.setTimeout(() => {
-        if (!running && ctx && ctx.state === "running") {
+        if (!musicOn && !sfxOn && ctx && ctx.state === "running") {
           try {
-            const suspendResult = ctx.suspend();
-            if (suspendResult && typeof suspendResult.catch === "function") {
-              suspendResult.catch(() => {});
-            }
+            const result = ctx.suspend();
+            if (result && typeof result.catch === "function") result.catch(() => {});
           } catch (error) {
             // Ignore audio lifecycle errors.
           }
@@ -2696,27 +2787,98 @@
       }, 420);
     }
 
-    function cue(frequency, delay, peak, duration) {
-      if (!ctx || !running || ctx.state !== "running" || !musicBus) return;
+    function setMusic(on) {
+      musicOn = on;
 
-      const at = ctx.currentTime + delay;
+      if (on) {
+        window.clearTimeout(suspendTimer);
+        unlock();
+
+        if (ctx) {
+          const now = ctx.currentTime;
+          musicBus.gain.cancelScheduledValues(now);
+          musicBus.gain.setTargetAtTime(0.55, now, 0.22);
+          if (ctx.state === "running") startMusicSchedule();
+        }
+      } else {
+        stopMusicSchedule();
+        if (ctx) {
+          const now = ctx.currentTime;
+          musicBus.gain.cancelScheduledValues(now);
+          musicBus.gain.setTargetAtTime(0.0001, now, 0.1);
+        }
+        maybeSuspend();
+      }
+    }
+
+    function setSfx(on) {
+      sfxOn = on;
+      if (on) {
+        window.clearTimeout(suspendTimer);
+        unlock();
+      } else {
+        maybeSuspend();
+      }
+    }
+
+    function configure(music, sfx) {
+      musicOn = music;
+      sfxOn = sfx;
+    }
+
+    function suspend() {
+      stopMusicSchedule();
+      window.clearTimeout(suspendTimer);
+      if (!ctx) return;
+
+      try {
+        const now = ctx.currentTime;
+        master.gain.cancelScheduledValues(now);
+        master.gain.setValueAtTime(0, now);
+        if (ctx.state === "running") {
+          const result = ctx.suspend();
+          if (result && typeof result.catch === "function") result.catch(() => {});
+        }
+      } catch (error) {
+        // Ignore audio lifecycle errors.
+      }
+    }
+
+    function hasStarted() {
+      return userStarted;
+    }
+
+    function isMusicPlaying() {
+      return Boolean(ctx && musicOn && userStarted && ctx.state === "running");
+    }
+
+    function canPlaySfx() {
+      return Boolean(ctx && sfxOn && ctx.state === "running");
+    }
+
+    function playSweep(fromFrequency, toFrequency, duration, peak, type) {
+      if (!canPlaySfx()) return;
+
+      const at = ctx.currentTime + 0.012;
       const oscillator = ctx.createOscillator();
       const filter = ctx.createBiquadFilter();
       const gain = ctx.createGain();
 
-      oscillator.type = "sine";
-      oscillator.frequency.value = frequency;
+      oscillator.type = type || "sine";
+      oscillator.frequency.setValueAtTime(fromFrequency, at);
+      oscillator.frequency.exponentialRampToValueAtTime(Math.max(20, toFrequency), at + duration * 0.85);
       filter.type = "lowpass";
-      filter.frequency.value = 2400;
+      filter.frequency.value = 2200;
       gain.gain.setValueAtTime(0.0001, at);
-      gain.gain.exponentialRampToValueAtTime(peak, at + 0.03);
+      gain.gain.exponentialRampToValueAtTime(peak, at + 0.035);
       gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
 
       oscillator.connect(filter);
       filter.connect(gain);
-      gain.connect(musicBus);
+      gain.connect(sfxBus);
       oscillator.start(at);
-      oscillator.stop(at + duration + 0.1);
+      oscillator.stop(at + duration + 0.05);
+
       oscillator.addEventListener("ended", () => {
         try {
           oscillator.disconnect();
@@ -2728,50 +2890,204 @@
       }, { once: true });
     }
 
+    function playBell(frequency, delay, peak, duration) {
+      if (!canPlaySfx()) return;
+
+      const at = ctx.currentTime + 0.014 + delay;
+      const oscillator = ctx.createOscillator();
+      const shimmer = ctx.createOscillator();
+      const shimmerGain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      shimmer.type = "sine";
+      shimmer.frequency.value = frequency * 2.01;
+      shimmerGain.gain.value = 0.13;
+      filter.type = "lowpass";
+      filter.frequency.value = 3200;
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(peak, at + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
+
+      oscillator.connect(filter);
+      shimmer.connect(shimmerGain);
+      shimmerGain.connect(filter);
+      filter.connect(gain);
+      gain.connect(sfxBus);
+      oscillator.start(at);
+      shimmer.start(at);
+      oscillator.stop(at + duration + 0.05);
+      shimmer.stop(at + duration + 0.05);
+
+      oscillator.addEventListener("ended", () => {
+        try {
+          oscillator.disconnect();
+          shimmer.disconnect();
+          shimmerGain.disconnect();
+          filter.disconnect();
+          gain.disconnect();
+        } catch (error) {
+          // Already disconnected.
+        }
+      }, { once: true });
+    }
+
+    function getLevel() {
+      if (!analyser) return { rms: 0, peak: 0 };
+      const data = new Float32Array(analyser.fftSize);
+      analyser.getFloatTimeDomainData(data);
+      let sum = 0;
+      let peak = 0;
+      for (let index = 0; index < data.length; index += 1) {
+        const value = data[index];
+        sum += value * value;
+        if (Math.abs(value) > peak) peak = Math.abs(value);
+      }
+      return {
+        rms: Math.sqrt(sum / data.length),
+        peak
+      };
+    }
+
+    function getDebug() {
+      return {
+        built: Boolean(ctx),
+        contextState: ctx ? ctx.state : "none",
+        userStarted,
+        musicOn,
+        sfxOn,
+        schedulerActive: Boolean(scheduler),
+        masterGain: master ? Number(master.gain.value.toFixed(4)) : 0,
+        musicGain: musicBus ? Number(musicBus.gain.value.toFixed(4)) : 0,
+        sfxGain: sfxBus ? Number(sfxBus.gain.value.toFixed(4)) : 0
+      };
+    }
+
     return {
-      start,
-      stop,
-      targetCue() {
-        cue(739.99, 0.01, 0.05, 1.1);
+      configure,
+      unlock,
+      suspend,
+      setMusic,
+      setSfx,
+      hasStarted,
+      isMusicPlaying,
+      getLevel,
+      getDebug,
+      holdStart() {
+        playSweep(196, 293.66, 0.8, 0.1, "sine");
       },
-      celebrate(level) {
-        if (!ctx || !running) return;
+      target() {
+        playBell(587.33, 0, 0.085, 1.2);
+        playBell(880, 0.1, 0.065, 1);
+      },
+      release() {
+        playSweep(440, 261.63, 0.95, 0.085, "sine");
+      },
+      invalid() {
+        playSweep(196, 164.81, 0.3, 0.045, "sine");
+      },
+      restReady() {
+        playBell(523.25, 0, 0.035, 0.7);
+      },
+      reward(level) {
         const notes = level >= 30
           ? [587.33, 739.99, 880, 1174.66]
           : level >= 20
             ? [587.33, 739.99, 880]
             : [587.33, 880];
-
         notes.forEach((frequency, index) => {
-          cue(frequency, 0.02 + index * 0.13, 0.09, 1.65 + index * 0.12);
+          playBell(frequency, 0.03 + index * 0.13, 0.085, 1.5 + index * 0.12);
         });
+      },
+      preview() {
+        playBell(523.25, 0, 0.075, 0.9);
+        playBell(659.25, 0.12, 0.06, 0.85);
       }
     };
   }
 
-  function startAmbient() {
-    if (!soundEnabled || !ambient) return;
-    soundPrimed = true;
-    const started = ambient.start();
-    el.soundToggle.classList.toggle("is-playing", Boolean(started));
-  }
-
-  function stopAmbient() {
-    if (ambient) ambient.stop();
-    el.soundToggle.classList.remove("is-playing");
+  function syncMusicIndicator() {
+    const playing = Boolean(sound && musicEnabled && sound.isMusicPlaying());
+    el.musicToggle.classList.toggle("is-playing", playing);
   }
 
   function updateSoundUI() {
-    if (!ambient) {
-      el.soundToggle.disabled = true;
-      el.soundToggle.setAttribute("aria-pressed", "false");
-      el.soundToggle.setAttribute("aria-label", "此浏览器不支持音乐");
+    if (!sound) {
+      el.musicToggle.disabled = true;
+      el.sfxToggle.disabled = true;
+      el.musicToggle.setAttribute("aria-pressed", "false");
+      el.sfxToggle.setAttribute("aria-pressed", "false");
+      el.musicToggle.setAttribute("aria-label", "此浏览器不支持背景音乐");
+      el.sfxToggle.setAttribute("aria-label", "此浏览器不支持收放音效");
+      el.musicState.textContent = "关";
+      el.sfxState.textContent = "关";
+      el.musicToggle.classList.remove("is-playing");
       return;
     }
 
-    el.soundToggle.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
-    el.soundToggle.setAttribute("aria-label", soundEnabled ? "关闭音乐" : "开启音乐");
-    if (!soundEnabled) el.soundToggle.classList.remove("is-playing");
+    el.musicToggle.disabled = false;
+    el.sfxToggle.disabled = false;
+    el.musicToggle.setAttribute("aria-pressed", musicEnabled ? "true" : "false");
+    el.sfxToggle.setAttribute("aria-pressed", sfxEnabled ? "true" : "false");
+    el.musicToggle.setAttribute("aria-label", musicEnabled ? "关闭背景音乐" : "开启背景音乐");
+    el.sfxToggle.setAttribute("aria-label", sfxEnabled ? "关闭收放音效" : "开启收放音效");
+    el.musicState.textContent = musicEnabled ? "开" : "关";
+    el.sfxState.textContent = sfxEnabled ? "开" : "关";
+
+    if (musicEnabled) {
+      syncMusicIndicator();
+    } else {
+      el.musicToggle.classList.remove("is-playing");
+    }
+  }
+
+  function unlockSoundFromGesture(event) {
+    if (!sound) return;
+    if (!musicEnabled && !sfxEnabled) return;
+
+    const target = event && event.target;
+    if (target && typeof target.closest === "function" && target.closest(".sound-controls")) {
+      return;
+    }
+
+    sound.configure(musicEnabled, sfxEnabled);
+    sound.unlock();
+    window.setTimeout(syncMusicIndicator, 160);
+  }
+
+  function toggleMusic() {
+    if (!sound) return;
+
+    const firstStart = musicEnabled && !sound.hasStarted();
+    if (!firstStart) {
+      musicEnabled = !musicEnabled;
+      saveTogglePreference(MUSIC_KEY, musicEnabled);
+    }
+
+    sound.setMusic(musicEnabled);
+    updateSoundUI();
+    window.setTimeout(syncMusicIndicator, 160);
+  }
+
+  function toggleSfx() {
+    if (!sound) return;
+
+    const firstStart = sfxEnabled && !sound.hasStarted();
+    if (!firstStart) {
+      sfxEnabled = !sfxEnabled;
+      saveTogglePreference(SFX_KEY, sfxEnabled);
+    }
+
+    sound.setSfx(sfxEnabled);
+    if (sfxEnabled) {
+      window.setTimeout(() => {
+        sound.preview();
+        syncMusicIndicator();
+      }, 160);
+    }
+    updateSoundUI();
   }
 
   function setStatus(text) {
@@ -2973,7 +3289,12 @@
 
     rolloverIfNeeded();
     disarmReset();
-    startAmbient();
+
+    if (sound && (musicEnabled || sfxEnabled)) {
+      sound.unlock();
+      window.setTimeout(syncMusicIndicator, 160);
+      if (sfxEnabled) sound.holdStart();
+    }
 
     pressing = true;
     pressSource = source;
@@ -3011,7 +3332,7 @@
       el.bloom.setAttribute("aria-label", "达标，可以松开了");
       setStatus("到位了");
       setFeedback("达标，慢慢松开。");
-      if (ambient) ambient.targetCue();
+      if (sound) sound.target();
       vibrate(6);
     }
 
@@ -3051,6 +3372,7 @@
       setFeedback(
         `还差 ${Math.max(0, HOLD_TARGET - heldSeconds).toFixed(1)} 秒，这次不计。稳住，再来。`
       );
+      if (sound) sound.invalid();
       vibrate(5);
       return;
     }
@@ -3063,12 +3385,13 @@
     const milestone = MILESTONES.get(count) || null;
     const restSeconds = Math.min(10, Math.max(3, Math.round(heldSeconds)));
 
+    if (sound) sound.release();
     beginRest(restSeconds, milestone);
     spawnBurst(Boolean(milestone));
 
     if (milestone) {
       showReward(milestone);
-      if (ambient) ambient.celebrate(count);
+      if (sound) sound.reward(count);
       vibrate([12, 28, 12, 28, 18]);
     } else {
       vibrate(10);
@@ -3112,6 +3435,7 @@
       resting = false;
       restFrame = 0;
       window.cancelAnimationFrame(restFrame);
+      if (sound) sound.restReady();
       setIdle(false);
       return;
     }
@@ -3259,7 +3583,10 @@
       setFeedback("新的一天，次数已从零开始。按住开始。");
     }
 
-    if (soundEnabled && soundPrimed) startAmbient();
+    if (sound && sound.hasStarted() && (musicEnabled || sfxEnabled)) {
+      sound.unlock();
+      window.setTimeout(syncMusicIndicator, 160);
+    }
   }
 
   function bindEvents() {
@@ -3338,17 +3665,12 @@
     el.bloom.addEventListener("contextmenu", (event) => event.preventDefault());
     el.resetBtn.addEventListener("click", handleResetClick);
 
-    el.soundToggle.addEventListener("click", () => {
-      if (!ambient) return;
-      soundEnabled = !soundEnabled;
-      saveSoundPreference();
-      if (soundEnabled) {
-        startAmbient();
-      } else {
-        stopAmbient();
-      }
-      updateSoundUI();
-    });
+    el.musicToggle.addEventListener("click", toggleMusic);
+    el.sfxToggle.addEventListener("click", toggleSfx);
+
+    document.addEventListener("pointerdown", unlockSoundFromGesture, { capture: true });
+    document.addEventListener("keydown", unlockSoundFromGesture, { capture: true });
+    document.addEventListener("click", unlockSoundFromGesture, { capture: true });
 
     guideOpeners.forEach((button) => {
       button.addEventListener("click", openGuide);
@@ -3383,8 +3705,8 @@
           window.cancelAnimationFrame(restFrame);
           restFrame = 0;
         }
-        if (ambient) ambient.stop();
-        el.soundToggle.classList.remove("is-playing");
+        if (sound) sound.suspend();
+        el.musicToggle.classList.remove("is-playing");
       } else {
         handleReturn();
         if (resting) {
@@ -3410,7 +3732,9 @@
     dailyKey = localDateKey();
     updateDateLabel();
 
-    soundEnabled = readSoundPreference();
+    musicEnabled = sound ? readTogglePreference(MUSIC_KEY) : false;
+    sfxEnabled = sound ? readTogglePreference(SFX_KEY) : false;
+    if (sound) sound.configure(musicEnabled, sfxEnabled);
     updateSoundUI();
 
     const hotCount = restoredCount(restored);
@@ -3420,6 +3744,13 @@
     renderDaily(false);
     bindEvents();
     setIdle(true);
+
+    if (sound && new URLSearchParams(window.location.search).has("debug-audio")) {
+      window.__tiqiAudioDebug = {
+        debug: () => ({ ...sound.getDebug(), musicEnabled, sfxEnabled }),
+        level: () => sound.getLevel()
+      };
+    }
   }
 
   try {
