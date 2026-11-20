@@ -1,6 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>提气练习</title>
+<meta name="description" content="提气：按 3 秒收紧、3 秒放松的凯格尔练习小游戏。有轻音乐、每日目标、分组成就与人群练习说明。">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -654,6 +655,10 @@
   .bloom:focus-visible {
     outline: 2px solid var(--accent);
     outline-offset: 9px;
+  }
+
+  .bloom[aria-disabled="true"] {
+    cursor: default;
   }
 
   .aura {
@@ -1327,6 +1332,795 @@
       scroll-behavior: auto !important;
     }
   }
+
+  /* Training, sound, rewards and guidance */
+  :root {
+    --gold: #a87621;
+    --gold-strong: #7d520d;
+    --gold-soft: rgba(168, 118, 33, 0.16);
+    --backdrop: rgba(10, 26, 20, 0.5);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --gold: #f1c76c;
+      --gold-strong: #ffdf9d;
+      --gold-soft: rgba(241, 199, 108, 0.16);
+      --backdrop: rgba(0, 0, 0, 0.72);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --gold: #f1c76c;
+    --gold-strong: #ffdf9d;
+    --gold-soft: rgba(241, 199, 108, 0.16);
+    --backdrop: rgba(0, 0, 0, 0.72);
+  }
+
+  body.dialog-open {
+    overflow: hidden;
+  }
+
+  .top-actions {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .sound-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 34px;
+    padding: 7px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--pill-bg);
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 10.5px;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease, opacity 0.25s ease;
+  }
+
+  .sound-toggle:hover:not(:disabled) {
+    color: var(--ink);
+    border-color: var(--ink-soft);
+  }
+
+  .sound-toggle[aria-pressed="true"] {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+    background: var(--glow);
+  }
+
+  .sound-toggle:disabled {
+    cursor: default;
+    opacity: 0.45;
+  }
+
+  .sound-bars {
+    height: 10px;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+  }
+
+  .sound-bars i {
+    width: 2px;
+    height: 8px;
+    flex: none;
+    border-radius: 2px;
+    background: currentColor;
+    transform: scaleY(0.32);
+    transform-origin: bottom;
+    transition: transform 0.25s ease;
+  }
+
+  .sound-toggle[aria-pressed="true"] .sound-bars i {
+    transform: scaleY(0.62);
+  }
+
+  .sound-toggle.is-playing .sound-bars i {
+    animation: soundBar 0.82s ease-in-out infinite alternate;
+  }
+
+  .sound-toggle.is-playing .sound-bars i:nth-child(2) {
+    animation-delay: -0.22s;
+  }
+
+  .sound-toggle.is-playing .sound-bars i:nth-child(3) {
+    animation-delay: -0.47s;
+  }
+
+  .safety-note {
+    max-width: 42ch;
+    margin: 14px 0 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.7;
+  }
+
+  .safety-mark {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    margin-top: 0.56em;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0.7;
+  }
+
+  .inline-link {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--accent-strong);
+    font: inherit;
+    line-height: inherit;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
+  .score {
+    gap: 4px;
+  }
+
+  .score-label {
+    display: flex;
+    align-items: baseline;
+    justify-content: flex-end;
+    gap: 5px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .score-target {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 9px;
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: 0.025em;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+  }
+
+  .score.is-complete .score-target {
+    color: var(--gold-strong);
+  }
+
+  .score.is-complete .score-num {
+    color: var(--gold-strong);
+  }
+
+  .goal-meter {
+    width: 78px;
+    height: 3px;
+    margin-top: 3px;
+    display: flex;
+    align-self: flex-end;
+    gap: 3px;
+  }
+
+  .goal-seg {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    border-radius: 999px;
+    background: var(--line-soft);
+  }
+
+  .goal-seg i {
+    display: block;
+    width: var(--fill, 0%);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--accent);
+    transition: width 0.38s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.3s ease;
+  }
+
+  .score.is-complete .goal-seg i {
+    background: var(--gold);
+  }
+
+  .arena.is-active .hold-meter,
+  .arena.is-target .hold-meter,
+  .arena.is-resting .hold-meter {
+    opacity: 1;
+  }
+
+  .hold-meter {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 47%;
+    aspect-ratio: 1;
+    z-index: 4;
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.28s ease;
+  }
+
+  .hold-meter svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    overflow: visible;
+    transform: rotate(-90deg);
+  }
+
+  .hold-track,
+  .hold-fill {
+    fill: none;
+    stroke-width: 1.6;
+  }
+
+  .hold-track {
+    stroke: var(--line);
+    opacity: 0.55;
+  }
+
+  .hold-fill {
+    stroke: var(--accent);
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+
+  .arena.is-target .hold-fill {
+    stroke: var(--gold);
+  }
+
+  .arena.is-resting .hold-fill {
+    stroke: var(--mint);
+  }
+
+  .arena.is-target .status-pill {
+    color: var(--gold-strong);
+    border-color: var(--gold);
+  }
+
+  .arena.is-target .status-dot {
+    background: var(--gold);
+    box-shadow: 0 0 0 4px var(--gold-soft);
+    animation: none;
+  }
+
+  .arena.is-resting .status-pill {
+    color: var(--mint-deep);
+    border-color: var(--mint);
+  }
+
+  .arena.is-resting .status-dot {
+    background: var(--mint);
+    box-shadow: 0 0 0 4px var(--glow-soft);
+    animation: none;
+  }
+
+  .arena.is-complete:not(.is-active):not(.is-resting) .status-pill {
+    color: var(--gold-strong);
+    border-color: var(--gold);
+  }
+
+  .arena.is-complete:not(.is-active):not(.is-resting) .status-dot {
+    background: var(--gold);
+    box-shadow: 0 0 0 4px var(--gold-soft);
+  }
+
+  .arena.is-target .core-glow {
+    background: radial-gradient(circle, var(--gold-soft) 0%, transparent 68%);
+  }
+
+  .arena.is-target .core {
+    box-shadow:
+      0 24px 48px -26px var(--petal-shadow),
+      inset 0 0 0 1px var(--gold),
+      0 0 0 1px var(--gold-soft);
+  }
+
+  .arena.is-active .core::after,
+  .arena.is-target .core::after,
+  .arena.is-resting .core::after,
+  .arena.is-complete .core::after {
+    animation: none;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .arena.is-target .phase-contract {
+    color: var(--gold-strong);
+  }
+
+  .arena.is-target .phase-contract .phase-dot {
+    background: var(--gold);
+    opacity: 1;
+    box-shadow: 0 0 0 3px var(--gold-soft);
+  }
+
+  .arena.is-resting .phase-relax {
+    color: var(--mint-deep);
+  }
+
+  .arena.is-resting .phase-relax .phase-dot {
+    opacity: 1;
+    box-shadow: 0 0 0 3px var(--glow-soft);
+  }
+
+  .feedback {
+    min-height: 2.9em;
+    text-wrap: pretty;
+  }
+
+  .burst-ring.is-gold {
+    border-color: var(--gold);
+  }
+
+  .reward-toast {
+    position: fixed;
+    top: max(18px, env(safe-area-inset-top, 0px));
+    left: 50%;
+    z-index: 60;
+    width: max-content;
+    max-width: min(390px, calc(100vw - 32px));
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    padding: 10px 15px 10px 10px;
+    border: 1px solid var(--gold);
+    border-radius: 18px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--surface-shadow);
+    opacity: 0;
+    pointer-events: none;
+    transform: translate(-50%, -12px);
+    transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .reward-toast[hidden] {
+    display: none !important;
+  }
+
+  .reward-toast.is-visible {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+
+  .reward-seal {
+    width: 38px;
+    height: 38px;
+    flex: none;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--gold);
+    border-radius: 50%;
+    background: var(--gold-soft);
+    color: var(--gold-strong);
+    font-family: var(--font-display);
+    font-size: 19px;
+    line-height: 1;
+  }
+
+  .reward-body {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .reward-body strong {
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  .reward-body span {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .footer-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .guide-btn {
+    flex: none;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 104px;
+    min-height: 34px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition: color 0.25s ease, border-color 0.25s ease;
+  }
+
+  .guide-btn:hover {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  .footer-actions .reset-btn {
+    margin-left: 0;
+  }
+
+  .guide-dialog {
+    width: min(700px, calc(100vw - 32px));
+    max-height: min(86vh, 840px);
+    max-height: min(86dvh, 840px);
+    margin: auto;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 26px;
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: var(--surface-shadow);
+    overflow: hidden;
+  }
+
+  .guide-dialog[open] {
+    display: flex;
+    flex-direction: column;
+    animation: dialogIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .guide-dialog::backdrop {
+    background: var(--backdrop);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+  }
+
+  .guide-sheet {
+    min-height: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .guide-head {
+    flex: none;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 24px 24px 18px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .guide-head > div {
+    min-width: 0;
+  }
+
+  .guide-eyebrow {
+    margin-bottom: 0;
+  }
+
+  .guide-head h2 {
+    margin: 10px 0 0;
+    font-family: var(--font-display);
+    font-size: clamp(27px, 3.2vw, 36px);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: 0.015em;
+    text-wrap: balance;
+  }
+
+  .guide-close {
+    position: relative;
+    width: 36px;
+    height: 36px;
+    flex: none;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.2s ease, color 0.2s ease;
+  }
+
+  .guide-close:hover {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  .guide-close span,
+  .guide-close span::after {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 12px;
+    height: 1px;
+    background: currentColor;
+    content: "";
+  }
+
+  .guide-close span {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  .guide-close span::after {
+    transform: translate(-50%, -50%) rotate(90deg);
+  }
+
+  .guide-body {
+    min-height: 0;
+    flex: 1;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+    padding: 20px 24px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .guide-intro {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 13px;
+    line-height: 1.85;
+  }
+
+  .guide-body h3 {
+    margin: 0 0 9px;
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+
+  .guide-list {
+    margin: 0;
+    padding-left: 1.25em;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.85;
+  }
+
+  .guide-list li + li {
+    margin-top: 4px;
+  }
+
+  .guide-list li::marker {
+    color: var(--accent);
+  }
+
+  .guide-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 9px;
+  }
+
+  .guide-grid article {
+    min-width: 0;
+    padding: 12px;
+    border: 1px solid var(--line-soft);
+    border-radius: 13px;
+    background: var(--surface-2);
+  }
+
+  .guide-grid h4 {
+    margin: 0 0 5px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .guide-grid p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 11.5px;
+    line-height: 1.75;
+  }
+
+  .guide-warning {
+    padding: 14px;
+    border: 1px solid var(--accent);
+    border-radius: 14px;
+    background: var(--glow);
+  }
+
+  .guide-warning h3 {
+    margin-bottom: 6px;
+    color: var(--accent-strong);
+  }
+
+  .guide-warning p {
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: 12px;
+    line-height: 1.75;
+  }
+
+  .guide-disclaimer {
+    margin: 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.75;
+  }
+
+  .guide-music-note {
+    margin: -8px 0 0;
+    color: var(--muted);
+    font-size: 10.5px;
+    line-height: 1.7;
+  }
+
+  .guide-sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line-soft);
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.7;
+  }
+
+  .guide-sources strong {
+    width: 100%;
+    color: var(--ink-soft);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+
+  .guide-sources a {
+    color: var(--accent-strong);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+  }
+
+  @keyframes soundBar {
+    from {
+      transform: scaleY(0.3);
+    }
+    to {
+      transform: scaleY(1);
+    }
+  }
+
+  @keyframes dialogIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px) scale(0.985);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  @media (max-width: 700px) {
+    .guide-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .top-actions {
+      gap: 0;
+    }
+
+    .top-meta {
+      display: none;
+    }
+
+    .sound-toggle {
+      min-height: 36px;
+      padding: 7px 10px;
+      font-size: 10px;
+    }
+
+    .safety-note {
+      margin-top: 12px;
+      font-size: 11px;
+      line-height: 1.65;
+    }
+
+    .score-target {
+      font-size: 8px;
+    }
+
+    .goal-meter {
+      width: 64px;
+    }
+
+    .feedback {
+      min-height: 2.9em;
+    }
+
+    .footer {
+      align-items: flex-start;
+    }
+
+    .footer-actions {
+      width: 100%;
+    }
+
+    .guide-btn {
+      min-width: 92px;
+      min-height: 38px;
+      padding: 8px 12px;
+    }
+
+    .footer-actions .reset-btn {
+      min-width: 92px;
+    }
+
+    .reward-toast {
+      top: max(12px, env(safe-area-inset-top, 0px));
+      max-width: calc(100vw - 24px);
+    }
+
+    .guide-dialog {
+      width: calc(100vw - 20px);
+      max-height: 88vh;
+      max-height: 88dvh;
+      border-radius: 20px;
+    }
+
+    .guide-head {
+      gap: 12px;
+    }
+
+    .guide-head h2 {
+      font-size: clamp(23px, 6vw, 28px);
+      line-height: 1.25;
+    }
+
+    .guide-head,
+    .guide-body {
+      padding-left: 18px;
+      padding-right: 18px;
+    }
+
+    .guide-head {
+      padding-top: 20px;
+      padding-bottom: 16px;
+    }
+
+    .guide-body {
+      padding-top: 17px;
+      padding-bottom: 20px;
+      gap: 18px;
+    }
+
+    .guide-close {
+      width: 34px;
+      height: 34px;
+    }
+  }
 </style>
 
 <div class="app" lang="zh-CN">
@@ -1338,38 +2132,56 @@
         <p class="brand-sub">PELVIC FLOOR PRACTICE</p>
       </div>
     </div>
-    <p class="top-meta"><span id="todayLabel">今天</span></p>
+    <div class="top-actions">
+      <p class="top-meta"><span id="todayLabel">今天</span></p>
+      <button class="sound-toggle" id="soundToggle" type="button" aria-pressed="true" aria-label="关闭音乐">
+        <span class="sound-bars" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>音乐</span>
+      </button>
+    </div>
   </header>
 
   <main class="layout">
     <section class="intro" aria-labelledby="pageTitle">
-      <p class="eyebrow">KEGEL PRACTICE · 01</p>
+      <p class="eyebrow">KEGEL PRACTICE · 3S RHYTHM</p>
       <h1 id="pageTitle">
         <span class="h1-part">收紧，</span>
         <span class="h1-part h1-em">再松开。</span>
       </h1>
       <p class="lead">
-        按住圆盘，轻轻收紧盆底肌；松手，慢慢放松。<strong>一次完整的收放，记作一次。</strong>
+        按住 3 秒，收紧并向上提；松开 3 秒，完全放松。<strong>一次完整的收放，记作一次。</strong>
+      </p>
+
+      <p class="safety-note">
+        <span class="safety-mark" aria-hidden="true"></span>
+        <span>无痛再练。孕期、产后、盆腔术后或已有盆底疼痛，先咨询专业人员。<button class="inline-link" type="button" data-open-guide>看看人群差异</button></span>
       </p>
 
       <div class="protocol" aria-label="练习方法">
         <div class="step">
           <span class="step-index" aria-hidden="true">01</span>
           <div>
-            <h2>按住 <span>CONTRACT</span></h2>
+            <h2>按住 <span>HOLD 3S</span></h2>
             <p>像忍住排气一样轻轻向上提，保持自然呼吸。</p>
           </div>
         </div>
         <div class="step">
           <span class="step-index" aria-hidden="true">02</span>
           <div>
-            <h2>松开 <span>RELEASE</span></h2>
-            <p>完全放松，不要一直用力，也不要耸肩。</p>
+            <h2>松开 <span>RELAX 3S</span></h2>
+            <p>完全放松，别夹着，也别急着开始下一次。</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-index" aria-hidden="true">03</span>
+          <div>
+            <h2>每天 <span>3 SETS</span></h2>
+            <p>每天 3 组、每组 10 次。练到位就收工，明天的底气还在。</p>
           </div>
         </div>
       </div>
 
-      <p class="breath-note">建议每下收紧 3 秒、放松 3 秒。累了就停。</p>
+      <p class="breath-note">30 次是今日目标，不是 KPI。多多益善，也要见好就收。</p>
     </section>
 
     <section class="arena" id="arena" aria-label="凯格尔练习区">
@@ -1378,12 +2190,17 @@
           <span class="status-dot" aria-hidden="true"></span>
           <span id="statusText">准备就绪</span>
         </div>
-        <div class="score" id="scoreBox" role="group" aria-label="今日完成 0 次">
-          <span class="score-label">今日完成</span>
+        <div class="score" id="scoreBox" role="group" aria-label="今日完成 0 次，目标 30 次">
+          <span class="score-label">今日完成 <span class="score-target" id="scoreTarget">/ 30</span></span>
           <span class="score-line">
             <span class="score-num" id="count">0</span>
             <span class="score-unit">次</span>
           </span>
+          <div class="goal-meter" id="goalMeter" role="progressbar" aria-label="今日目标，3 组，每组 10 次" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
+            <span class="goal-seg"><i></i></span>
+            <span class="goal-seg"><i></i></span>
+            <span class="goal-seg"><i></i></span>
+          </div>
         </div>
       </div>
 
@@ -1436,8 +2253,15 @@
             <span class="core">
               <span class="core-copy">
                 <span class="core-action" id="actionText">按住</span>
-                <span class="core-hint" id="actionHint">HOLD</span>
+                <span class="core-hint" id="actionHint">3S</span>
               </span>
+            </span>
+
+            <span class="hold-meter" aria-hidden="true">
+              <svg viewBox="0 0 100 100">
+                <circle class="hold-track" cx="50" cy="50" r="47"></circle>
+                <circle class="hold-fill" id="holdFill" cx="50" cy="50" r="47" pathLength="100"></circle>
+              </svg>
             </span>
           </button>
 
@@ -1446,413 +2270,1007 @@
       </div>
 
       <p id="howTo" class="sr-only">
-        按住按钮收紧盆底肌，松开按钮放松。每次完整的收放记作一次。也可以聚焦按钮后按住空格键。
+        按住按钮收紧盆底肌并保持三秒，然后松开按钮。收满三秒才会计入一次；之后会引导你放松三秒，等放松结束后再开始下一次。也可以聚焦按钮后按住空格键。
       </p>
 
       <div class="arena-foot">
-        <p class="feedback" id="feedback" aria-live="polite">按住圆盘，开始第一次。</p>
+        <p class="feedback" id="feedback" aria-live="polite">按住 3 秒，开始第一次。</p>
         <div class="phases" aria-hidden="true">
-          <span class="phase phase-contract"><span class="phase-dot"></span>按住 · 收紧</span>
+          <span class="phase phase-contract"><span class="phase-dot"></span>按住 · 收紧 3 秒</span>
           <span class="phase-sep"></span>
-          <span class="phase phase-relax"><span class="phase-dot"></span>松开 · 放松</span>
+          <span class="phase phase-relax"><span class="phase-dot"></span>松开 · 放松 3 秒</span>
         </div>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>建议每下收紧 3 秒、放松 3 秒。按住鼠标、触屏或空格键均可。</p>
-    <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
+    <p>建议收紧 3 秒、放松 3 秒。按住鼠标、触屏或空格键均可；出现疼痛请停止。</p>
+    <div class="footer-actions">
+      <button class="guide-btn" type="button" data-open-guide>练法与人群</button>
+      <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
+    </div>
   </footer>
 </div>
 
+<div class="reward-toast" id="rewardToast" aria-hidden="true" hidden lang="zh-CN">
+  <span class="reward-seal" id="rewardSeal">一</span>
+  <span class="reward-body">
+    <strong id="rewardTitle">第一组达成</strong>
+    <span id="rewardCopy">十次，妙不可言。</span>
+  </span>
+</div>
+
+<dialog class="guide-dialog" id="guideDialog" aria-labelledby="guideTitle" lang="zh-CN">
+  <div class="guide-sheet">
+    <div class="guide-head">
+      <div>
+        <p class="eyebrow guide-eyebrow">HOW TO PRACTISE</p>
+        <h2 id="guideTitle">练得准，比练得多重要。</h2>
+      </div>
+      <button class="guide-close" id="guideClose" type="button" aria-label="关闭练习说明">
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="guide-body">
+      <p class="guide-intro">
+        本页采用一个通用入门节奏：收紧 3 秒、放松 3 秒，10 次一组，每天 3 组。收满 3 秒才计入一次；不足 3 秒会提示重来，放松时间会自动匹配你的收紧时长。适合无痛、无特殊禁忌的日常练习，不替代专业评估。如果你的医生或盆底康复师给了不同剂量，按他们的来。
+      </p>
+
+      <section>
+        <h3>先把动作做对</h3>
+        <ul class="guide-list">
+          <li>先排空膀胱；坐着或躺着，让肩膀、腹部、臀部都放松。</li>
+          <li>想象同时忍住排气和尿意，会阴轻轻“向上提”。</li>
+          <li>全程自然呼吸，不憋气，不夹臀、不夹腿。</li>
+          <li>松开要真的松到底。不要把“中断排尿”当成日常训练。</li>
+          <li>3 秒是入门目标，可逐步向 5–10 秒过渡；完全放松和完整收缩同样重要。</li>
+          <li>本页只练慢速收放；如果你的训练计划还包括快速收缩，请按专业方案另行练习。</li>
+        </ul>
+      </section>
+
+      <section>
+        <h3>不同人，重点不一样</h3>
+        <div class="guide-grid">
+          <article>
+            <h4>日常保养 / 轻度漏尿</h4>
+            <p>没有特殊禁忌的成年人（包括老年人）都可以练，重点是动作准确、完全放松。女性若持续出现压力性或混合性漏尿，NICE 建议在专业指导下进行至少 3 个月的盆底肌训练。多数人的改善需要坚持数周到数月。</p>
+          </article>
+          <article>
+            <h4>孕期 / 产后</h4>
+            <p>通常可以练，但何时开始要看孕周、分娩方式、伤口和出血情况。拔除尿管且排尿正常后再练；有阴道出血、规律宫缩、胎膜早破等情况先问医生。产后 6 周仍漏尿或找不到发力感，找助产士、全科医生或盆底理疗评估。</p>
+          </article>
+          <article>
+            <h4>男性 / 前列腺术后</h4>
+            <p>同样是“提肛”，别憋气。术后控尿训练通常有益，但术前或术后的开始时间和剂量，应按泌尿外科或盆底康复团队安排。</p>
+          </article>
+          <article>
+            <h4>盆底疼痛 / 高张力</h4>
+            <p>不要默认“越紧越好”。高张力盆底往往先做放松、呼吸和协调训练；继续加练收缩可能加重不适。先做盆底评估，疼痛时不要用本游戏硬练。</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="guide-warning">
+        <h3>这些情况先停下来</h3>
+        <p>疼痛、明显坠胀、排尿或排便困难、血尿、近期盆腔手术、孕期异常症状，或练习后症状加重。请咨询医生或盆底康复师。</p>
+      </section>
+
+      <p class="guide-disclaimer">这是通用健康教育，不构成诊断或个体化处方。不同指南的保持时长和次数略有差异，请以专业评估为准。</p>
+      <p class="guide-music-note">背景音乐由浏览器实时合成，不加载外部音轨；可随时用右上角的“音乐”按钮关闭。</p>
+
+      <div class="guide-sources" lang="en">
+        <strong lang="zh-CN">资料参考</strong>
+        <a href="https://www.nice.org.uk/guidance/ng123" target="_blank" rel="noopener noreferrer">NICE NG123</a>
+        <a href="https://leedscommunityhealthcare.nhs.uk/our-services-a-z/continence-urology-and-colorectal-cucs/bladder-problems-cucs/pelvic-floor-exercises-for-men-cucs/" target="_blank" rel="noopener noreferrer">NHS Leeds · 男性盆底练习</a>
+        <a href="https://www.lscft.nhs.uk/our-services/service-finder-z/continence-service/pelvic-floor-physiotherapy/pelvic-floor-muscle-exercise-information-sheet-women" target="_blank" rel="noopener noreferrer">NHS LSCFT · 女性盆底练习</a>
+        <a href="https://www.mkuh.nhs.uk/maternity-services/your-pregnancy-journey/postnatal-care/care-of-the-pelvic-floor-and-perineum" target="_blank" rel="noopener noreferrer">NHS MKUH · 产后盆底护理</a>
+        <a href="https://www.rightdecisions.scot.nhs.uk/patient-information-leaflets/primary-community-services/physiotherapy/pelvic-floor-exercises-during-pregnancy/" target="_blank" rel="noopener noreferrer">NHS · 孕期盆底练习</a>
+        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10953682/" target="_blank" rel="noopener noreferrer">Obstetrics &amp; Gynecology · 高张力盆底治疗</a>
+      </div>
+    </div>
+  </div>
+</dialog>
+
 <script>
-  (() => {
-    "use strict";
+(() => {
+  "use strict";
 
-    const STORE_KEY = "tiqi-kegel-v1";
-    const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
-    const el = {
-      arena: document.getElementById("arena"),
-      bloom: document.getElementById("bloom"),
-      actionText: document.getElementById("actionText"),
-      actionHint: document.getElementById("actionHint"),
-      statusText: document.getElementById("statusText"),
-      feedback: document.getElementById("feedback"),
-      count: document.getElementById("count"),
-      scoreBox: document.getElementById("scoreBox"),
-      resetBtn: document.getElementById("resetBtn"),
-      fx: document.getElementById("fx"),
-      todayLabel: document.getElementById("todayLabel")
-    };
+  const STORE_KEY = "tiqi-kegel-v1";
+  const SOUND_KEY = "tiqi-kegel-sound-v1";
+  const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
+  const HOLD_TARGET = 3;
+  const DAILY_GOAL = 30;
+  const SET_SIZE = 10;
+  const MILESTONES = new Map([
+    [10, { seal: "一", title: "第一组达成", copy: "十次，妙不可言。" }],
+    [20, { seal: "二", title: "第二组达成", copy: "是努力的轨迹，也是实力的证明。" }],
+    [30, { seal: "满", title: "今日达标 · 收放自如", copy: "多多益善，但见好就收也是本事。" }]
+  ]);
 
-    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const el = {
+    arena: document.getElementById("arena"),
+    bloom: document.getElementById("bloom"),
+    actionText: document.getElementById("actionText"),
+    actionHint: document.getElementById("actionHint"),
+    holdFill: document.getElementById("holdFill"),
+    statusText: document.getElementById("statusText"),
+    feedback: document.getElementById("feedback"),
+    count: document.getElementById("count"),
+    scoreBox: document.getElementById("scoreBox"),
+    scoreTarget: document.getElementById("scoreTarget"),
+    goalMeter: document.getElementById("goalMeter"),
+    resetBtn: document.getElementById("resetBtn"),
+    fx: document.getElementById("fx"),
+    todayLabel: document.getElementById("todayLabel"),
+    soundToggle: document.getElementById("soundToggle"),
+    rewardToast: document.getElementById("rewardToast"),
+    rewardSeal: document.getElementById("rewardSeal"),
+    rewardTitle: document.getElementById("rewardTitle"),
+    rewardCopy: document.getElementById("rewardCopy"),
+    guideDialog: document.getElementById("guideDialog"),
+    guideClose: document.getElementById("guideClose")
+  };
 
-    let dailyKey = "";
-    let count = 0;
-    let booted = false;
-    let pressing = false;
-    let pressSource = null;
-    let activePointer = null;
-    let holdStarted = 0;
-    let holdFrame = 0;
-    let releaseTimer = 0;
-    let bumpTimer = 0;
-    let resetTimer = 0;
-    let resetArmed = false;
+  const goalSegments = Array.from(document.querySelectorAll(".goal-seg"));
+  const guideOpeners = Array.from(document.querySelectorAll("[data-open-guide]"));
+  const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
-    function localDateKey(date = new Date()) {
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, "0");
-      const day = String(date.getDate()).padStart(2, "0");
-      return `${year}-${month}-${day}`;
+  let dailyKey = "";
+  let count = 0;
+  let booted = false;
+  let pressing = false;
+  let pressSource = null;
+  let activePointer = null;
+  let holdStartedAt = 0;
+  let holdFrame = 0;
+  let targetReached = false;
+  let longHoldNoted = false;
+  let resting = false;
+  let restEndsAt = 0;
+  let restDuration = 0;
+  let restFrame = 0;
+  let bumpTimer = 0;
+  let resetTimer = 0;
+  let resetArmed = false;
+  let rewardHideTimer = 0;
+  let rewardCleanupTimer = 0;
+  let lastGuideTrigger = null;
+  let soundEnabled = true;
+  let soundPrimed = false;
+
+  const ambient = createAmbientEngine();
+
+  function localDateKey(date = new Date()) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  }
+
+  function updateDateLabel() {
+    const now = new Date();
+    el.todayLabel.textContent = `${now.getMonth() + 1}月${now.getDate()}日 · 周${WEEKDAYS[now.getDay()]}`;
+  }
+
+  function validCount(value) {
+    const number = Number(value);
+    return Number.isFinite(number) && number >= 0 ? Math.floor(number) : null;
+  }
+
+  function readStoredCount() {
+    try {
+      const raw = window.localStorage.getItem(STORE_KEY);
+      if (!raw) return 0;
+      const data = JSON.parse(raw);
+      if (!data || data.date !== dailyKey) return 0;
+      return validCount(data.count) ?? 0;
+    } catch (error) {
+      return 0;
     }
+  }
 
-    function updateDateLabel() {
-      const now = new Date();
-      el.todayLabel.textContent = `${now.getMonth() + 1}月${now.getDate()}日 · 周${WEEKDAYS[now.getDay()]}`;
-    }
-
-    function validCount(value) {
-      const number = Number(value);
-      return Number.isFinite(number) && number >= 0 ? Math.floor(number) : null;
-    }
-
-    function readStoredCount() {
-      try {
-        const raw = window.localStorage.getItem(STORE_KEY);
-        if (!raw) return 0;
-        const data = JSON.parse(raw);
-        if (!data || data.date !== dailyKey) return 0;
-        return validCount(data.count) ?? 0;
-      } catch (error) {
-        return 0;
-      }
-    }
-
-    function saveCount() {
-      try {
-        window.localStorage.setItem(
-          STORE_KEY,
-          JSON.stringify({ date: dailyKey, count })
-        );
-      } catch (error) {
-        // The exercise still works without storage.
-      }
-    }
-
-    function restoredCount(data) {
-      if (!data || typeof data !== "object" || data.date !== dailyKey) return null;
-      return validCount(data.count);
-    }
-
-    function setStatus(text) {
-      el.statusText.textContent = text;
-    }
-
-    function setFeedback(text, animate = true) {
-      if (el.feedback.textContent === text) return;
-      el.feedback.textContent = text;
-
-      if (
-        animate &&
-        !motionQuery.matches &&
-        typeof el.feedback.animate === "function"
-      ) {
-        el.feedback.animate(
-          [
-            { opacity: 0.35, transform: "translateY(3px)" },
-            { opacity: 1, transform: "translateY(0)" }
-          ],
-          { duration: 260, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }
-        );
-      }
-    }
-
-    function syncResetButton() {
-      el.resetBtn.disabled = count === 0;
-      el.resetBtn.textContent = resetArmed ? "再点一次确认" : "清零今日";
-      el.resetBtn.classList.toggle("is-armed", resetArmed);
-      el.resetBtn.setAttribute(
-        "aria-label",
-        resetArmed ? "再点一次确认清零今日记录" : "清零今日记录"
+  function saveCount() {
+    try {
+      window.localStorage.setItem(
+        STORE_KEY,
+        JSON.stringify({ date: dailyKey, count })
       );
+    } catch (error) {
+      // Local persistence is a convenience; the exercise still works without it.
     }
+  }
 
-    function showPlusOne() {
-      if (motionQuery.matches) return;
+  function restoredCount(data) {
+    if (!data || typeof data !== "object" || data.date !== dailyKey) return null;
+    return validCount(data.count);
+  }
 
-      const plus = document.createElement("span");
-      plus.className = "plus-one";
-      plus.setAttribute("aria-hidden", "true");
-      plus.textContent = "+1";
-      el.scoreBox.appendChild(plus);
-
-      const remove = () => plus.remove();
-      plus.addEventListener("animationend", remove, { once: true });
-      window.setTimeout(remove, 1100);
+  function readSoundPreference() {
+    try {
+      const stored = window.localStorage.getItem(SOUND_KEY);
+      return stored !== "off";
+    } catch (error) {
+      return true;
     }
+  }
 
-    function renderCount(animate) {
-      el.count.textContent = String(count);
-      el.scoreBox.setAttribute("aria-label", `今日完成 ${count} 次`);
-      syncResetButton();
-
-      if (!animate || motionQuery.matches) return;
-
-      el.scoreBox.classList.remove("is-bumped");
-      void el.scoreBox.offsetWidth;
-      el.scoreBox.classList.add("is-bumped");
-      window.clearTimeout(bumpTimer);
-      bumpTimer = window.setTimeout(() => {
-        el.scoreBox.classList.remove("is-bumped");
-      }, 560);
-
-      showPlusOne();
+  function saveSoundPreference() {
+    try {
+      window.localStorage.setItem(SOUND_KEY, soundEnabled ? "on" : "off");
+    } catch (error) {
+      // Ignore storage failures.
     }
+  }
 
-    function disarmReset() {
-      if (resetTimer) {
-        window.clearTimeout(resetTimer);
-        resetTimer = 0;
+  function createAmbientEngine() {
+    const AudioCtor = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtor) return null;
+
+    const padNotes = [73.416, 110, 146.832];
+    const melody = [
+      293.66, 369.99, 440, 493.88, 440, 369.99, 329.63, 293.66,
+      null, 440, 369.99, 329.63
+    ];
+
+    let ctx = null;
+    let master = null;
+    let musicBus = null;
+    let delayNode = null;
+    let padNodes = [];
+    let scheduler = 0;
+    let running = false;
+    let nextNoteAt = 0;
+    let noteIndex = 0;
+    let suspendTimer = 0;
+
+    function init() {
+      if (ctx) return true;
+
+      try {
+        ctx = new AudioCtor();
+        master = ctx.createGain();
+        master.gain.value = 0;
+        master.connect(ctx.destination);
+
+        musicBus = ctx.createGain();
+        musicBus.gain.value = 0.75;
+        musicBus.connect(master);
+
+        delayNode = ctx.createDelay(1.4);
+        delayNode.delayTime.value = 0.42;
+        const feedback = ctx.createGain();
+        feedback.gain.value = 0.22;
+        const wet = ctx.createGain();
+        wet.gain.value = 0.16;
+        delayNode.connect(feedback);
+        feedback.connect(delayNode);
+        delayNode.connect(wet);
+        wet.connect(musicBus);
+
+        const padFilter = ctx.createBiquadFilter();
+        padFilter.type = "lowpass";
+        padFilter.frequency.value = 430;
+        padFilter.Q.value = 0.25;
+        const padGain = ctx.createGain();
+        padGain.gain.value = 0.055;
+        padFilter.connect(padGain);
+        padGain.connect(musicBus);
+
+        padNodes = padNotes.map((frequency, index) => {
+          const oscillator = ctx.createOscillator();
+          const gain = ctx.createGain();
+          oscillator.type = index === 0 ? "sine" : "triangle";
+          oscillator.frequency.value = frequency;
+          gain.gain.value = index === 0 ? 0.45 : 0.2;
+          oscillator.connect(gain);
+          gain.connect(padFilter);
+          oscillator.start();
+          return { oscillator, gain };
+        });
+
+        return true;
+      } catch (error) {
+        ctx = null;
+        return false;
       }
-      if (!resetArmed) {
-        syncResetButton();
-        return;
-      }
-      resetArmed = false;
-      syncResetButton();
     }
 
-    function rolloverIfNeeded() {
-      const nextKey = localDateKey();
-      if (nextKey === dailyKey) return false;
+    function playPluck(frequency, when) {
+      if (!ctx || !musicBus || !delayNode) return;
 
-      dailyKey = nextKey;
-      count = 0;
-      resetArmed = false;
-      if (resetTimer) {
-        window.clearTimeout(resetTimer);
-        resetTimer = 0;
+      const at = Math.max(when, ctx.currentTime);
+      const oscillator = ctx.createOscillator();
+      const shimmer = ctx.createOscillator();
+      const shimmerGain = ctx.createGain();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+      const send = ctx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      shimmer.type = "sine";
+      shimmer.frequency.value = frequency * 2;
+      shimmerGain.gain.value = 0.1;
+      filter.type = "lowpass";
+      filter.frequency.value = 1800;
+      send.gain.value = 0.25;
+
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(0.085, at + 0.18);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.1);
+
+      oscillator.connect(filter);
+      shimmer.connect(shimmerGain);
+      shimmerGain.connect(filter);
+      filter.connect(gain);
+      gain.connect(musicBus);
+      gain.connect(send);
+      send.connect(delayNode);
+
+      oscillator.start(at);
+      shimmer.start(at);
+      oscillator.stop(at + 3.2);
+      shimmer.stop(at + 3.2);
+
+      oscillator.addEventListener("ended", () => {
+        try {
+          oscillator.disconnect();
+          shimmer.disconnect();
+          shimmerGain.disconnect();
+          filter.disconnect();
+          gain.disconnect();
+          send.disconnect();
+        } catch (error) {
+          // Already disconnected.
+        }
+      }, { once: true });
+    }
+
+    function schedule() {
+      if (!ctx || !running || ctx.state !== "running") return;
+
+      while (nextNoteAt < ctx.currentTime + 1.6) {
+        const frequency = melody[noteIndex % melody.length];
+        if (frequency) playPluck(frequency, nextNoteAt);
+        noteIndex += 1;
+        nextNoteAt += 2.8;
       }
-      updateDateLabel();
-      saveCount();
-      renderCount(false);
+    }
+
+    function start() {
+      if (!init()) return false;
+
+      running = true;
+      window.clearTimeout(suspendTimer);
+
+      try {
+        const resumeResult = ctx.resume();
+        if (resumeResult && typeof resumeResult.catch === "function") {
+          resumeResult.catch(() => {});
+        }
+      } catch (error) {
+        // The user can retry from the sound button.
+      }
+
+      const now = ctx.currentTime;
+      master.gain.cancelScheduledValues(now);
+      master.gain.setTargetAtTime(0.72, now, 0.42);
+
+      if (!scheduler) {
+        noteIndex = 0;
+        nextNoteAt = now + 0.25;
+        scheduler = window.setInterval(schedule, 450);
+        schedule();
+      }
+
       return true;
     }
 
-    function setIdle(initial = false) {
-      if (pressing) return;
+    function stop() {
+      running = false;
+      if (scheduler) {
+        window.clearInterval(scheduler);
+        scheduler = 0;
+      }
 
-      el.arena.classList.remove("is-active", "is-release");
-      el.bloom.setAttribute("aria-pressed", "false");
-      el.actionText.textContent = "按住";
-      el.actionHint.textContent = "HOLD";
-      setStatus(count > 0 ? "准备继续" : "准备就绪");
+      if (!ctx) return;
 
-      let message;
-      if (initial) {
-        message =
-          count > 0
-            ? `今天已完成 ${count} 次。按住继续。`
-            : "按住圆盘，开始第一次。";
+      const now = ctx.currentTime;
+      master.gain.cancelScheduledValues(now);
+      master.gain.setTargetAtTime(0.0001, now, 0.06);
+
+      window.clearTimeout(suspendTimer);
+      suspendTimer = window.setTimeout(() => {
+        if (!running && ctx && ctx.state === "running") {
+          try {
+            const suspendResult = ctx.suspend();
+            if (suspendResult && typeof suspendResult.catch === "function") {
+              suspendResult.catch(() => {});
+            }
+          } catch (error) {
+            // Ignore audio lifecycle errors.
+          }
+        }
+      }, 420);
+    }
+
+    function cue(frequency, delay, peak, duration) {
+      if (!ctx || !running || ctx.state !== "running" || !musicBus) return;
+
+      const at = ctx.currentTime + delay;
+      const oscillator = ctx.createOscillator();
+      const filter = ctx.createBiquadFilter();
+      const gain = ctx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.value = frequency;
+      filter.type = "lowpass";
+      filter.frequency.value = 2400;
+      gain.gain.setValueAtTime(0.0001, at);
+      gain.gain.exponentialRampToValueAtTime(peak, at + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
+
+      oscillator.connect(filter);
+      filter.connect(gain);
+      gain.connect(musicBus);
+      oscillator.start(at);
+      oscillator.stop(at + duration + 0.1);
+      oscillator.addEventListener("ended", () => {
+        try {
+          oscillator.disconnect();
+          filter.disconnect();
+          gain.disconnect();
+        } catch (error) {
+          // Already disconnected.
+        }
+      }, { once: true });
+    }
+
+    return {
+      start,
+      stop,
+      targetCue() {
+        cue(739.99, 0.01, 0.05, 1.1);
+      },
+      celebrate(level) {
+        if (!ctx || !running) return;
+        const notes = level >= 30
+          ? [587.33, 739.99, 880, 1174.66]
+          : level >= 20
+            ? [587.33, 739.99, 880]
+            : [587.33, 880];
+
+        notes.forEach((frequency, index) => {
+          cue(frequency, 0.02 + index * 0.13, 0.09, 1.65 + index * 0.12);
+        });
+      }
+    };
+  }
+
+  function startAmbient() {
+    if (!soundEnabled || !ambient) return;
+    soundPrimed = true;
+    const started = ambient.start();
+    el.soundToggle.classList.toggle("is-playing", Boolean(started));
+  }
+
+  function stopAmbient() {
+    if (ambient) ambient.stop();
+    el.soundToggle.classList.remove("is-playing");
+  }
+
+  function updateSoundUI() {
+    if (!ambient) {
+      el.soundToggle.disabled = true;
+      el.soundToggle.setAttribute("aria-pressed", "false");
+      el.soundToggle.setAttribute("aria-label", "此浏览器不支持音乐");
+      return;
+    }
+
+    el.soundToggle.setAttribute("aria-pressed", soundEnabled ? "true" : "false");
+    el.soundToggle.setAttribute("aria-label", soundEnabled ? "关闭音乐" : "开启音乐");
+    if (!soundEnabled) el.soundToggle.classList.remove("is-playing");
+  }
+
+  function setStatus(text) {
+    el.statusText.textContent = text;
+  }
+
+  function setFeedback(text, animate = true) {
+    if (el.feedback.textContent === text) return;
+    el.feedback.textContent = text;
+
+    if (
+      animate &&
+      !motionQuery.matches &&
+      typeof el.feedback.animate === "function"
+    ) {
+      el.feedback.animate(
+        [
+          { opacity: 0.35, transform: "translateY(3px)" },
+          { opacity: 1, transform: "translateY(0)" }
+        ],
+        { duration: 260, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }
+      );
+    }
+  }
+
+  function setHoldProgress(percent) {
+    const clamped = Math.max(0, Math.min(100, percent));
+    el.holdFill.style.strokeDashoffset = String(100 - clamped);
+  }
+
+  function clearHoldUI() {
+    el.arena.classList.remove("is-active", "is-target", "is-resting");
+    el.bloom.setAttribute("aria-pressed", "false");
+    el.bloom.setAttribute("aria-disabled", "false");
+    el.bloom.setAttribute("aria-label", "按住收紧三秒，松开放松");
+    el.actionText.textContent = "按住";
+    el.actionHint.textContent = "3S";
+    setHoldProgress(0);
+  }
+
+  function syncResetButton() {
+    el.resetBtn.disabled = count === 0;
+    el.resetBtn.textContent = resetArmed ? "再点一次确认" : "清零今日";
+    el.resetBtn.classList.toggle("is-armed", resetArmed);
+    el.resetBtn.setAttribute(
+      "aria-label",
+      resetArmed ? "再点一次确认清零今日记录" : "清零今日记录"
+    );
+  }
+
+  function showPlusOne() {
+    if (motionQuery.matches) return;
+
+    const plus = document.createElement("span");
+    plus.className = "plus-one";
+    plus.setAttribute("aria-hidden", "true");
+    plus.textContent = "+1";
+    el.scoreBox.appendChild(plus);
+
+    const remove = () => plus.remove();
+    plus.addEventListener("animationend", remove, { once: true });
+    window.setTimeout(remove, 1100);
+  }
+
+  function renderDaily(animate) {
+    el.count.textContent = String(count);
+    const complete = count >= DAILY_GOAL;
+
+    el.scoreBox.classList.toggle("is-complete", complete);
+    el.arena.classList.toggle("is-complete", complete);
+    el.scoreTarget.textContent = complete ? "已达标" : "/ 30";
+    el.scoreBox.setAttribute(
+      "aria-label",
+      complete
+        ? `今日完成 ${count} 次，目标 30 次，已达标`
+        : `今日完成 ${count} 次，目标 30 次`
+    );
+
+    goalSegments.forEach((segment, index) => {
+      const filled = Math.min(SET_SIZE, Math.max(0, count - index * SET_SIZE));
+      const fill = segment.querySelector("i");
+      if (fill) fill.style.setProperty("--fill", `${(filled / SET_SIZE) * 100}%`);
+    });
+
+    el.goalMeter.setAttribute("aria-valuenow", String(Math.min(count, DAILY_GOAL)));
+    el.goalMeter.setAttribute(
+      "aria-valuetext",
+      complete ? `已达成今日 30 次目标，当前 ${count} 次` : `${count} / 30 次`
+    );
+
+    syncResetButton();
+
+    if (!animate || motionQuery.matches) return;
+
+    el.scoreBox.classList.remove("is-bumped");
+    void el.scoreBox.offsetWidth;
+    el.scoreBox.classList.add("is-bumped");
+    window.clearTimeout(bumpTimer);
+    bumpTimer = window.setTimeout(() => {
+      el.scoreBox.classList.remove("is-bumped");
+    }, 560);
+
+    showPlusOne();
+  }
+
+  function showReward(milestone) {
+    if (!milestone) return;
+
+    window.clearTimeout(rewardHideTimer);
+    window.clearTimeout(rewardCleanupTimer);
+    el.rewardSeal.textContent = milestone.seal;
+    el.rewardTitle.textContent = milestone.title;
+    el.rewardCopy.textContent = milestone.copy;
+    el.rewardToast.hidden = false;
+    el.rewardToast.classList.remove("is-visible");
+    void el.rewardToast.offsetWidth;
+    el.rewardToast.classList.add("is-visible");
+
+    rewardHideTimer = window.setTimeout(() => {
+      el.rewardToast.classList.remove("is-visible");
+      rewardCleanupTimer = window.setTimeout(() => {
+        el.rewardToast.hidden = true;
+      }, 320);
+    }, 4300);
+  }
+
+  function hideReward() {
+    window.clearTimeout(rewardHideTimer);
+    window.clearTimeout(rewardCleanupTimer);
+    el.rewardToast.classList.remove("is-visible");
+    el.rewardToast.hidden = true;
+  }
+
+  function disarmReset() {
+    if (resetTimer) {
+      window.clearTimeout(resetTimer);
+      resetTimer = 0;
+    }
+    if (!resetArmed) {
+      syncResetButton();
+      return;
+    }
+    resetArmed = false;
+    syncResetButton();
+  }
+
+  function rolloverIfNeeded() {
+    const nextKey = localDateKey();
+    if (nextKey === dailyKey) return false;
+
+    dailyKey = nextKey;
+    count = 0;
+    resetArmed = false;
+    if (resetTimer) {
+      window.clearTimeout(resetTimer);
+      resetTimer = 0;
+    }
+    updateDateLabel();
+    hideReward();
+    saveCount();
+    renderDaily(false);
+    return true;
+  }
+
+  function setIdle(initial = false) {
+    if (pressing || resting) return;
+
+    clearHoldUI();
+    setStatus(count >= DAILY_GOAL ? "今日达标" : count > 0 ? "准备继续" : "准备就绪");
+
+    let message;
+    if (initial) {
+      if (count >= DAILY_GOAL) {
+        message = "今日已达标。是努力的轨迹，也是实力的证明。";
+      } else if (count > 0) {
+        message = `今天已记下 ${count} 次。按住，继续攒底气。`;
       } else {
-        message =
-          count > 0
-            ? "松到底，再按住开始下一次。"
-            : "按住圆盘，开始第一次。";
+        message = "按住 3 秒，开始第一次。";
       }
-      setFeedback(message, !initial);
+    } else if (count >= DAILY_GOAL) {
+      message = count === DAILY_GOAL
+        ? "今日达标。收工或量力加练，都算数。"
+        : "今日已达标。加练一次，量力而行。";
+    } else if (count > 0 && count % SET_SIZE === 0) {
+      message = "放松到位。这一组完成得漂亮，下一组继续。";
+    } else {
+      message = "放松到位。按住，开始下一次。";
     }
 
-    function vibrate(pattern) {
-      if (typeof navigator.vibrate !== "function") return;
-      try {
-        navigator.vibrate(pattern);
-      } catch (error) {
-        // Vibration is an optional nicety.
+    setFeedback(message, !initial);
+  }
+
+  function startPress(source) {
+    if (pressing) return;
+    if (resting) {
+      nudgeRest();
+      return;
+    }
+
+    rolloverIfNeeded();
+    disarmReset();
+    startAmbient();
+
+    pressing = true;
+    pressSource = source;
+    holdStartedAt = performance.now();
+    targetReached = false;
+    longHoldNoted = false;
+
+    el.arena.classList.remove("is-resting", "is-target");
+    el.arena.classList.add("is-active");
+    el.bloom.setAttribute("aria-pressed", "true");
+    el.bloom.setAttribute("aria-disabled", "false");
+    el.bloom.setAttribute("aria-label", "正在收紧，请保持三秒");
+    el.actionText.textContent = "保持";
+    el.actionHint.textContent = "0.0s";
+    setHoldProgress(0);
+    setStatus("收紧中");
+    setFeedback("收住，别憋气。想象一次轻轻的向上提。");
+
+    window.cancelAnimationFrame(holdFrame);
+    holdFrame = window.requestAnimationFrame(tickHold);
+    vibrate(8);
+  }
+
+  function tickHold() {
+    if (!pressing) return;
+
+    const elapsed = Math.max(0, (performance.now() - holdStartedAt) / 1000);
+    el.actionHint.textContent = `${elapsed.toFixed(1)}s`;
+    setHoldProgress(Math.min(1, elapsed / HOLD_TARGET) * 100);
+
+    if (!targetReached && elapsed >= HOLD_TARGET) {
+      targetReached = true;
+      el.arena.classList.add("is-target");
+      el.actionText.textContent = "可以松";
+      el.bloom.setAttribute("aria-label", "达标，可以松开了");
+      setStatus("到位了");
+      setFeedback("达标，慢慢松开。");
+      if (ambient) ambient.targetCue();
+      vibrate(6);
+    }
+
+    if (!longHoldNoted && elapsed >= 10) {
+      longHoldNoted = true;
+      setFeedback("够了，慢慢松开，不用硬撑。");
+    }
+
+    holdFrame = window.requestAnimationFrame(tickHold);
+  }
+
+  function endPress(shouldCount) {
+    if (!pressing) return;
+
+    const heldSeconds = Math.max(0, (performance.now() - holdStartedAt) / 1000);
+    const valid = heldSeconds >= HOLD_TARGET - 0.05;
+
+    pressing = false;
+    pressSource = null;
+    activePointer = null;
+    window.cancelAnimationFrame(holdFrame);
+    holdFrame = 0;
+
+    el.arena.classList.remove("is-active", "is-target");
+    el.bloom.setAttribute("aria-pressed", "false");
+
+    if (!shouldCount) {
+      clearHoldUI();
+      setStatus(count >= DAILY_GOAL ? "今日达标" : count > 0 ? "准备继续" : "准备就绪");
+      setFeedback("这次不计。按住三秒，我们重新来。");
+      return;
+    }
+
+    if (!valid) {
+      clearHoldUI();
+      setStatus("再来一次");
+      setFeedback(
+        `还差 ${Math.max(0, HOLD_TARGET - heldSeconds).toFixed(1)} 秒，这次不计。稳住，再来。`
+      );
+      vibrate(5);
+      return;
+    }
+
+    rolloverIfNeeded();
+    count += 1;
+    saveCount();
+    renderDaily(true);
+
+    const milestone = MILESTONES.get(count) || null;
+    const restSeconds = Math.min(10, Math.max(3, Math.round(heldSeconds)));
+
+    beginRest(restSeconds, milestone);
+    spawnBurst(Boolean(milestone));
+
+    if (milestone) {
+      showReward(milestone);
+      if (ambient) ambient.celebrate(count);
+      vibrate([12, 28, 12, 28, 18]);
+    } else {
+      vibrate(10);
+    }
+  }
+
+  function beginRest(seconds, milestone) {
+    resting = true;
+    restDuration = seconds;
+    restEndsAt = performance.now() + seconds * 1000;
+
+    el.arena.classList.add("is-resting");
+    el.bloom.setAttribute("aria-disabled", "true");
+    el.bloom.setAttribute("aria-label", "放松中，稍后再开始下一次");
+    el.actionText.textContent = "放松";
+    el.actionHint.textContent = `${seconds.toFixed(1)}s`;
+    setStatus("放松中");
+    setHoldProgress(100);
+
+    if (milestone) {
+      setFeedback(`${milestone.title}。${milestone.copy} 松到底。`);
+    } else if (count >= DAILY_GOAL) {
+      setFeedback(`今日第 ${count} 次。已达标，量力加练。松到底。`);
+    } else {
+      setFeedback(`第 ${count} 次完成。松到底，给肌肉一点时间。`);
+    }
+
+    window.cancelAnimationFrame(restFrame);
+    restFrame = window.requestAnimationFrame(tickRest);
+  }
+
+  function tickRest() {
+    if (!resting) return;
+
+    const remainingMs = Math.max(0, restEndsAt - performance.now());
+    const remaining = remainingMs / 1000;
+    el.actionHint.textContent = `${remaining.toFixed(1)}s`;
+    setHoldProgress(restDuration > 0 ? (remaining / restDuration) * 100 : 0);
+
+    if (remainingMs <= 20) {
+      resting = false;
+      restFrame = 0;
+      window.cancelAnimationFrame(restFrame);
+      setIdle(false);
+      return;
+    }
+
+    restFrame = window.requestAnimationFrame(tickRest);
+  }
+
+  function nudgeRest() {
+    if (!resting) return;
+    setFeedback("别急，先把这口气松完。");
+    vibrate(5);
+  }
+
+  function cancelPress() {
+    if (!pressing) return;
+
+    pressing = false;
+    pressSource = null;
+    activePointer = null;
+    window.cancelAnimationFrame(holdFrame);
+    holdFrame = 0;
+
+    clearHoldUI();
+    setStatus(count >= DAILY_GOAL ? "今日达标" : count > 0 ? "准备继续" : "准备就绪");
+    setFeedback("已松开，这次不计。想继续时再按住就行。");
+  }
+
+  function resetToday() {
+    window.clearTimeout(resetTimer);
+    resetTimer = 0;
+    window.cancelAnimationFrame(holdFrame);
+    holdFrame = 0;
+    window.cancelAnimationFrame(restFrame);
+    restFrame = 0;
+
+    pressing = false;
+    resting = false;
+    pressSource = null;
+    activePointer = null;
+    resetArmed = false;
+
+    clearHoldUI();
+    hideReward();
+    el.fx.replaceChildren();
+
+    count = 0;
+    saveCount();
+    renderDaily(false);
+    setStatus("准备就绪");
+    setFeedback("今日记录已清零。按住 3 秒，重新开始。");
+    vibrate(12);
+  }
+
+  function handleResetClick() {
+    if (count === 0) return;
+
+    if (!resetArmed) {
+      resetArmed = true;
+      syncResetButton();
+      resetTimer = window.setTimeout(disarmReset, 4000);
+      return;
+    }
+
+    resetToday();
+  }
+
+  function spawnBurst(celebration) {
+    if (motionQuery.matches) return;
+
+    const ring = document.createElement("span");
+    ring.className = celebration ? "burst-ring is-gold" : "burst-ring";
+    el.fx.appendChild(ring);
+    ring.addEventListener("animationend", () => ring.remove(), { once: true });
+    window.setTimeout(() => ring.remove(), 1400);
+
+    const radius = el.bloom.getBoundingClientRect().width / 2 || 160;
+    const total = celebration ? 24 : 13;
+    const colors = celebration
+      ? ["var(--gold)", "var(--gold)", "var(--accent)", "var(--mint)"]
+      : ["var(--accent)", "var(--accent)", "var(--accent)", "var(--mint)"];
+
+    for (let index = 0; index < total; index += 1) {
+      const spark = document.createElement("i");
+      const angle = (360 / total) * index + Math.random() * 16;
+      const distance = radius * (0.64 + Math.random() * 0.5);
+      spark.className = "spark";
+      spark.style.setProperty("--a", `${angle}deg`);
+      spark.style.setProperty("--d", `${distance}px`);
+      spark.style.background = colors[index % colors.length];
+      spark.style.animationDelay = `${Math.random() * 80}ms`;
+      el.fx.appendChild(spark);
+      spark.addEventListener("animationend", () => spark.remove(), { once: true });
+      window.setTimeout(() => spark.remove(), 1600);
+    }
+  }
+
+  function vibrate(pattern) {
+    if (typeof navigator.vibrate !== "function") return;
+    try {
+      navigator.vibrate(pattern);
+    } catch (error) {
+      // Vibration is optional.
+    }
+  }
+
+  function openGuide(event) {
+    if (!el.guideDialog) return;
+    lastGuideTrigger = event && event.currentTarget ? event.currentTarget : document.activeElement;
+
+    if (typeof el.guideDialog.showModal === "function") {
+      if (!el.guideDialog.open) el.guideDialog.showModal();
+    } else {
+      el.guideDialog.setAttribute("open", "");
+    }
+    document.body.classList.add("dialog-open");
+  }
+
+  function closeGuide() {
+    if (!el.guideDialog) return;
+    if (typeof el.guideDialog.close === "function" && el.guideDialog.open) {
+      el.guideDialog.close();
+    } else {
+      el.guideDialog.removeAttribute("open");
+      document.body.classList.remove("dialog-open");
+      if (lastGuideTrigger && typeof lastGuideTrigger.focus === "function") {
+        lastGuideTrigger.focus();
       }
     }
+  }
 
-    function tickHold() {
-      if (!pressing) return;
-      const seconds = Math.max(0, (performance.now() - holdStarted) / 1000);
-      el.actionHint.textContent = `${seconds.toFixed(1)}s`;
-      holdFrame = window.requestAnimationFrame(tickHold);
+  function isHoldKey(event) {
+    return event.key === " " || event.key === "Spacebar" || event.key === "Enter";
+  }
+
+  function handleReturn() {
+    if (document.hidden) return;
+
+    const dayChanged = rolloverIfNeeded();
+    if (dayChanged && !pressing) {
+      resting = false;
+      window.cancelAnimationFrame(restFrame);
+      restFrame = 0;
+      clearHoldUI();
+      setIdle(false);
+      setFeedback("新的一天，次数已从零开始。按住开始。");
     }
 
-    function startPress(source) {
+    if (soundEnabled && soundPrimed) startAmbient();
+  }
+
+  function bindEvents() {
+    el.bloom.addEventListener("pointerdown", (event) => {
       if (pressing) return;
-
-      rolloverIfNeeded();
-      disarmReset();
-
-      if (releaseTimer) {
-        window.clearTimeout(releaseTimer);
-        releaseTimer = 0;
-      }
-
-      pressing = true;
-      pressSource = source;
-      holdStarted = performance.now();
-
-      el.arena.classList.remove("is-release");
-      el.arena.classList.add("is-active");
-      el.bloom.setAttribute("aria-pressed", "true");
-      el.actionText.textContent = "保持";
-      el.actionHint.textContent = "0.0s";
-      setStatus("收紧中");
-      setFeedback("保持住，肩膀放松，别憋气。");
-
-      window.cancelAnimationFrame(holdFrame);
-      tickHold();
-      vibrate(8);
-    }
-
-    function endPress(shouldCount) {
-      if (!pressing) return;
-
-      const heldSeconds = Math.max(0, (performance.now() - holdStarted) / 1000);
-      pressing = false;
-      pressSource = null;
-      activePointer = null;
-      window.cancelAnimationFrame(holdFrame);
-      holdFrame = 0;
-
-      el.arena.classList.remove("is-active");
-      el.bloom.setAttribute("aria-pressed", "false");
-
-      if (!shouldCount) {
-        el.actionText.textContent = "按住";
-        el.actionHint.textContent = "HOLD";
-        setStatus(count > 0 ? "准备继续" : "准备就绪");
-        setFeedback("松开了，没有计数。按住可以重来。");
-        return;
-      }
-
-      rolloverIfNeeded();
-      count += 1;
-      saveCount();
-      renderCount(true);
-
-      el.arena.classList.add("is-release");
-      el.actionText.textContent = "松开";
-      el.actionHint.textContent = "RELEASE";
-      setStatus(`第 ${count} 次`);
-
-      if (heldSeconds < 1) {
-        setFeedback(
-          `第 ${count} 次完成，保持 ${heldSeconds.toFixed(1)} 秒。下次多收一会儿。`
-        );
-      } else {
-        setFeedback(
-          `第 ${count} 次完成，保持 ${heldSeconds.toFixed(1)} 秒。`
-        );
-      }
-
-      if (releaseTimer) window.clearTimeout(releaseTimer);
-      releaseTimer = window.setTimeout(() => {
-        releaseTimer = 0;
-        if (!pressing) setIdle(false);
-      }, 1180);
-
-      spawnBurst();
-      vibrate([10, 28, 10]);
-    }
-
-    function cancelPress() {
-      if (!pressing) return;
-      pressing = false;
-      pressSource = null;
-      activePointer = null;
-      window.cancelAnimationFrame(holdFrame);
-      holdFrame = 0;
-
-      el.arena.classList.remove("is-active");
-      el.bloom.setAttribute("aria-pressed", "false");
-      el.actionText.textContent = "按住";
-      el.actionHint.textContent = "HOLD";
-      setStatus(count > 0 ? "准备继续" : "准备就绪");
-      setFeedback("松开了，没有计数。按住可以重来。");
-    }
-
-    function spawnBurst() {
-      if (motionQuery.matches) return;
-
-      const ring = document.createElement("span");
-      ring.className = "burst-ring";
-      el.fx.appendChild(ring);
-      ring.addEventListener("animationend", () => ring.remove(), { once: true });
-      window.setTimeout(() => ring.remove(), 1400);
-
-      const radius = el.bloom.getBoundingClientRect().width / 2 || 160;
-      const total = 13;
-
-      for (let index = 0; index < total; index += 1) {
-        const spark = document.createElement("i");
-        const angle = (360 / total) * index + Math.random() * 18;
-        const distance = radius * (0.64 + Math.random() * 0.42);
-        spark.className = "spark";
-        spark.style.setProperty("--a", `${angle}deg`);
-        spark.style.setProperty("--d", `${distance}px`);
-        spark.style.background = index % 4 === 0 ? "var(--mint)" : "var(--accent)";
-        spark.style.animationDelay = `${Math.random() * 70}ms`;
-        el.fx.appendChild(spark);
-        spark.addEventListener("animationend", () => spark.remove(), { once: true });
-        window.setTimeout(() => spark.remove(), 1500);
-      }
-    }
-
-    function resetToday() {
-      if (releaseTimer) {
-        window.clearTimeout(releaseTimer);
-        releaseTimer = 0;
-      }
-      if (resetTimer) {
-        window.clearTimeout(resetTimer);
-        resetTimer = 0;
-      }
-      if (holdFrame) {
-        window.cancelAnimationFrame(holdFrame);
-        holdFrame = 0;
-      }
-
-      pressing = false;
-      pressSource = null;
-      activePointer = null;
-      resetArmed = false;
-
-      el.arena.classList.remove("is-active", "is-release");
-      el.bloom.setAttribute("aria-pressed", "false");
-      el.actionText.textContent = "按住";
-      el.actionHint.textContent = "HOLD";
-      el.fx.replaceChildren();
-
-      count = 0;
-      saveCount();
-      renderCount(false);
-      setStatus("准备就绪");
-      setFeedback("今日记录已清零。按住圆盘，重新开始。");
-      vibrate(12);
-    }
-
-    function handleResetClick() {
-      if (count === 0) return;
-
-      if (!resetArmed) {
-        resetArmed = true;
-        syncResetButton();
-        resetTimer = window.setTimeout(disarmReset, 4000);
-        return;
-      }
-
-      resetToday();
-    }
-
-    function onPointerDown(event) {
-      if (pressing) return;
-      if (!event.isPrimary) return;
+      if (event.isPrimary === false) return;
       if (event.pointerType === "mouse" && event.button !== 0) return;
+      if (resting) {
+        nudgeRest();
+        return;
+      }
 
       activePointer = event.pointerId;
       startPress("pointer");
@@ -1862,9 +3280,9 @@
       } catch (error) {
         // Pointer capture is helpful, but not required for a tap.
       }
-    }
+    });
 
-    function onPointerUp(event) {
+    el.bloom.addEventListener("pointerup", (event) => {
       if (
         pressSource !== "pointer" ||
         activePointer === null ||
@@ -1873,9 +3291,9 @@
         return;
       }
       endPress(true);
-    }
+    });
 
-    function onPointerCancel(event) {
+    el.bloom.addEventListener("pointercancel", (event) => {
       if (
         pressSource !== "pointer" ||
         activePointer === null ||
@@ -1884,9 +3302,9 @@
         return;
       }
       endPress(false);
-    }
+    });
 
-    function onLostPointerCapture(event) {
+    el.bloom.addEventListener("lostpointercapture", (event) => {
       if (
         pressing &&
         pressSource === "pointer" &&
@@ -1894,101 +3312,126 @@
       ) {
         endPress(false);
       }
-    }
+    });
 
-    function isHoldKey(event) {
-      return event.key === " " || event.key === "Spacebar" || event.key === "Enter";
-    }
-
-    function onKeyDown(event) {
+    el.bloom.addEventListener("keydown", (event) => {
       if (!isHoldKey(event) || event.repeat) return;
       event.preventDefault();
+      if (resting) {
+        nudgeRest();
+        return;
+      }
       startPress("keyboard");
-    }
+    });
 
-    function onKeyUp(event) {
+    el.bloom.addEventListener("keyup", (event) => {
       if (!isHoldKey(event)) return;
       if (pressSource !== "keyboard") return;
       event.preventDefault();
       endPress(true);
-    }
+    });
 
-    function handleReturn() {
-      if (document.hidden) return;
+    el.bloom.addEventListener("blur", () => {
+      if (pressing && pressSource === "keyboard") cancelPress();
+    });
 
-      const dayChanged = rolloverIfNeeded();
-      if (!dayChanged || pressing) return;
+    el.bloom.addEventListener("contextmenu", (event) => event.preventDefault());
+    el.resetBtn.addEventListener("click", handleResetClick);
 
-      if (releaseTimer) {
-        window.clearTimeout(releaseTimer);
-        releaseTimer = 0;
+    el.soundToggle.addEventListener("click", () => {
+      if (!ambient) return;
+      soundEnabled = !soundEnabled;
+      saveSoundPreference();
+      if (soundEnabled) {
+        startAmbient();
+      } else {
+        stopAmbient();
       }
-      setIdle(false);
-      setFeedback("新的一天，次数已从零开始。按住开始。");
+      updateSoundUI();
+    });
+
+    guideOpeners.forEach((button) => {
+      button.addEventListener("click", openGuide);
+    });
+
+    if (el.guideClose) {
+      el.guideClose.addEventListener("click", closeGuide);
     }
 
-    function boot(restored) {
-      if (booted) {
-        const nextCount = restoredCount(restored);
-        if (nextCount !== null && nextCount !== count) {
-          count = nextCount;
-          renderCount(false);
-        }
-        return;
-      }
-
-      booted = true;
-      dailyKey = localDateKey();
-      updateDateLabel();
-
-      const hotCount = restoredCount(restored);
-      count = hotCount !== null ? hotCount : readStoredCount();
-      if (hotCount !== null) saveCount();
-
-      renderCount(false);
-      updateDateLabel();
-      setIdle(true);
-      bindEvents();
-    }
-
-    function bindEvents() {
-      el.bloom.addEventListener("pointerdown", onPointerDown);
-      el.bloom.addEventListener("pointerup", onPointerUp);
-      el.bloom.addEventListener("pointercancel", onPointerCancel);
-      el.bloom.addEventListener("lostpointercapture", onLostPointerCapture);
-      el.bloom.addEventListener("keydown", onKeyDown);
-      el.bloom.addEventListener("keyup", onKeyUp);
-      el.bloom.addEventListener("contextmenu", (event) => event.preventDefault());
-      el.bloom.addEventListener("blur", () => {
-        if (pressing && pressSource === "keyboard") cancelPress();
+    if (el.guideDialog) {
+      el.guideDialog.addEventListener("click", (event) => {
+        if (event.target === el.guideDialog) closeGuide();
       });
+      el.guideDialog.addEventListener("close", () => {
+        document.body.classList.remove("dialog-open");
+        if (lastGuideTrigger && typeof lastGuideTrigger.focus === "function") {
+          lastGuideTrigger.focus();
+        }
+      });
+    }
 
-      el.resetBtn.addEventListener("click", handleResetClick);
+    window.addEventListener("blur", () => {
+      if (pressing) cancelPress();
+    });
 
-      window.addEventListener("blur", () => {
+    window.addEventListener("focus", handleReturn);
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
         if (pressing) cancelPress();
-      });
-      window.addEventListener("focus", handleReturn);
-
-      document.addEventListener("visibilitychange", () => {
-        if (document.hidden) {
-          if (pressing) cancelPress();
-        } else {
-          handleReturn();
+        if (resting) {
+          window.cancelAnimationFrame(restFrame);
+          restFrame = 0;
         }
-      });
+        if (ambient) ambient.stop();
+        el.soundToggle.classList.remove("is-playing");
+      } else {
+        handleReturn();
+        if (resting) {
+          window.cancelAnimationFrame(restFrame);
+          restFrame = window.requestAnimationFrame(tickRest);
+        }
+      }
+    });
+  }
+
+  function boot(restored) {
+    if (booted) {
+      const nextCount = restoredCount(restored);
+      if (nextCount !== null && nextCount !== count) {
+        count = nextCount;
+        renderDaily(false);
+        if (!pressing && !resting) setIdle(false);
+      }
+      return;
     }
 
-    try {
-      window.claude?.hot?.snapshot?.(() => ({ date: dailyKey, count }));
-    } catch (error) {
-      // The standalone page has no hot-update bridge.
-    }
+    booted = true;
+    dailyKey = localDateKey();
+    updateDateLabel();
 
-    if (window.claude?.hot?.ready) {
-      window.claude.hot.ready(boot);
-    } else {
-      boot(window.claude?.hot?.data ?? {});
-    }
-  })();
+    soundEnabled = readSoundPreference();
+    updateSoundUI();
+
+    const hotCount = restoredCount(restored);
+    count = hotCount !== null ? hotCount : readStoredCount();
+    if (hotCount !== null) saveCount();
+
+    renderDaily(false);
+    bindEvents();
+    setIdle(true);
+  }
+
+  try {
+    window.claude?.hot?.snapshot?.(() => ({ date: dailyKey, count }));
+  } catch (error) {
+    // The standalone page has no hot-update bridge.
+  }
+
+  if (window.claude?.hot?.ready) {
+    window.claude.hot.ready(boot);
+  } else {
+    boot(window.claude?.hot?.data ?? {});
+  }
+})();
 </script>
