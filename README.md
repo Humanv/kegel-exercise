@@ -2,6 +2,8 @@
 
 一个轻量的凯格尔练习网页小游戏。按住收紧、松开放松，一次完整的收放记作一次。
 
+[**在线试玩 →**](https://humanv.github.io/kegel-exercise/)
+
 ![提气练习页面预览](preview.png)
 
 ## 玩法
