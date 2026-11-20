@@ -581,14 +581,7 @@
     aspect-ratio: 1;
     z-index: 0;
     pointer-events: none;
-    transform: translate(-50%, -50%);
-    transition: transform 900ms cubic-bezier(0.22, 1.2, 0.36, 1);
-  }
-
-  .arena.is-active .orbits {
-    transform: translate(-50%, -50%) scale(0.96);
-    transition-duration: 620ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.09));
   }
 
   .orbit {
@@ -650,6 +643,7 @@
     user-select: none;
     -webkit-user-select: none;
     touch-action: none;
+    transform: scale(calc(1 - var(--squeeze, 0) * 0.06));
   }
 
   .bloom:focus-visible {
@@ -669,17 +663,9 @@
     background:
       radial-gradient(circle at 50% 53%, var(--glow-soft) 0%, transparent 66%),
       radial-gradient(circle at 50% 50%, transparent 44%, var(--glow) 67%, transparent 76%);
-    opacity: 0.78;
-    transform: scale(0.97);
+    opacity: calc(0.78 + var(--squeeze, 0) * 0.17);
+    transform: scale(calc(0.97 - var(--squeeze, 0) * 0.22));
     pointer-events: none;
-    transition: transform 950ms cubic-bezier(0.22, 1.2, 0.36, 1), opacity 700ms ease;
-  }
-
-  .arena.is-active .aura {
-    opacity: 1;
-    transform: scale(0.84);
-    transition-duration: 620ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .petals {
@@ -690,11 +676,15 @@
 
   .petals-outer {
     z-index: 1;
+    transform: rotate(calc(var(--squeeze, 0) * 24deg)) scale(calc(1 - var(--squeeze, 0) * 0.06));
+    transform-origin: 50% 50%;
   }
 
   .petals-inner {
     inset: 15%;
     z-index: 2;
+    transform: rotate(calc(var(--squeeze, 0) * -36deg)) scale(calc(1 - var(--squeeze, 0) * 0.09));
+    transform-origin: 50% 50%;
   }
 
   .petal {
@@ -714,10 +704,9 @@
     box-shadow:
       inset 0 0 0 1px var(--petal-line),
       0 18px 30px -22px var(--petal-shadow);
-    transform: translate(-50%, -100%) scaleY(1) scaleX(1);
+    transform: translate(-50%, -100%) scaleY(calc(1 - var(--squeeze, 0) * 0.38)) scaleX(calc(1 - var(--squeeze, 0) * 0.14));
     transform-origin: 50% 100%;
     transition:
-      transform 840ms cubic-bezier(0.2, 1.28, 0.36, 1),
       filter 450ms ease,
       opacity 450ms ease;
   }
@@ -742,9 +731,8 @@
     background: linear-gradient(to top, var(--petal-inner) 0%, transparent 92%);
     box-shadow: none;
     opacity: 0.7;
-    transition:
-      transform 760ms cubic-bezier(0.2, 1.28, 0.36, 1),
-      opacity 400ms ease;
+    transform: translate(-50%, -100%) scaleY(calc(1 - var(--squeeze, 0) * 0.55)) scaleX(calc(1 - var(--squeeze, 0) * 0.1));
+    transition: opacity 400ms ease;
   }
 
   .petals-inner .petal:nth-child(2n) .leaf {
@@ -752,40 +740,19 @@
     opacity: 0.48;
   }
 
-  .arena.is-active .petals-outer .leaf {
-    transform: translate(-50%, -100%) scaleY(0.56) scaleX(0.94);
-    filter: brightness(1.08) saturate(1.06);
-    transition-duration: 620ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  .arena.is-active .petals-inner .leaf {
-    transform: translate(-50%, -100%) scaleY(0.44) scaleX(0.9);
-    opacity: 0.9;
-    transition-duration: 560ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
   .core-glow {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 72%;
+    width: 66%;
     aspect-ratio: 1;
-    z-index: 3;
+    z-index: 0;
     border-radius: 50%;
     background: radial-gradient(circle, var(--glow) 0%, transparent 68%);
-    filter: blur(10px);
-    opacity: 0.38;
+    filter: blur(9px);
+    opacity: calc(0.32 + var(--squeeze, 0) * 0.55);
     pointer-events: none;
-    transform: translate(-50%, -50%) scale(0.9);
-    transition: transform 750ms cubic-bezier(0.22, 1.2, 0.36, 1), opacity 600ms ease;
-  }
-
-  .arena.is-active .core-glow {
-    opacity: 0.95;
-    transform: translate(-50%, -50%) scale(1.08);
-    transition-duration: 600ms;
+    transform: translate(-50%, -50%) scale(calc(0.9 - var(--squeeze, 0) * 0.2));
   }
 
   .core {
@@ -803,11 +770,9 @@
     box-shadow:
       0 24px 48px -26px var(--petal-shadow),
       inset 0 0 0 1px var(--core-ring);
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.13));
     pointer-events: none;
-    transition:
-      transform 820ms cubic-bezier(0.2, 1.3, 0.36, 1),
-      box-shadow 520ms ease;
+    transition: box-shadow 520ms ease;
   }
 
   .core::after {
@@ -822,12 +787,9 @@
   }
 
   .arena.is-active .core {
-    transform: translate(-50%, -50%) scale(0.92);
     box-shadow:
       0 20px 46px -24px var(--petal-shadow),
       inset 0 0 0 1px var(--core-ring);
-    transition-duration: 560ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .arena.is-active .core::after,
@@ -873,10 +835,6 @@
     .bloom:hover .leaf {
       filter: brightness(1.05);
     }
-
-    .bloom:hover .aura {
-      opacity: 0.95;
-    }
   }
 
   .fx {
@@ -898,6 +856,12 @@
     opacity: 0;
     transform: translate(-50%, -50%) scale(0.82);
     animation: ringOut 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .burst-ring.is-wide {
+    width: 70%;
+    border-color: var(--mint);
+    animation: ringOutWide 1150ms cubic-bezier(0.12, 0.7, 0.28, 1) forwards;
   }
 
   .spark {
@@ -1121,6 +1085,17 @@
     100% {
       opacity: 0;
       transform: translate(-50%, -50%) scale(1.7);
+    }
+  }
+
+  @keyframes ringOutWide {
+    0% {
+      opacity: 0.38;
+      transform: translate(-50%, -50%) scale(0.72);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.28);
     }
   }
 
@@ -1614,6 +1589,7 @@
 
   .arena.is-target .hold-fill {
     stroke: var(--gold);
+    animation: targetPulse 1.2s ease-in-out infinite;
   }
 
   .arena.is-resting .hold-fill {
@@ -1654,6 +1630,29 @@
 
   .arena.is-target .core-glow {
     background: radial-gradient(circle, var(--gold-soft) 0%, transparent 68%);
+  }
+
+  .arena {
+    --squeeze: 0;
+  }
+
+  .motes {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  @keyframes targetPulse {
+    0%,
+    100% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
   }
 
   .arena.is-target .core {
@@ -2086,16 +2085,9 @@
     left: 50%;
     width: min(94%, 560px, 58vh);
     aspect-ratio: 1;
-    z-index: 1;
+    z-index: 4;
     pointer-events: none;
-    transform: translate(-50%, -50%);
-    transition: transform 900ms cubic-bezier(0.22, 1.2, 0.36, 1);
-  }
-
-  .arena.is-active .progress-orbit {
-    transform: translate(-50%, -50%) scale(0.96);
-    transition-duration: 620ms;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.09));
   }
 
   .progress-node {
@@ -2160,6 +2152,127 @@
   .feedback {
     min-height: 0;
     font-size: clamp(13px, 1.15vw, 15px);
+  }
+
+  :root {
+    --squeeze-shade: rgba(6, 28, 21, 0.3);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --squeeze-shade: rgba(0, 0, 0, 0.46);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --squeeze-shade: rgba(0, 0, 0, 0.46);
+  }
+
+  .arena::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    background: radial-gradient(
+      ellipse 58% 54% at 50% 54%,
+      transparent 16%,
+      var(--squeeze-shade) 100%
+    );
+    opacity: calc(var(--squeeze, 0) * 0.55);
+    pointer-events: none;
+  }
+
+  .arena.is-target .bloom-stage {
+    animation: heldTension 0.95s ease-in-out infinite;
+  }
+
+  .arena.is-resting .bloom::before {
+    animation: restBreathe 3.2s ease-in-out infinite;
+  }
+
+  .bloom::before {
+    content: "";
+    position: absolute;
+    inset: -2%;
+    z-index: 0;
+    border-radius: 50%;
+    background: radial-gradient(
+      circle,
+      transparent 51%,
+      var(--glow-soft) 67%,
+      transparent 80%
+    );
+    opacity: 0;
+    transform: scale(0.96);
+    pointer-events: none;
+  }
+
+  .wave-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    pointer-events: none;
+    overflow: visible;
+  }
+
+  .exhale-wave {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 40%;
+    aspect-ratio: 1;
+    border: 1.5px solid var(--accent);
+    border-radius: 50%;
+    box-shadow:
+      0 0 10px var(--glow),
+      inset 0 0 8px var(--glow-soft);
+    opacity: 0;
+    animation: exhaleWave 1s cubic-bezier(0.14, 0.7, 0.2, 1) forwards;
+  }
+
+  .exhale-wave.is-gold {
+    width: 33%;
+    border-color: var(--gold);
+    box-shadow: 0 0 10px var(--gold-soft);
+    animation-delay: 80ms;
+    animation-duration: 1.15s;
+  }
+
+  @keyframes heldTension {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.016);
+    }
+  }
+
+  @keyframes restBreathe {
+    0%,
+    100% {
+      opacity: 0.08;
+      transform: scale(0.96);
+    }
+    50% {
+      opacity: 0.55;
+      transform: scale(1.015);
+    }
+  }
+
+  @keyframes exhaleWave {
+    0% {
+      opacity: 0.72;
+      transform: translate(-50%, -50%) scale(0.6);
+    }
+    64% {
+      opacity: 0.25;
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(2.2);
+    }
   }
 
   @media (max-width: 560px) {
@@ -2357,7 +2470,10 @@
           <span class="orbit orbit-c"></span>
         </div>
 
+        <canvas class="motes" id="motes" aria-hidden="true"></canvas>
+
         <div class="progress-orbit" id="progressOrbit" aria-hidden="true"></div>
+        <div class="wave-layer" id="waveLayer" aria-hidden="true"></div>
 
         <div class="bloom-stage">
           <button
@@ -2473,6 +2589,8 @@
     todayLabel: document.getElementById("todayLabel"),
     moodText: document.getElementById("moodText"),
     progressOrbit: document.getElementById("progressOrbit"),
+    motes: document.getElementById("motes"),
+    waveLayer: document.getElementById("waveLayer"),
     musicToggle: document.getElementById("musicToggle"),
     musicState: document.getElementById("musicState"),
     sfxToggle: document.getElementById("sfxToggle"),
@@ -2505,6 +2623,10 @@
   let rewardHideTimer = 0;
   let rewardCleanupTimer = 0;
   let progressDots = [];
+  let squeezeValue = 0;
+  let squeezeBase = 0;
+  let squeezeFrame = 0;
+  let moteField = null;
   let musicEnabled = true;
   let sfxEnabled = true;
 
@@ -3130,6 +3252,261 @@
     el.holdFill.style.strokeDashoffset = String(100 - clamped);
   }
 
+  function setSqueeze(value) {
+    squeezeValue = value;
+    el.arena.style.setProperty("--squeeze", value.toFixed(4));
+  }
+
+  function releaseSqueeze(strength = 1) {
+    window.cancelAnimationFrame(squeezeFrame);
+    squeezeFrame = 0;
+    squeezeBase = 0;
+
+    if (motionQuery.matches) {
+      setSqueeze(0);
+      return;
+    }
+
+    const start = squeezeValue;
+    if (Math.abs(start) < 0.001) {
+      setSqueeze(0);
+      return;
+    }
+
+    const duration = 450 + 850 * strength;
+    const startedAt = performance.now();
+
+    function step(now) {
+      const progress = Math.min(1, (now - startedAt) / duration);
+      const eased = 1 - Math.pow(1 - progress, 2);
+
+      if (progress < 1) {
+        setSqueeze(start + (0 - start) * eased);
+        squeezeFrame = window.requestAnimationFrame(step);
+      } else {
+        squeezeFrame = 0;
+        setSqueeze(0);
+      }
+    }
+
+    squeezeFrame = window.requestAnimationFrame(step);
+  }
+
+  function createMoteField() {
+    const canvas = el.motes;
+    if (!canvas) return { burst() {}, reset() {} };
+
+    const context = canvas.getContext("2d");
+    if (!context) return { burst() {}, reset() {} };
+
+    if (motionQuery.matches) {
+      canvas.hidden = true;
+      return { burst() {}, reset() {} };
+    }
+
+    const COUNT = 34;
+    let width = 0;
+    let height = 0;
+    let dpr = 1;
+    let cx = 0;
+    let cy = 0;
+    let bloomRadius = 0;
+    let outerRadius = 0;
+    let particles = [];
+    let colors = [];
+    let raf = 0;
+    let lastTime = 0;
+    let burstStartedAt = -1e9;
+    let burstPower = 0;
+
+    function randomBetween(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function readColors() {
+      const styles = getComputedStyle(document.documentElement);
+      colors = [
+        styles.getPropertyValue("--accent").trim() || "#e45e40",
+        styles.getPropertyValue("--mint").trim() || "#6fa58e",
+        styles.getPropertyValue("--gold").trim() || "#a87621"
+      ];
+    }
+
+    function resetParticle(particle, fadeIn = true) {
+      const maxRadius = Math.max(bloomRadius * 0.82 + 6, outerRadius - 3);
+      particle.angle = Math.random() * Math.PI * 2;
+      particle.baseRadius = Math.min(maxRadius, bloomRadius * randomBetween(0.82, 1.28));
+      particle.radius = particle.baseRadius;
+      particle.speed = randomBetween(0.55, 1.35);
+      particle.size = randomBetween(0.7, 1.8);
+      particle.phase = Math.random() * Math.PI * 2;
+      particle.color = Math.floor(Math.random() * colors.length);
+      particle.alpha = fadeIn ? 0 : randomBetween(0.16, 0.34);
+      particle.burstV = 0;
+      particle.spin = 0;
+    }
+
+    function seed() {
+      particles = Array.from({ length: COUNT }, () => {
+        const particle = {};
+        resetParticle(particle);
+        return particle;
+      });
+    }
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      const previousBloomRadius = bloomRadius;
+      const nextWidth = Math.max(1, rect.width);
+      const nextHeight = Math.max(1, rect.height);
+      const bloomRect = el.bloom.getBoundingClientRect();
+
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      width = nextWidth;
+      height = nextHeight;
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      cx = bloomRect.left - rect.left + bloomRect.width / 2;
+      cy = bloomRect.top - rect.top + bloomRect.height / 2;
+      bloomRadius = bloomRect.width / 2;
+      outerRadius = Math.min(width, height) / 2 - 6;
+      readColors();
+
+      if (!particles.length) {
+        seed();
+      } else if (previousBloomRadius > 0) {
+        const ratio = bloomRadius / previousBloomRadius;
+        particles.forEach((particle) => {
+          particle.radius *= ratio;
+          particle.baseRadius *= ratio;
+        });
+      }
+    }
+
+    function burst(strength = 1) {
+      if (!particles.length) return;
+
+      burstStartedAt = performance.now();
+      burstPower = Math.max(0.25, Math.min(1, strength));
+      const speed = bloomRadius * (1.35 + burstPower * 1.55);
+
+      particles.forEach((particle) => {
+        particle.burstV = speed * randomBetween(0.55, 1.1);
+        particle.spin = randomBetween(-1.2, 1.2);
+        particle.alpha = Math.max(particle.alpha, 0.35 + burstPower * 0.35);
+      });
+    }
+
+    function reset() {
+      burstPower = 0;
+      burstStartedAt = -1e9;
+      particles.forEach((particle) => resetParticle(particle, false));
+    }
+
+    function draw(now) {
+      const delta = Math.min(0.04, lastTime ? (now - lastTime) / 1000 : 0.016);
+      lastTime = now;
+      context.clearRect(0, 0, width, height);
+
+      const burstAge = (now - burstStartedAt) / 1000;
+      const bursting = burstPower > 0 && burstAge < 1.1;
+      if (burstPower > 0 && !bursting) {
+        burstPower = 0;
+        particles.forEach((particle) => resetParticle(particle, false));
+      }
+
+      const active = pressing;
+      const intensity = Math.max(0.08, Math.min(1, squeezeValue));
+      const coreSafe = bloomRadius * 0.34;
+
+      for (const particle of particles) {
+        if (bursting) {
+          particle.radius += particle.burstV * delta;
+          particle.angle += particle.spin * delta;
+          particle.alpha = Math.max(0, particle.alpha - delta * (0.7 + burstPower * 0.5));
+        } else if (active) {
+          particle.radius -= (34 + 230 * intensity) * delta * particle.speed;
+          particle.angle += (0.3 + 1.9 * intensity) * delta * particle.speed;
+          particle.alpha += ((0.55 + 0.4 * intensity) - particle.alpha) * 0.08;
+          if (particle.radius < coreSafe) {
+            resetParticle(particle, true);
+            particle.alpha = 0;
+          }
+        } else {
+          particle.angle += 0.11 * particle.speed * delta;
+          const targetRadius = particle.baseRadius + Math.sin(now * 0.00055 * particle.speed + particle.phase) * bloomRadius * 0.055;
+          particle.radius += (targetRadius - particle.radius) * 0.025;
+          particle.alpha += ((resting ? 0.36 : 0.3) - particle.alpha) * 0.04;
+        }
+
+        if (particle.alpha <= 0.01 || particle.radius < coreSafe) continue;
+        if (particle.radius > outerRadius * 1.5) {
+          resetParticle(particle, true);
+          continue;
+        }
+
+        const color = colors[particle.color] || colors[0];
+        const x = cx + Math.cos(particle.angle) * particle.radius;
+        const y = cy + Math.sin(particle.angle) * particle.radius;
+        const trailAngle = particle.angle - (bursting ? 0.15 : active ? 0.07 : 0.035);
+        const trailRadius = particle.radius + (active ? 8 : 2);
+        const trailX = cx + Math.cos(trailAngle) * trailRadius;
+        const trailY = cy + Math.sin(trailAngle) * trailRadius;
+
+        if (x < -40 || x > width + 40 || y < -40 || y > height + 40) continue;
+
+        context.globalAlpha = particle.alpha * 0.12;
+        context.fillStyle = color;
+        context.beginPath();
+        context.arc(x, y, particle.size * 3.2, 0, Math.PI * 2);
+        context.fill();
+
+        context.globalAlpha = particle.alpha * 0.45;
+        context.strokeStyle = color;
+        context.lineWidth = Math.max(0.6, particle.size * 0.7);
+        context.beginPath();
+        context.moveTo(trailX, trailY);
+        context.lineTo(x, y);
+        context.stroke();
+
+        context.globalAlpha = particle.alpha;
+        context.fillStyle = color;
+        context.beginPath();
+        context.arc(x, y, particle.size, 0, Math.PI * 2);
+        context.fill();
+      }
+
+      context.globalAlpha = 1;
+      raf = window.requestAnimationFrame(draw);
+    }
+
+    const observer = typeof ResizeObserver === "function"
+      ? new ResizeObserver(() => resize())
+      : null;
+
+    if (observer) observer.observe(canvas.parentElement);
+    else window.addEventListener("resize", resize, { passive: true });
+
+    const themeQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    if (typeof themeQuery.addEventListener === "function") {
+      themeQuery.addEventListener("change", readColors);
+    }
+
+    resize();
+    raf = window.requestAnimationFrame(draw);
+
+    return {
+      burst,
+      reset,
+      destroy() {
+        window.cancelAnimationFrame(raf);
+        if (observer) observer.disconnect();
+      }
+    };
+  }
+
   function clearHoldUI() {
     el.arena.classList.remove("is-active", "is-target", "is-resting");
     el.bloom.setAttribute("aria-pressed", "false");
@@ -3324,6 +3701,11 @@
       if (sfxEnabled) sound.holdStart();
     }
 
+    window.cancelAnimationFrame(squeezeFrame);
+    squeezeFrame = 0;
+    squeezeBase = motionQuery.matches ? 0 : Math.max(0, Math.min(1, squeezeValue));
+    if (motionQuery.matches) setSqueeze(1);
+
     pressing = true;
     pressSource = source;
     holdStartedAt = performance.now();
@@ -3350,6 +3732,12 @@
     if (!pressing) return;
 
     const elapsed = Math.max(0, (performance.now() - holdStartedAt) / 1000);
+
+    if (!motionQuery.matches) {
+      const progress = Math.min(1, elapsed / HOLD_TARGET);
+      const eased = 1 - Math.pow(1 - progress, 2.3);
+      setSqueeze(squeezeBase + (1 - squeezeBase) * eased);
+    }
 
     if (!targetReached) {
       el.actionHint.textContent = `${elapsed.toFixed(1)}s`;
@@ -3393,6 +3781,7 @@
     el.bloom.setAttribute("aria-pressed", "false");
 
     if (!shouldCount) {
+      releaseSqueeze(0.35);
       clearHoldUI();
       setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
       setFeedback("这次不算。");
@@ -3400,6 +3789,9 @@
     }
 
     if (!valid) {
+      releaseSqueeze(0.55);
+      if (moteField) moteField.burst(0.55);
+      emitExhale(0.55);
       clearHoldUI();
       setStatus("差一点");
       setFeedback("差一点，这次不算。再来。");
@@ -3416,6 +3808,9 @@
     const milestone = MILESTONES.get(count) || null;
     const restSeconds = Math.min(10, Math.max(3, Math.round(heldSeconds)));
 
+    releaseSqueeze(1);
+    if (moteField) moteField.burst(1);
+    emitExhale(1);
     if (sound) sound.release();
     beginRest(restSeconds, milestone);
     spawnBurst(Boolean(milestone));
@@ -3488,6 +3883,7 @@
     activePointer = null;
     window.cancelAnimationFrame(holdFrame);
     holdFrame = 0;
+    releaseSqueeze(0.35);
 
     clearHoldUI();
     setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
@@ -3507,6 +3903,12 @@
     pressSource = null;
     activePointer = null;
     resetArmed = false;
+
+    window.cancelAnimationFrame(squeezeFrame);
+    squeezeFrame = 0;
+    squeezeBase = 0;
+    setSqueeze(0);
+    if (moteField) moteField.reset();
 
     clearHoldUI();
     hideReward();
@@ -3533,6 +3935,23 @@
     resetToday();
   }
 
+  function emitExhale(strength = 1) {
+    if (motionQuery.matches || !el.waveLayer) return;
+
+    const waves = strength >= 0.8 ? 2 : 1;
+    for (let index = 0; index < waves; index += 1) {
+      const wave = document.createElement("span");
+      wave.className = index === 0 ? "exhale-wave" : "exhale-wave is-gold";
+      if (index === 0 && strength < 0.8) {
+        wave.style.opacity = "0.36";
+        wave.style.animationDuration = "820ms";
+      }
+      el.waveLayer.appendChild(wave);
+      wave.addEventListener("animationend", () => wave.remove(), { once: true });
+      window.setTimeout(() => wave.remove(), 1600);
+    }
+  }
+
   function spawnBurst(celebration) {
     if (motionQuery.matches) return;
 
@@ -3541,6 +3960,12 @@
     el.fx.appendChild(ring);
     ring.addEventListener("animationend", () => ring.remove(), { once: true });
     window.setTimeout(() => ring.remove(), 1400);
+
+    const wideRing = document.createElement("span");
+    wideRing.className = celebration ? "burst-ring is-wide is-gold" : "burst-ring is-wide";
+    el.fx.appendChild(wideRing);
+    wideRing.addEventListener("animationend", () => wideRing.remove(), { once: true });
+    window.setTimeout(() => wideRing.remove(), 1600);
 
     const radius = el.bloom.getBoundingClientRect().width / 2 || 160;
     const total = celebration ? 24 : 13;
@@ -3728,6 +4153,7 @@
     if (hotCount !== null) saveCount();
 
     buildProgressOrbit();
+    if (!moteField) moteField = createMoteField();
     renderDaily(false);
     bindEvents();
     setIdle(true);
