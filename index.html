@@ -23,17 +23,19 @@
     --mint: #6fa58e;
     --mint-deep: #2d6251;
     --mint-soft: #d7e4dc;
-    --core-hi: #2b5748;
-    --core: #16362b;
-    --on-core: #f4f9f2;
-    --core-ring: rgba(244, 249, 242, 0.14);
-    --core-invite: rgba(244, 249, 242, 0.28);
-    --petal-base: #285a49;
-    --petal-mid: rgba(108, 160, 139, 0.72);
-    --petal-tip: rgba(167, 200, 185, 0.08);
-    --petal-inner: rgba(228, 94, 64, 0.32);
-    --petal-line: rgba(250, 253, 248, 0.16);
-    --petal-shadow: rgba(29, 64, 52, 0.12);
+    --core-hi: #f2d17f;
+    --core: #b37a1e;
+    --on-core: #2b1a04;
+    --core-ring: rgba(43, 26, 4, 0.18);
+    --core-invite: rgba(43, 26, 4, 0.3);
+    --petal-base: #ad7310;
+    --petal-mid: rgba(227, 170, 42, 0.9);
+    --petal-tip: rgba(255, 232, 154, 0.32);
+    --petal-inner: rgba(255, 198, 62, 0.55);
+    --petal-line: rgba(255, 249, 221, 0.4);
+    --petal-shadow: rgba(87, 55, 7, 0.18);
+    --bloom-halo: rgba(224, 164, 38, 0.26);
+    --bloom-halo-soft: rgba(184, 157, 82, 0.18);
     --glow: rgba(228, 94, 64, 0.22);
     --glow-soft: rgba(94, 153, 130, 0.22);
     --wash-warm: rgba(228, 94, 64, 0.06);
@@ -63,17 +65,19 @@
       --mint: #86c8b1;
       --mint-deep: #3a806b;
       --mint-soft: #1d3b30;
-      --core-hi: #ffffff;
-      --core: #eaf4ec;
-      --on-core: #14271f;
-      --core-ring: rgba(20, 39, 31, 0.16);
-      --core-invite: rgba(20, 39, 31, 0.26);
-      --petal-base: #2f735f;
-      --petal-mid: rgba(108, 188, 160, 0.64);
-      --petal-tip: rgba(154, 221, 197, 0.08);
-      --petal-inner: rgba(255, 138, 102, 0.26);
-      --petal-line: rgba(235, 250, 242, 0.12);
-      --petal-shadow: rgba(0, 0, 0, 0.28);
+      --core-hi: #ffeeae;
+      --core: #dda42b;
+      --on-core: #2b1a04;
+      --core-ring: rgba(43, 26, 4, 0.2);
+      --core-invite: rgba(43, 26, 4, 0.34);
+      --petal-base: #7c4d08;
+      --petal-mid: rgba(242, 184, 57, 0.92);
+      --petal-tip: rgba(255, 239, 176, 0.3);
+      --petal-inner: rgba(255, 203, 87, 0.55);
+      --petal-line: rgba(255, 248, 218, 0.35);
+      --petal-shadow: rgba(0, 0, 0, 0.32);
+      --bloom-halo: rgba(255, 188, 67, 0.26);
+      --bloom-halo-soft: rgba(134, 116, 60, 0.16);
       --glow: rgba(255, 138, 102, 0.26);
       --glow-soft: rgba(112, 187, 160, 0.18);
       --wash-warm: rgba(255, 138, 102, 0.06);
@@ -100,17 +104,19 @@
     --mint: #86c8b1;
     --mint-deep: #3a806b;
     --mint-soft: #1d3b30;
-    --core-hi: #ffffff;
-    --core: #eaf4ec;
-    --on-core: #14271f;
-    --core-ring: rgba(20, 39, 31, 0.16);
-    --core-invite: rgba(20, 39, 31, 0.26);
-    --petal-base: #2f735f;
-    --petal-mid: rgba(108, 188, 160, 0.64);
-    --petal-tip: rgba(154, 221, 197, 0.08);
-    --petal-inner: rgba(255, 138, 102, 0.26);
-    --petal-line: rgba(235, 250, 242, 0.12);
-    --petal-shadow: rgba(0, 0, 0, 0.28);
+    --core-hi: #ffeeae;
+    --core: #dda42b;
+    --on-core: #2b1a04;
+    --core-ring: rgba(43, 26, 4, 0.2);
+    --core-invite: rgba(43, 26, 4, 0.34);
+    --petal-base: #7c4d08;
+    --petal-mid: rgba(242, 184, 57, 0.92);
+    --petal-tip: rgba(255, 239, 176, 0.16);
+    --petal-inner: rgba(255, 203, 87, 0.55);
+    --petal-line: rgba(255, 248, 218, 0.35);
+    --petal-shadow: rgba(0, 0, 0, 0.32);
+    --bloom-halo: rgba(255, 188, 67, 0.26);
+    --bloom-halo-soft: rgba(134, 116, 60, 0.16);
     --glow: rgba(255, 138, 102, 0.26);
     --glow-soft: rgba(112, 187, 160, 0.18);
     --wash-warm: rgba(255, 138, 102, 0.06);
@@ -660,11 +666,14 @@
     inset: 5%;
     z-index: 0;
     border-radius: 50%;
-    background:
-      radial-gradient(circle at 50% 53%, var(--glow-soft) 0%, transparent 66%),
-      radial-gradient(circle at 50% 50%, transparent 44%, var(--glow) 67%, transparent 76%);
-    opacity: calc(0.78 + var(--squeeze, 0) * 0.17);
-    transform: scale(calc(0.97 - var(--squeeze, 0) * 0.22));
+    background: radial-gradient(
+      circle at 50% 52%,
+      var(--bloom-halo-soft) 0%,
+      var(--bloom-halo) 34%,
+      transparent 69%
+    );
+    opacity: calc(0.55 + var(--squeeze, 0) * 0.3);
+    transform: scale(calc(0.98 - var(--squeeze, 0) * 0.22));
     pointer-events: none;
   }
 
@@ -683,25 +692,25 @@
   .layer-guard {
     inset: 0;
     z-index: 1;
-    transform: rotate(calc(var(--squeeze, 0) * 32deg)) scale(calc(1 - var(--squeeze, 0) * 0.07));
+    transform: rotate(calc(var(--squeeze, 0) * 14deg)) scale(calc(1 - var(--squeeze, 0) * 0.06));
   }
 
   .layer-mid {
-    inset: 8%;
+    inset: 4%;
     z-index: 2;
-    transform: rotate(calc(var(--squeeze, 0) * -28deg)) scale(calc(1 - var(--squeeze, 0) * 0.06));
+    transform: rotate(calc(var(--squeeze, 0) * -18deg)) scale(calc(1 - var(--squeeze, 0) * 0.05));
   }
 
   .layer-inner {
-    inset: 16%;
+    inset: 9%;
     z-index: 3;
-    transform: rotate(calc(var(--squeeze, 0) * 40deg)) scale(calc(1 - var(--squeeze, 0) * 0.05));
+    transform: rotate(calc(var(--squeeze, 0) * 24deg)) scale(calc(1 - var(--squeeze, 0) * 0.04));
   }
 
   .layer-heart {
-    inset: 17%;
+    inset: 14%;
     z-index: 4;
-    transform: rotate(calc(var(--squeeze, 0) * -46deg)) scale(calc(1 - var(--squeeze, 0) * 0.04));
+    transform: rotate(calc(var(--squeeze, 0) * -28deg)) scale(calc(1 - var(--squeeze, 0) * 0.03));
   }
 
   .petal {
@@ -714,9 +723,9 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: var(--w, 7.2%);
-    height: var(--h, 42%);
-    border-radius: 52% 48% 44% 56% / 76% 76% 24% 24%;
+    width: var(--w, 15%);
+    height: var(--h, 32%);
+    border-radius: 48% 52% 44% 56% / 58% 58% 42% 42%;
     background: linear-gradient(to top, var(--petal-base) 0%, var(--petal-mid) 58%, var(--petal-tip) 100%);
     box-shadow:
       inset 0 0 0 1px var(--petal-line),
@@ -758,9 +767,9 @@
   }
 
   .layer-heart .leaf {
-    --fold: 0.32;
-    border-radius: 56% 44% 42% 58% / 78% 78% 22% 22%;
-    background: linear-gradient(to top, var(--accent-strong) 0%, var(--petal-inner) 48%, transparent 100%);
+    --fold: 0.34;
+    border-radius: 50% 50% 44% 56% / 62% 62% 38% 38%;
+    background: linear-gradient(to top, var(--petal-base) 0%, var(--petal-inner) 52%, transparent 100%);
     box-shadow: none;
   }
 
@@ -772,7 +781,7 @@
     aspect-ratio: 1;
     z-index: 0;
     border-radius: 50%;
-    background: radial-gradient(circle, var(--glow) 0%, transparent 68%);
+    background: radial-gradient(circle, var(--bloom-halo) 0%, transparent 68%);
     filter: blur(9px);
     opacity: calc(0.32 + var(--squeeze, 0) * 0.55);
     pointer-events: none;
@@ -783,7 +792,7 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 33%;
+    width: 27%;
     aspect-ratio: 1;
     z-index: 4;
     border-radius: 50%;
@@ -851,7 +860,7 @@
     letter-spacing: 0.16em;
     text-align: center;
     font-variant-numeric: tabular-nums;
-    opacity: 0.62;
+    opacity: 0.72;
     text-transform: uppercase;
   }
 
@@ -1612,7 +1621,7 @@
   }
 
   .arena.is-target .hold-fill {
-    stroke: var(--gold);
+    stroke: var(--accent-strong);
     animation: targetPulse 1.2s ease-in-out infinite;
   }
 
@@ -1653,7 +1662,7 @@
   }
 
   .arena.is-target .core-glow {
-    background: radial-gradient(circle, var(--gold-soft) 0%, transparent 68%);
+    background: radial-gradient(circle, var(--glow) 0%, transparent 68%);
   }
 
   .arena {
@@ -1682,8 +1691,8 @@
   .arena.is-target .core {
     box-shadow:
       0 24px 48px -26px var(--petal-shadow),
-      inset 0 0 0 1px var(--gold),
-      0 0 0 1px var(--gold-soft);
+      inset 0 0 0 1px var(--accent-strong),
+      0 0 0 1px var(--glow);
   }
 
   .arena.is-active .core::after,
@@ -2233,7 +2242,7 @@
     background: radial-gradient(
       circle,
       transparent 51%,
-      var(--glow-soft) 67%,
+      var(--bloom-halo-soft) 67%,
       transparent 80%
     );
     opacity: 0;
@@ -3287,7 +3296,7 @@
     el.arena.style.setProperty("--squeeze", value.toFixed(4));
   }
 
-  function releaseSqueeze(strength = 1) {
+  function releaseSqueeze(strength = 1, durationOverride = 0) {
     window.cancelAnimationFrame(squeezeFrame);
     squeezeFrame = 0;
     squeezeBase = 0;
@@ -3303,7 +3312,7 @@
       return;
     }
 
-    const duration = 450 + 850 * strength;
+    const duration = durationOverride > 0 ? durationOverride : 450 + 850 * strength;
     const startedAt = performance.now();
 
     function step(now) {
@@ -3590,10 +3599,10 @@
     if (!el.petalArt || el.petalArt.childElementCount) return;
 
     const layers = [
-      { className: "layer-guard", count: 22, offset: 0, width: 6.8, height: 49, opacity: 0.58, bend: 4.2 },
-      { className: "layer-mid", count: 20, offset: 8.2, width: 7.2, height: 40, opacity: 0.7, bend: 3.6 },
-      { className: "layer-inner", count: 16, offset: 3.8, width: 6.4, height: 31, opacity: 0.8, bend: 2.8 },
-      { className: "layer-heart", count: 12, offset: 14, width: 5.6, height: 34, opacity: 0.76, bend: 2 }
+      { className: "layer-guard", count: 20, offset: 0, width: 14.2, height: 37, opacity: 0.68, bend: 3.2 },
+      { className: "layer-mid", count: 20, offset: 9, width: 13.2, height: 30, opacity: 0.79, bend: 3 },
+      { className: "layer-inner", count: 16, offset: 4, width: 11.8, height: 24, opacity: 0.87, bend: 2.5 },
+      { className: "layer-heart", count: 12, offset: 14, width: 10.2, height: 18, opacity: 0.92, bend: 2 }
     ];
 
     layers.forEach((spec) => {
@@ -3893,9 +3902,9 @@
     renderDaily(true);
 
     const milestone = MILESTONES.get(count) || null;
-    const restSeconds = Math.min(10, Math.max(3, Math.round(heldSeconds)));
+    const restSeconds = Math.min(10, Math.max(3, heldSeconds));
 
-    releaseSqueeze(1);
+    releaseSqueeze(1, restSeconds * 1000);
     if (moteField) moteField.burst(1);
     emitExhale(1);
     triggerShake(1.3);
