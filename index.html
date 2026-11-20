@@ -1,8 +1,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>提气</title>
-<meta name="description" content="提气：按住，等光环满一圈，再松开。一个关于收与放的三十口小游戏。">
-<meta property="og:title" content="提气 · 偷偷练一口气">
+<title>一吸一呼</title>
+<meta name="description" content="一吸一呼，妙不可言。按住收，松开放，偷偷练一口气的三十口小游戏。">
+<meta property="og:title" content="一吸一呼 · 妙不可言">
 <meta property="og:description" content="按住收，松开放。别人看不出，花看得出来。来偷偷练几口气。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://humanv.github.io/kegel-exercise/">
@@ -1225,12 +1225,12 @@
     }
 
     .brand-name {
-      font-size: 22px;
+      font-size: 20px;
+      letter-spacing: 0.06em;
     }
 
     .brand-sub {
-      font-size: 7.5px;
-      letter-spacing: 0.16em;
+      display: none;
     }
 
     .top-meta {
@@ -1323,7 +1323,11 @@
       gap: 9px;
     }
 
-    .brand-sub {
+    .brand-name {
+      font-size: 18px;
+    }
+
+    .top-actions .share-quick {
       display: none;
     }
 
@@ -1341,9 +1345,9 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
+    body:not(.motion-on) *,
+    body:not(.motion-on) *::before,
+    body:not(.motion-on) *::after {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
@@ -2374,6 +2378,36 @@
     display: none !important;
   }
 
+  .motion-note {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--gold);
+    border-radius: 13px;
+    background: var(--gold-soft);
+    color: var(--ink-soft);
+    font-size: 11px;
+    line-height: 1.5;
+  }
+
+  .motion-note button {
+    appearance: none;
+    -webkit-appearance: none;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--gold-strong);
+    font-family: var(--font-body);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: inherit;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+  }
+
   .challenge-bar {
     min-width: 0;
     display: flex;
@@ -3018,7 +3052,7 @@
     <div class="brand">
       <span class="brand-mark" aria-hidden="true"></span>
       <div class="brand-copy">
-        <p class="brand-name">提气</p>
+        <p class="brand-name">一吸一呼</p>
         <p class="brand-sub">ONE BREATH AT A TIME</p>
       </div>
     </div>
@@ -3051,8 +3085,8 @@
     <section class="intro" aria-labelledby="pageTitle">
       <p class="eyebrow">TODAY'S LITTLE RITUAL</p>
       <h1 id="pageTitle">
-        <span class="h1-part">偷偷，</span>
-        <span class="h1-part h1-em">练一口气。</span>
+        <span class="h1-part">一吸一呼，</span>
+        <span class="h1-part h1-em">妙不可言。</span>
       </h1>
       <p class="lead">
         按住，收；松开，放。<strong>别人看不出，花看得出来。</strong>
@@ -3076,6 +3110,11 @@
             <span class="score-unit">口</span>
           </span>
         </div>
+      </div>
+
+      <div class="motion-note" id="motionNote" hidden>
+        <span>系统开启了“减少动态效果”，动画目前是暂停的。</span>
+        <button id="motionEnable" type="button">仍然播放</button>
       </div>
 
       <div class="challenge-bar" id="challengeBar" hidden>
@@ -3173,7 +3212,7 @@
     <div class="share-poster" id="sharePoster">
       <span class="poster-stamp" aria-hidden="true">密</span>
       <div class="poster-top">
-        <span class="poster-brand">提气</span>
+        <span class="poster-brand">一吸一呼</span>
         <span id="shareDate">11月20日</span>
       </div>
       <div class="poster-flower-wrap">
@@ -3245,6 +3284,8 @@
     rewardSeal: document.getElementById("rewardSeal"),
     rewardTitle: document.getElementById("rewardTitle"),
     rewardCopy: document.getElementById("rewardCopy"),
+    motionNote: document.getElementById("motionNote"),
+    motionEnable: document.getElementById("motionEnable"),
     challengeBar: document.getElementById("challengeBar"),
     challengeScore: document.getElementById("challengeScore"),
     challengeState: document.getElementById("challengeState"),
@@ -3268,6 +3309,11 @@
   };
 
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+  let motionOverride = false;
+
+  function motionReduced() {
+    return motionQuery.matches && !motionOverride;
+  }
 
   let dailyKey = "";
   let count = 0;
@@ -3904,7 +3950,7 @@
 
     if (
       animate &&
-      !motionQuery.matches &&
+      !motionReduced() &&
       typeof el.feedback.animate === "function"
     ) {
       el.feedback.animate(
@@ -3932,7 +3978,7 @@
     squeezeFrame = 0;
     squeezeBase = 0;
 
-    if (motionQuery.matches) {
+    if (motionReduced()) {
       setSqueeze(0);
       return;
     }
@@ -3969,7 +4015,9 @@
     const context = canvas.getContext("2d");
     if (!context) return { burst() {}, reset() {} };
 
-    if (motionQuery.matches) {
+    canvas.hidden = false;
+
+    if (motionReduced()) {
       canvas.hidden = true;
       return { burst() {}, reset() {} };
     }
@@ -4289,9 +4337,9 @@
     const flavor = shareFlavor();
     const link = buildShareLink();
     if (count <= 0) {
-      return `我在「提气」偷偷练一口气，你也来（今日称号：${flavor.rank}）：${link}`;
+      return `我在「一吸一呼」偷偷练一口气，你也来（今日称号：${flavor.rank}）：${link}`;
     }
-    return `我在「提气」偷偷练了 ${count} 口气（今日称号：${flavor.rank}），来超过我：${link}`;
+    return `我在「一吸一呼」偷偷练了 ${count} 口气（今日称号：${flavor.rank}），来超过我：${link}`;
   }
 
   function ensurePosterDots() {
@@ -4402,7 +4450,7 @@
     if (typeof navigator.share !== "function") return;
     try {
       await navigator.share({
-        title: "提气 · 偷偷练一口气",
+        title: "一吸一呼 · 妙不可言",
         text: buildShareMessage()
       });
       el.shareStatus.textContent = "发出去了。继续保持低调。";
@@ -4413,7 +4461,7 @@
   }
 
   function showPlusOne() {
-    if (motionQuery.matches) return;
+    if (motionReduced()) return;
 
     const plus = document.createElement("span");
     plus.className = "plus-one";
@@ -4485,7 +4533,7 @@
   }
 
   function triggerShake(amplitude = 2) {
-    if (!el.arena || motionQuery.matches) return;
+    if (!el.arena || motionReduced()) return;
 
     window.clearTimeout(shakeTimer);
     el.arena.style.setProperty("--shake-amp", `${amplitude}px`);
@@ -4533,7 +4581,7 @@
     updateChallengeUI();
     syncResetButton();
 
-    if (!animate || motionQuery.matches) return;
+    if (!animate || motionReduced()) return;
 
     el.scoreBox.classList.remove("is-bumped");
     void el.scoreBox.offsetWidth;
@@ -4647,8 +4695,8 @@
 
     window.cancelAnimationFrame(squeezeFrame);
     squeezeFrame = 0;
-    squeezeBase = motionQuery.matches ? 0 : Math.max(0, Math.min(1, squeezeValue));
-    if (motionQuery.matches) setSqueeze(1);
+    squeezeBase = motionReduced() ? 0 : Math.max(0, Math.min(1, squeezeValue));
+    if (motionReduced()) setSqueeze(1);
 
     pressing = true;
     pressSource = source;
@@ -4677,7 +4725,7 @@
 
     const elapsed = Math.max(0, (performance.now() - holdStartedAt) / 1000);
 
-    if (!motionQuery.matches) {
+    if (!motionReduced()) {
       const progress = Math.min(1, elapsed / HOLD_TARGET);
       const eased = 1 - Math.pow(1 - progress, 2.3);
       setSqueeze(squeezeBase + (1 - squeezeBase) * eased);
@@ -4884,7 +4932,7 @@
   }
 
   function emitExhale(strength = 1) {
-    if (motionQuery.matches || !el.waveLayer) return;
+    if (motionReduced() || !el.waveLayer) return;
 
     const waves = strength >= 0.8 ? 2 : 1;
     for (let index = 0; index < waves; index += 1) {
@@ -4901,7 +4949,7 @@
   }
 
   function spawnBurst(celebration) {
-    if (motionQuery.matches) return;
+    if (motionReduced()) return;
 
     const ring = document.createElement("span");
     ring.className = celebration ? "burst-ring is-gold" : "burst-ring";
@@ -5051,6 +5099,14 @@
     document.addEventListener("keydown", unlockSoundFromGesture, { capture: true });
     document.addEventListener("click", unlockSoundFromGesture, { capture: true });
 
+    el.motionEnable.addEventListener("click", () => {
+      motionOverride = true;
+      document.body.classList.add("motion-on");
+      el.motionNote.hidden = true;
+      moteField = createMoteField();
+      el.bloom.focus({ preventScroll: true });
+    });
+
     el.challengeDismiss.addEventListener("click", () => {
       challengeDismissed = true;
       updateChallengeUI();
@@ -5118,6 +5174,10 @@
     sfxEnabled = sound ? readTogglePreference(SFX_KEY) : false;
     if (sound) sound.configure(musicEnabled, sfxEnabled);
     updateSoundUI();
+
+    if (motionQuery.matches) {
+      el.motionNote.hidden = false;
+    }
 
     const hotCount = restoredCount(restored);
     count = hotCount !== null ? hotCount : readStoredCount();
