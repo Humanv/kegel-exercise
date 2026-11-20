@@ -1,0 +1,1994 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>提气练习</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Layout: editorial instruction column beside a quiet circular instrument. */
+    --bg: #edf1ec;
+    --surface: #f8faf5;
+    --surface-2: #eef3ea;
+    --ink: #18352c;
+    --ink-soft: #2b4a3f;
+    --muted: #596d63;
+    --line: rgba(24, 53, 44, 0.16);
+    --line-soft: rgba(24, 53, 44, 0.09);
+    --accent: #e45e40;
+    --accent-strong: #b9432a;
+    --on-accent: #fff8f3;
+    --mint: #6fa58e;
+    --mint-deep: #2d6251;
+    --mint-soft: #d7e4dc;
+    --core-hi: #2b5748;
+    --core: #16362b;
+    --on-core: #f4f9f2;
+    --core-ring: rgba(244, 249, 242, 0.14);
+    --core-invite: rgba(244, 249, 242, 0.28);
+    --petal-base: #285a49;
+    --petal-mid: rgba(108, 160, 139, 0.72);
+    --petal-tip: rgba(167, 200, 185, 0.08);
+    --petal-inner: rgba(228, 94, 64, 0.32);
+    --petal-line: rgba(250, 253, 248, 0.16);
+    --petal-shadow: rgba(29, 64, 52, 0.12);
+    --glow: rgba(228, 94, 64, 0.22);
+    --glow-soft: rgba(94, 153, 130, 0.22);
+    --wash-warm: rgba(228, 94, 64, 0.06);
+    --wash-cool: rgba(112, 166, 144, 0.16);
+    --dot: rgba(24, 53, 44, 0.12);
+    --pill-bg: rgba(24, 53, 44, 0.035);
+    --surface-shadow: 0 36px 80px -44px rgba(16, 43, 35, 0.38);
+    --font-display: "ZCOOL XiaoWei", "Noto Serif SC", "Songti SC", serif;
+    --font-body: "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-mono: "Space Grotesk", "SFMono-Regular", Consolas, monospace;
+    color-scheme: light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0b1712;
+      --surface: #12241d;
+      --surface-2: #172c24;
+      --ink: #e9f2eb;
+      --ink-soft: #cfe0d6;
+      --muted: #8fa59a;
+      --line: rgba(233, 242, 235, 0.16);
+      --line-soft: rgba(233, 242, 235, 0.08);
+      --accent: #ff8a66;
+      --accent-strong: #ffad93;
+      --on-accent: #26130c;
+      --mint: #86c8b1;
+      --mint-deep: #3a806b;
+      --mint-soft: #1d3b30;
+      --core-hi: #ffffff;
+      --core: #eaf4ec;
+      --on-core: #14271f;
+      --core-ring: rgba(20, 39, 31, 0.16);
+      --core-invite: rgba(20, 39, 31, 0.26);
+      --petal-base: #2f735f;
+      --petal-mid: rgba(108, 188, 160, 0.64);
+      --petal-tip: rgba(154, 221, 197, 0.08);
+      --petal-inner: rgba(255, 138, 102, 0.26);
+      --petal-line: rgba(235, 250, 242, 0.12);
+      --petal-shadow: rgba(0, 0, 0, 0.28);
+      --glow: rgba(255, 138, 102, 0.26);
+      --glow-soft: rgba(112, 187, 160, 0.18);
+      --wash-warm: rgba(255, 138, 102, 0.06);
+      --wash-cool: rgba(74, 148, 122, 0.12);
+      --dot: rgba(233, 242, 235, 0.12);
+      --pill-bg: rgba(233, 242, 235, 0.04);
+      --surface-shadow: 0 42px 90px -46px rgba(0, 0, 0, 0.9);
+      color-scheme: dark;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0b1712;
+    --surface: #12241d;
+    --surface-2: #172c24;
+    --ink: #e9f2eb;
+    --ink-soft: #cfe0d6;
+    --muted: #8fa59a;
+    --line: rgba(233, 242, 235, 0.16);
+    --line-soft: rgba(233, 242, 235, 0.08);
+    --accent: #ff8a66;
+    --accent-strong: #ffad93;
+    --on-accent: #26130c;
+    --mint: #86c8b1;
+    --mint-deep: #3a806b;
+    --mint-soft: #1d3b30;
+    --core-hi: #ffffff;
+    --core: #eaf4ec;
+    --on-core: #14271f;
+    --core-ring: rgba(20, 39, 31, 0.16);
+    --core-invite: rgba(20, 39, 31, 0.26);
+    --petal-base: #2f735f;
+    --petal-mid: rgba(108, 188, 160, 0.64);
+    --petal-tip: rgba(154, 221, 197, 0.08);
+    --petal-inner: rgba(255, 138, 102, 0.26);
+    --petal-line: rgba(235, 250, 242, 0.12);
+    --petal-shadow: rgba(0, 0, 0, 0.28);
+    --glow: rgba(255, 138, 102, 0.26);
+    --glow-soft: rgba(112, 187, 160, 0.18);
+    --wash-warm: rgba(255, 138, 102, 0.06);
+    --wash-cool: rgba(74, 148, 122, 0.12);
+    --dot: rgba(233, 242, 235, 0.12);
+    --pill-bg: rgba(233, 242, 235, 0.04);
+    --surface-shadow: 0 42px 90px -46px rgba(0, 0, 0, 0.9);
+    color-scheme: dark;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100%;
+    overflow-x: hidden;
+    background:
+      radial-gradient(70% 58% at 86% 8%, var(--wash-cool), transparent 68%),
+      radial-gradient(52% 44% at 4% 96%, var(--wash-warm), transparent 72%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  button {
+    font: inherit;
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--on-accent);
+  }
+
+  .sr-only {
+    position: absolute !important;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 1280px;
+    min-height: 100%;
+    margin: 0 auto;
+    padding-block: clamp(16px, 2.6vw, 32px);
+    padding-left: max(20px, env(safe-area-inset-left, 0px));
+    padding-right: max(20px, env(safe-area-inset-right, 0px));
+    display: flex;
+    flex-direction: column;
+    gap: clamp(18px, 2.4vh, 28px);
+  }
+
+  /* Masthead */
+  .topbar {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .brand {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand-mark {
+    position: relative;
+    width: 38px;
+    height: 38px;
+    flex: none;
+    border: 1px solid var(--line);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+  }
+
+  .brand-mark::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 6px var(--glow-soft);
+  }
+
+  .brand-mark::after {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 1px solid var(--line-soft);
+    border-radius: 50%;
+  }
+
+  .brand-copy {
+    min-width: 0;
+  }
+
+  .brand-name {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.12em;
+  }
+
+  .brand-sub {
+    margin: 5px 0 0;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.2em;
+  }
+
+  .top-meta {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex: none;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .top-meta::before {
+    content: "";
+    width: 18px;
+    height: 1px;
+    background: var(--line);
+  }
+
+  /* Main split */
+  .layout {
+    min-width: 0;
+    min-height: 0;
+    flex: 1;
+    display: grid;
+    grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr);
+    gap: clamp(36px, 6vw, 92px);
+    align-items: stretch;
+  }
+
+  .intro {
+    min-width: 0;
+    padding-block: clamp(14px, 3vh, 42px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .eyebrow {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 9.5px;
+    font-weight: 500;
+    line-height: 1.4;
+    letter-spacing: 0.18em;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    flex: none;
+    background: var(--accent);
+  }
+
+  .intro h1 {
+    margin: 16px 0 0;
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: clamp(52px, 6vw, 90px);
+    font-weight: 400;
+    line-height: 1.08;
+    letter-spacing: 0.015em;
+  }
+
+  .h1-part {
+    display: inline-block;
+  }
+
+  .h1-em {
+    color: var(--accent);
+  }
+
+  .lead {
+    max-width: 34ch;
+    margin: 22px 0 0;
+    color: var(--muted);
+    font-size: clamp(14px, 1.15vw, 16px);
+    line-height: 1.9;
+  }
+
+  .lead strong {
+    color: var(--ink-soft);
+    font-weight: 500;
+  }
+
+  .protocol {
+    max-width: 430px;
+    margin-top: clamp(24px, 4vh, 42px);
+    border-top: 1px solid var(--line);
+  }
+
+  .step {
+    display: grid;
+    grid-template-columns: 28px minmax(0, 1fr);
+    gap: 14px;
+    padding-block: 15px;
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .step-index {
+    padding-top: 3px;
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+  }
+
+  .step h2 {
+    margin: 0;
+    color: var(--ink);
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.45;
+    letter-spacing: 0.01em;
+  }
+
+  .step h2 span {
+    margin-left: 7px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+  }
+
+  .step p {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+
+  .breath-note {
+    margin: 20px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.65;
+  }
+
+  .breath-note::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--mint);
+  }
+
+  /* Practice arena */
+  .arena {
+    position: relative;
+    isolation: isolate;
+    min-width: 0;
+    overflow: hidden;
+    padding: clamp(18px, 2.1vw, 28px);
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background:
+      radial-gradient(ellipse 52% 42% at 50% 54%, var(--glow-soft), transparent 72%),
+      linear-gradient(165deg, var(--surface) 0%, var(--surface-2) 125%);
+    box-shadow: var(--surface-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: clamp(8px, 1.2vh, 16px);
+  }
+
+  .arena::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    background-image: radial-gradient(var(--dot) 1px, transparent 1.2px);
+    background-size: 18px 18px;
+    opacity: 0.45;
+    -webkit-mask-image: radial-gradient(ellipse 78% 68% at 50% 48%, #000 18%, transparent 78%);
+    mask-image: radial-gradient(ellipse 78% 68% at 50% 48%, #000 18%, transparent 78%);
+    pointer-events: none;
+  }
+
+  .arena > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .arena-head {
+    min-width: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--line-soft);
+    border-radius: 999px;
+    background: var(--pill-bg);
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--muted);
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .arena.is-active .status-pill {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  .arena.is-active .status-dot {
+    background: var(--accent);
+    animation: dotPulse 1.2s ease-in-out infinite;
+  }
+
+  .arena.is-release .status-pill {
+    color: var(--ink-soft);
+  }
+
+  .arena.is-release .status-dot {
+    background: var(--mint);
+    box-shadow: 0 0 0 4px var(--glow-soft);
+  }
+
+  .score {
+    position: relative;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 3px;
+    text-align: right;
+  }
+
+  .score-label {
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1.4;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+  }
+
+  .score-line {
+    display: flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+
+  .score-num {
+    display: inline-block;
+    color: var(--ink);
+    font-family: var(--font-mono);
+    font-size: clamp(38px, 3.6vw, 52px);
+    font-weight: 600;
+    line-height: 0.85;
+    letter-spacing: -0.045em;
+    font-variant-numeric: tabular-nums;
+    transform-origin: 100% 100%;
+  }
+
+  .score-unit {
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.1em;
+  }
+
+  .score.is-bumped .score-num {
+    animation: countBump 520ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .plus-one {
+    position: absolute;
+    top: 16px;
+    right: 0;
+    z-index: 2;
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1;
+    pointer-events: none;
+    animation: plusUp 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .dial {
+    position: relative;
+    flex: 1;
+    min-height: clamp(310px, 40vh, 480px);
+    display: grid;
+    place-items: center;
+  }
+
+  .orbits {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(94%, 560px, 58vh);
+    aspect-ratio: 1;
+    z-index: 0;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 900ms cubic-bezier(0.22, 1.2, 0.36, 1);
+  }
+
+  .arena.is-active .orbits {
+    transform: translate(-50%, -50%) scale(0.96);
+    transition-duration: 620ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .orbit {
+    position: absolute;
+    border-radius: 50%;
+  }
+
+  .orbit-a {
+    inset: 0;
+    border: 1px dashed var(--line);
+    opacity: 0.85;
+    animation: orbitTurn 120s linear infinite;
+  }
+
+  .orbit-b {
+    inset: 9%;
+    border: 1px solid var(--line-soft);
+    opacity: 0.9;
+  }
+
+  .orbit-c {
+    inset: 18%;
+    border: 1px dotted var(--line-soft);
+    opacity: 0.75;
+  }
+
+  .satellite {
+    position: absolute;
+    top: -3px;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 5px var(--glow);
+    transform: translateX(-50%);
+  }
+
+  .bloom-stage {
+    position: relative;
+    width: min(84%, 440px, 47vh);
+    aspect-ratio: 1;
+    z-index: 2;
+  }
+
+  .bloom {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+  }
+
+  .bloom:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 9px;
+  }
+
+  .aura {
+    position: absolute;
+    inset: 5%;
+    z-index: 0;
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 53%, var(--glow-soft) 0%, transparent 66%),
+      radial-gradient(circle at 50% 50%, transparent 44%, var(--glow) 67%, transparent 76%);
+    opacity: 0.78;
+    transform: scale(0.97);
+    pointer-events: none;
+    transition: transform 950ms cubic-bezier(0.22, 1.2, 0.36, 1), opacity 700ms ease;
+  }
+
+  .arena.is-active .aura {
+    opacity: 1;
+    transform: scale(0.84);
+    transition-duration: 620ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .petals {
+    position: absolute;
+    inset: 2.5%;
+    pointer-events: none;
+  }
+
+  .petals-outer {
+    z-index: 1;
+  }
+
+  .petals-inner {
+    inset: 15%;
+    z-index: 2;
+  }
+
+  .petal {
+    position: absolute;
+    inset: 0;
+    transform: rotate(var(--a));
+  }
+
+  .leaf {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 16%;
+    height: 46%;
+    border-radius: 52% 52% 48% 48% / 64% 64% 38% 38%;
+    background: linear-gradient(to top, var(--petal-base) 0%, var(--petal-mid) 58%, var(--petal-tip) 100%);
+    box-shadow:
+      inset 0 0 0 1px var(--petal-line),
+      0 18px 30px -22px var(--petal-shadow);
+    transform: translate(-50%, -100%) scaleY(1) scaleX(1);
+    transform-origin: 50% 100%;
+    transition:
+      transform 840ms cubic-bezier(0.2, 1.28, 0.36, 1),
+      filter 450ms ease,
+      opacity 450ms ease;
+  }
+
+  .petals-outer .petal:nth-child(2n) .leaf {
+    opacity: 0.78;
+  }
+
+  .petals-outer .petal:nth-child(3n) .leaf {
+    height: 42%;
+    opacity: 0.88;
+  }
+
+  .petals-outer .petal:nth-child(4n) .leaf {
+    height: 50%;
+  }
+
+  .petals-inner .leaf {
+    width: 14%;
+    height: 35%;
+    border-radius: 50% 50% 46% 46% / 62% 62% 40% 40%;
+    background: linear-gradient(to top, var(--petal-inner) 0%, transparent 92%);
+    box-shadow: none;
+    opacity: 0.7;
+    transition:
+      transform 760ms cubic-bezier(0.2, 1.28, 0.36, 1),
+      opacity 400ms ease;
+  }
+
+  .petals-inner .petal:nth-child(2n) .leaf {
+    height: 29%;
+    opacity: 0.48;
+  }
+
+  .arena.is-active .petals-outer .leaf {
+    transform: translate(-50%, -100%) scaleY(0.56) scaleX(0.94);
+    filter: brightness(1.08) saturate(1.06);
+    transition-duration: 620ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .arena.is-active .petals-inner .leaf {
+    transform: translate(-50%, -100%) scaleY(0.44) scaleX(0.9);
+    opacity: 0.9;
+    transition-duration: 560ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .core-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 72%;
+    aspect-ratio: 1;
+    z-index: 3;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glow) 0%, transparent 68%);
+    filter: blur(10px);
+    opacity: 0.38;
+    pointer-events: none;
+    transform: translate(-50%, -50%) scale(0.9);
+    transition: transform 750ms cubic-bezier(0.22, 1.2, 0.36, 1), opacity 600ms ease;
+  }
+
+  .arena.is-active .core-glow {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.08);
+    transition-duration: 600ms;
+  }
+
+  .core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 36%;
+    aspect-ratio: 1;
+    z-index: 4;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    color: var(--on-core);
+    background: radial-gradient(circle at 36% 30%, var(--core-hi) 0%, var(--core) 72%);
+    box-shadow:
+      0 24px 48px -26px var(--petal-shadow),
+      inset 0 0 0 1px var(--core-ring);
+    transform: translate(-50%, -50%) scale(1);
+    pointer-events: none;
+    transition:
+      transform 820ms cubic-bezier(0.2, 1.3, 0.36, 1),
+      box-shadow 520ms ease;
+  }
+
+  .core::after {
+    content: "";
+    position: absolute;
+    inset: -9%;
+    border: 1px solid var(--core-invite);
+    border-radius: 50%;
+    opacity: 0.5;
+    animation: invite 3.6s ease-in-out infinite;
+    pointer-events: none;
+  }
+
+  .arena.is-active .core {
+    transform: translate(-50%, -50%) scale(0.92);
+    box-shadow:
+      0 20px 46px -24px var(--petal-shadow),
+      inset 0 0 0 1px var(--core-ring);
+    transition-duration: 560ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .arena.is-active .core::after,
+  .arena.is-release .core::after {
+    animation: none;
+    opacity: 0;
+    transition: opacity 250ms ease;
+  }
+
+  .core-copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    pointer-events: none;
+  }
+
+  .core-action {
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.2vw, 27px);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: 0.12em;
+    white-space: nowrap;
+    transform: translateX(0.06em);
+  }
+
+  .core-hint {
+    min-width: 6ch;
+    color: var(--on-core);
+    font-family: var(--font-mono);
+    font-size: 8px;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.16em;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.62;
+    text-transform: uppercase;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .bloom:hover .leaf {
+      filter: brightness(1.05);
+    }
+
+    .bloom:hover .aura {
+      opacity: 0.95;
+    }
+  }
+
+  .fx {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .burst-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 38%;
+    aspect-ratio: 1;
+    border: 1px solid var(--accent);
+    border-radius: 50%;
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.82);
+    animation: ringOut 900ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .spark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    margin: -2.5px 0 0 -2.5px;
+    border-radius: 50%;
+    opacity: 0;
+    animation: sparkFly 900ms cubic-bezier(0.12, 0.72, 0.28, 1) forwards;
+  }
+
+  .arena-foot {
+    min-height: 74px;
+    padding-bottom: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 11px;
+    text-align: center;
+  }
+
+  .feedback {
+    max-width: 42ch;
+    min-height: 1.6em;
+    margin: 0;
+    color: var(--ink-soft);
+    font-size: clamp(13px, 1.15vw, 15px);
+    line-height: 1.6;
+    letter-spacing: 0.01em;
+    transition: color 0.3s ease;
+  }
+
+  .arena.is-active .feedback {
+    color: var(--ink);
+  }
+
+  .phases {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.08em;
+  }
+
+  .phase {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+  }
+
+  .phase-dot {
+    width: 5px;
+    height: 5px;
+    flex: none;
+    border-radius: 50%;
+    opacity: 0.5;
+    transition: opacity 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .phase-contract .phase-dot {
+    background: var(--accent);
+  }
+
+  .phase-relax .phase-dot {
+    background: var(--mint);
+  }
+
+  .phase-sep {
+    width: 1px;
+    height: 11px;
+    background: var(--line-soft);
+  }
+
+  .arena.is-active .phase-contract {
+    color: var(--accent-strong);
+  }
+
+  .arena.is-active .phase-contract .phase-dot {
+    opacity: 1;
+    box-shadow: 0 0 0 3px var(--glow);
+  }
+
+  .arena.is-release .phase-relax {
+    color: var(--ink-soft);
+  }
+
+  .arena.is-release .phase-relax .phase-dot {
+    opacity: 1;
+  }
+
+  /* Footer */
+  .footer {
+    min-width: 0;
+    padding-top: clamp(12px, 1.8vh, 18px);
+    border-top: 1px solid var(--line-soft);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 14px 18px;
+    color: var(--muted);
+    font-size: 11px;
+    line-height: 1.6;
+  }
+
+  .footer p {
+    max-width: 66ch;
+    margin: 0;
+  }
+
+  .reset-btn {
+    flex: none;
+    appearance: none;
+    -webkit-appearance: none;
+    min-width: 104px;
+    min-height: 34px;
+    padding: 8px 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--font-body);
+    font-size: 11px;
+    line-height: 1.2;
+    letter-spacing: 0.04em;
+    cursor: pointer;
+    transition:
+      color 0.25s ease,
+      border-color 0.25s ease,
+      background 0.25s ease,
+      opacity 0.25s ease;
+  }
+
+  .reset-btn:hover:not(:disabled) {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  .reset-btn.is-armed {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+    background: var(--glow);
+  }
+
+  .reset-btn:disabled {
+    opacity: 0.36;
+    cursor: default;
+  }
+
+  @keyframes dotPulse {
+    0%,
+    100% {
+      box-shadow: 0 0 0 3px transparent;
+    }
+    50% {
+      box-shadow: 0 0 0 5px var(--glow);
+    }
+  }
+
+  @keyframes countBump {
+    0% {
+      transform: scale(1);
+      color: var(--ink);
+    }
+    34% {
+      transform: scale(1.12);
+      color: var(--accent);
+    }
+    100% {
+      transform: scale(1);
+      color: var(--ink);
+    }
+  }
+
+  @keyframes plusUp {
+    0% {
+      opacity: 0;
+      transform: translateY(4px);
+    }
+    22% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+  }
+
+  @keyframes orbitTurn {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes invite {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.34;
+    }
+    50% {
+      transform: scale(1.045);
+      opacity: 0.68;
+    }
+  }
+
+  @keyframes ringOut {
+    0% {
+      opacity: 0.55;
+      transform: translate(-50%, -50%) scale(0.82);
+    }
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -50%) scale(1.7);
+    }
+  }
+
+  @keyframes sparkFly {
+    0% {
+      opacity: 0;
+      transform: rotate(var(--a)) translateY(0) scale(0.5);
+    }
+    18% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(var(--a)) translateY(calc(var(--d) * -1)) scale(0.12);
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .layout {
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: clamp(28px, 4vw, 48px);
+    }
+  }
+
+  @media (max-width: 900px) {
+    .app {
+      gap: 18px;
+    }
+
+    .layout {
+      grid-template-columns: 1fr;
+      gap: 22px;
+    }
+
+    .intro {
+      max-width: 680px;
+      padding-block: 6px 0;
+    }
+
+    .intro h1 {
+      margin-top: 12px;
+      font-size: clamp(42px, 8vw, 64px);
+    }
+
+    .lead {
+      max-width: 52ch;
+      margin-top: 14px;
+      line-height: 1.8;
+    }
+
+    .protocol,
+    .breath-note {
+      display: none;
+    }
+
+    .arena {
+      border-radius: 24px;
+    }
+
+    .dial {
+      min-height: clamp(300px, 42vh, 430px);
+    }
+
+    .bloom-stage {
+      width: min(76%, 380px, 44vh);
+    }
+
+    .orbits {
+      width: min(90%, 480px, 54vh);
+    }
+
+    .footer {
+      padding-top: 12px;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .app {
+      padding-block: 16px 20px;
+      padding-left: max(16px, env(safe-area-inset-left, 0px));
+      padding-right: max(16px, env(safe-area-inset-right, 0px));
+      gap: 16px;
+    }
+
+    .brand-mark {
+      width: 32px;
+      height: 32px;
+    }
+
+    .brand-name {
+      font-size: 22px;
+    }
+
+    .brand-sub {
+      font-size: 7.5px;
+      letter-spacing: 0.16em;
+    }
+
+    .top-meta {
+      font-size: 9px;
+    }
+
+    .intro h1 {
+      margin-top: 10px;
+      font-size: clamp(38px, 10.5vw, 48px);
+      letter-spacing: 0;
+    }
+
+    .lead {
+      margin-top: 12px;
+      font-size: 13.5px;
+      line-height: 1.8;
+    }
+
+    .arena {
+      padding: 16px;
+      border-radius: 22px;
+    }
+
+    .arena-head {
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      padding: 7px 10px;
+      font-size: 10px;
+    }
+
+    .score-label {
+      font-size: 9px;
+    }
+
+    .score-num {
+      font-size: 38px;
+    }
+
+    .dial {
+      min-height: 290px;
+    }
+
+    .bloom-stage {
+      width: min(86%, 330px, 42vh);
+    }
+
+    .orbits {
+      width: min(98%, 390px, 52vh);
+    }
+
+    .core-action {
+      font-size: clamp(19px, 5vw, 22px);
+    }
+
+    .arena-foot {
+      min-height: 68px;
+      gap: 8px;
+    }
+
+    .feedback {
+      font-size: 12.5px;
+    }
+
+    .footer {
+      gap: 10px 14px;
+      font-size: 10.5px;
+    }
+
+    .footer p {
+      max-width: 46ch;
+    }
+
+    .reset-btn {
+      min-width: 92px;
+      min-height: 38px;
+      margin-left: auto;
+      padding: 8px 12px;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .top-meta::before {
+      display: none;
+    }
+
+    .brand {
+      gap: 9px;
+    }
+
+    .score-num {
+      font-size: 34px;
+    }
+
+    .bloom-stage {
+      width: min(90%, 300px, 40vh);
+    }
+
+    .orbits {
+      width: min(100%, 350px, 50vh);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+</style>
+
+<div class="app" lang="zh-CN">
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <div class="brand-copy">
+        <p class="brand-name">提气</p>
+        <p class="brand-sub">PELVIC FLOOR PRACTICE</p>
+      </div>
+    </div>
+    <p class="top-meta"><span id="todayLabel">今天</span></p>
+  </header>
+
+  <main class="layout">
+    <section class="intro" aria-labelledby="pageTitle">
+      <p class="eyebrow">KEGEL PRACTICE · 01</p>
+      <h1 id="pageTitle">
+        <span class="h1-part">收紧，</span>
+        <span class="h1-part h1-em">再松开。</span>
+      </h1>
+      <p class="lead">
+        按住圆盘，轻轻收紧盆底肌；松手，慢慢放松。<strong>一次完整的收放，记作一次。</strong>
+      </p>
+
+      <div class="protocol" aria-label="练习方法">
+        <div class="step">
+          <span class="step-index" aria-hidden="true">01</span>
+          <div>
+            <h2>按住 <span>CONTRACT</span></h2>
+            <p>像忍住排气一样轻轻向上提，保持自然呼吸。</p>
+          </div>
+        </div>
+        <div class="step">
+          <span class="step-index" aria-hidden="true">02</span>
+          <div>
+            <h2>松开 <span>RELEASE</span></h2>
+            <p>完全放松，不要一直用力，也不要耸肩。</p>
+          </div>
+        </div>
+      </div>
+
+      <p class="breath-note">建议每下收紧 3 秒、放松 3 秒。累了就停。</p>
+    </section>
+
+    <section class="arena" id="arena" aria-label="凯格尔练习区">
+      <div class="arena-head">
+        <div class="status-pill">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span id="statusText">准备就绪</span>
+        </div>
+        <div class="score" id="scoreBox" role="group" aria-label="今日完成 0 次">
+          <span class="score-label">今日完成</span>
+          <span class="score-line">
+            <span class="score-num" id="count">0</span>
+            <span class="score-unit">次</span>
+          </span>
+        </div>
+      </div>
+
+      <div class="dial">
+        <div class="orbits" aria-hidden="true">
+          <span class="orbit orbit-a"><span class="satellite"></span></span>
+          <span class="orbit orbit-b"></span>
+          <span class="orbit orbit-c"></span>
+        </div>
+
+        <div class="bloom-stage">
+          <button
+            class="bloom"
+            id="bloom"
+            type="button"
+            aria-pressed="false"
+            aria-label="按住收紧，松开放松"
+            aria-describedby="howTo"
+          >
+            <span class="aura" aria-hidden="true"></span>
+
+            <span class="petals petals-outer" aria-hidden="true">
+              <span class="petal" style="--a: 0deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 30deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 60deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 90deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 120deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 150deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 180deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 210deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 240deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 270deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 300deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 330deg"><span class="leaf"></span></span>
+            </span>
+
+            <span class="petals petals-inner" aria-hidden="true">
+              <span class="petal" style="--a: 23deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 68deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 113deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 158deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 203deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 248deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 293deg"><span class="leaf"></span></span>
+              <span class="petal" style="--a: 338deg"><span class="leaf"></span></span>
+            </span>
+
+            <span class="core-glow" aria-hidden="true"></span>
+
+            <span class="core">
+              <span class="core-copy">
+                <span class="core-action" id="actionText">按住</span>
+                <span class="core-hint" id="actionHint">HOLD</span>
+              </span>
+            </span>
+          </button>
+
+          <div class="fx" id="fx" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <p id="howTo" class="sr-only">
+        按住按钮收紧盆底肌，松开按钮放松。每次完整的收放记作一次。也可以聚焦按钮后按住空格键。
+      </p>
+
+      <div class="arena-foot">
+        <p class="feedback" id="feedback" aria-live="polite">按住圆盘，开始第一次。</p>
+        <div class="phases" aria-hidden="true">
+          <span class="phase phase-contract"><span class="phase-dot"></span>按住 · 收紧</span>
+          <span class="phase-sep"></span>
+          <span class="phase phase-relax"><span class="phase-dot"></span>松开 · 放松</span>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>建议每下收紧 3 秒、放松 3 秒。按住鼠标、触屏或空格键均可。</p>
+    <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
+  </footer>
+</div>
+
+<script>
+  (() => {
+    "use strict";
+
+    const STORE_KEY = "tiqi-kegel-v1";
+    const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
+    const el = {
+      arena: document.getElementById("arena"),
+      bloom: document.getElementById("bloom"),
+      actionText: document.getElementById("actionText"),
+      actionHint: document.getElementById("actionHint"),
+      statusText: document.getElementById("statusText"),
+      feedback: document.getElementById("feedback"),
+      count: document.getElementById("count"),
+      scoreBox: document.getElementById("scoreBox"),
+      resetBtn: document.getElementById("resetBtn"),
+      fx: document.getElementById("fx"),
+      todayLabel: document.getElementById("todayLabel")
+    };
+
+    const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+    let dailyKey = "";
+    let count = 0;
+    let booted = false;
+    let pressing = false;
+    let pressSource = null;
+    let activePointer = null;
+    let holdStarted = 0;
+    let holdFrame = 0;
+    let releaseTimer = 0;
+    let bumpTimer = 0;
+    let resetTimer = 0;
+    let resetArmed = false;
+
+    function localDateKey(date = new Date()) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function updateDateLabel() {
+      const now = new Date();
+      el.todayLabel.textContent = `${now.getMonth() + 1}月${now.getDate()}日 · 周${WEEKDAYS[now.getDay()]}`;
+    }
+
+    function validCount(value) {
+      const number = Number(value);
+      return Number.isFinite(number) && number >= 0 ? Math.floor(number) : null;
+    }
+
+    function readStoredCount() {
+      try {
+        const raw = window.localStorage.getItem(STORE_KEY);
+        if (!raw) return 0;
+        const data = JSON.parse(raw);
+        if (!data || data.date !== dailyKey) return 0;
+        return validCount(data.count) ?? 0;
+      } catch (error) {
+        return 0;
+      }
+    }
+
+    function saveCount() {
+      try {
+        window.localStorage.setItem(
+          STORE_KEY,
+          JSON.stringify({ date: dailyKey, count })
+        );
+      } catch (error) {
+        // The exercise still works without storage.
+      }
+    }
+
+    function restoredCount(data) {
+      if (!data || typeof data !== "object" || data.date !== dailyKey) return null;
+      return validCount(data.count);
+    }
+
+    function setStatus(text) {
+      el.statusText.textContent = text;
+    }
+
+    function setFeedback(text, animate = true) {
+      if (el.feedback.textContent === text) return;
+      el.feedback.textContent = text;
+
+      if (
+        animate &&
+        !motionQuery.matches &&
+        typeof el.feedback.animate === "function"
+      ) {
+        el.feedback.animate(
+          [
+            { opacity: 0.35, transform: "translateY(3px)" },
+            { opacity: 1, transform: "translateY(0)" }
+          ],
+          { duration: 260, easing: "cubic-bezier(0.2, 0.8, 0.2, 1)" }
+        );
+      }
+    }
+
+    function syncResetButton() {
+      el.resetBtn.disabled = count === 0;
+      el.resetBtn.textContent = resetArmed ? "再点一次确认" : "清零今日";
+      el.resetBtn.classList.toggle("is-armed", resetArmed);
+      el.resetBtn.setAttribute(
+        "aria-label",
+        resetArmed ? "再点一次确认清零今日记录" : "清零今日记录"
+      );
+    }
+
+    function showPlusOne() {
+      if (motionQuery.matches) return;
+
+      const plus = document.createElement("span");
+      plus.className = "plus-one";
+      plus.setAttribute("aria-hidden", "true");
+      plus.textContent = "+1";
+      el.scoreBox.appendChild(plus);
+
+      const remove = () => plus.remove();
+      plus.addEventListener("animationend", remove, { once: true });
+      window.setTimeout(remove, 1100);
+    }
+
+    function renderCount(animate) {
+      el.count.textContent = String(count);
+      el.scoreBox.setAttribute("aria-label", `今日完成 ${count} 次`);
+      syncResetButton();
+
+      if (!animate || motionQuery.matches) return;
+
+      el.scoreBox.classList.remove("is-bumped");
+      void el.scoreBox.offsetWidth;
+      el.scoreBox.classList.add("is-bumped");
+      window.clearTimeout(bumpTimer);
+      bumpTimer = window.setTimeout(() => {
+        el.scoreBox.classList.remove("is-bumped");
+      }, 560);
+
+      showPlusOne();
+    }
+
+    function disarmReset() {
+      if (resetTimer) {
+        window.clearTimeout(resetTimer);
+        resetTimer = 0;
+      }
+      if (!resetArmed) {
+        syncResetButton();
+        return;
+      }
+      resetArmed = false;
+      syncResetButton();
+    }
+
+    function rolloverIfNeeded() {
+      const nextKey = localDateKey();
+      if (nextKey === dailyKey) return false;
+
+      dailyKey = nextKey;
+      count = 0;
+      resetArmed = false;
+      if (resetTimer) {
+        window.clearTimeout(resetTimer);
+        resetTimer = 0;
+      }
+      updateDateLabel();
+      saveCount();
+      renderCount(false);
+      return true;
+    }
+
+    function setIdle(initial = false) {
+      if (pressing) return;
+
+      el.arena.classList.remove("is-active", "is-release");
+      el.bloom.setAttribute("aria-pressed", "false");
+      el.actionText.textContent = "按住";
+      el.actionHint.textContent = "HOLD";
+      setStatus(count > 0 ? "准备继续" : "准备就绪");
+
+      let message;
+      if (initial) {
+        message =
+          count > 0
+            ? `今天已完成 ${count} 次。按住继续。`
+            : "按住圆盘，开始第一次。";
+      } else {
+        message =
+          count > 0
+            ? "松到底，再按住开始下一次。"
+            : "按住圆盘，开始第一次。";
+      }
+      setFeedback(message, !initial);
+    }
+
+    function vibrate(pattern) {
+      if (typeof navigator.vibrate !== "function") return;
+      try {
+        navigator.vibrate(pattern);
+      } catch (error) {
+        // Vibration is an optional nicety.
+      }
+    }
+
+    function tickHold() {
+      if (!pressing) return;
+      const seconds = Math.max(0, (performance.now() - holdStarted) / 1000);
+      el.actionHint.textContent = `${seconds.toFixed(1)}s`;
+      holdFrame = window.requestAnimationFrame(tickHold);
+    }
+
+    function startPress(source) {
+      if (pressing) return;
+
+      rolloverIfNeeded();
+      disarmReset();
+
+      if (releaseTimer) {
+        window.clearTimeout(releaseTimer);
+        releaseTimer = 0;
+      }
+
+      pressing = true;
+      pressSource = source;
+      holdStarted = performance.now();
+
+      el.arena.classList.remove("is-release");
+      el.arena.classList.add("is-active");
+      el.bloom.setAttribute("aria-pressed", "true");
+      el.actionText.textContent = "保持";
+      el.actionHint.textContent = "0.0s";
+      setStatus("收紧中");
+      setFeedback("保持住，肩膀放松，别憋气。");
+
+      window.cancelAnimationFrame(holdFrame);
+      tickHold();
+      vibrate(8);
+    }
+
+    function endPress(shouldCount) {
+      if (!pressing) return;
+
+      const heldSeconds = Math.max(0, (performance.now() - holdStarted) / 1000);
+      pressing = false;
+      pressSource = null;
+      activePointer = null;
+      window.cancelAnimationFrame(holdFrame);
+      holdFrame = 0;
+
+      el.arena.classList.remove("is-active");
+      el.bloom.setAttribute("aria-pressed", "false");
+
+      if (!shouldCount) {
+        el.actionText.textContent = "按住";
+        el.actionHint.textContent = "HOLD";
+        setStatus(count > 0 ? "准备继续" : "准备就绪");
+        setFeedback("松开了，没有计数。按住可以重来。");
+        return;
+      }
+
+      rolloverIfNeeded();
+      count += 1;
+      saveCount();
+      renderCount(true);
+
+      el.arena.classList.add("is-release");
+      el.actionText.textContent = "松开";
+      el.actionHint.textContent = "RELEASE";
+      setStatus(`第 ${count} 次`);
+
+      if (heldSeconds < 1) {
+        setFeedback(
+          `第 ${count} 次完成，保持 ${heldSeconds.toFixed(1)} 秒。下次多收一会儿。`
+        );
+      } else {
+        setFeedback(
+          `第 ${count} 次完成，保持 ${heldSeconds.toFixed(1)} 秒。`
+        );
+      }
+
+      if (releaseTimer) window.clearTimeout(releaseTimer);
+      releaseTimer = window.setTimeout(() => {
+        releaseTimer = 0;
+        if (!pressing) setIdle(false);
+      }, 1180);
+
+      spawnBurst();
+      vibrate([10, 28, 10]);
+    }
+
+    function cancelPress() {
+      if (!pressing) return;
+      pressing = false;
+      pressSource = null;
+      activePointer = null;
+      window.cancelAnimationFrame(holdFrame);
+      holdFrame = 0;
+
+      el.arena.classList.remove("is-active");
+      el.bloom.setAttribute("aria-pressed", "false");
+      el.actionText.textContent = "按住";
+      el.actionHint.textContent = "HOLD";
+      setStatus(count > 0 ? "准备继续" : "准备就绪");
+      setFeedback("松开了，没有计数。按住可以重来。");
+    }
+
+    function spawnBurst() {
+      if (motionQuery.matches) return;
+
+      const ring = document.createElement("span");
+      ring.className = "burst-ring";
+      el.fx.appendChild(ring);
+      ring.addEventListener("animationend", () => ring.remove(), { once: true });
+      window.setTimeout(() => ring.remove(), 1400);
+
+      const radius = el.bloom.getBoundingClientRect().width / 2 || 160;
+      const total = 13;
+
+      for (let index = 0; index < total; index += 1) {
+        const spark = document.createElement("i");
+        const angle = (360 / total) * index + Math.random() * 18;
+        const distance = radius * (0.64 + Math.random() * 0.42);
+        spark.className = "spark";
+        spark.style.setProperty("--a", `${angle}deg`);
+        spark.style.setProperty("--d", `${distance}px`);
+        spark.style.background = index % 4 === 0 ? "var(--mint)" : "var(--accent)";
+        spark.style.animationDelay = `${Math.random() * 70}ms`;
+        el.fx.appendChild(spark);
+        spark.addEventListener("animationend", () => spark.remove(), { once: true });
+        window.setTimeout(() => spark.remove(), 1500);
+      }
+    }
+
+    function resetToday() {
+      if (releaseTimer) {
+        window.clearTimeout(releaseTimer);
+        releaseTimer = 0;
+      }
+      if (resetTimer) {
+        window.clearTimeout(resetTimer);
+        resetTimer = 0;
+      }
+      if (holdFrame) {
+        window.cancelAnimationFrame(holdFrame);
+        holdFrame = 0;
+      }
+
+      pressing = false;
+      pressSource = null;
+      activePointer = null;
+      resetArmed = false;
+
+      el.arena.classList.remove("is-active", "is-release");
+      el.bloom.setAttribute("aria-pressed", "false");
+      el.actionText.textContent = "按住";
+      el.actionHint.textContent = "HOLD";
+      el.fx.replaceChildren();
+
+      count = 0;
+      saveCount();
+      renderCount(false);
+      setStatus("准备就绪");
+      setFeedback("今日记录已清零。按住圆盘，重新开始。");
+      vibrate(12);
+    }
+
+    function handleResetClick() {
+      if (count === 0) return;
+
+      if (!resetArmed) {
+        resetArmed = true;
+        syncResetButton();
+        resetTimer = window.setTimeout(disarmReset, 4000);
+        return;
+      }
+
+      resetToday();
+    }
+
+    function onPointerDown(event) {
+      if (pressing) return;
+      if (!event.isPrimary) return;
+      if (event.pointerType === "mouse" && event.button !== 0) return;
+
+      activePointer = event.pointerId;
+      startPress("pointer");
+
+      try {
+        el.bloom.setPointerCapture(event.pointerId);
+      } catch (error) {
+        // Pointer capture is helpful, but not required for a tap.
+      }
+    }
+
+    function onPointerUp(event) {
+      if (
+        pressSource !== "pointer" ||
+        activePointer === null ||
+        event.pointerId !== activePointer
+      ) {
+        return;
+      }
+      endPress(true);
+    }
+
+    function onPointerCancel(event) {
+      if (
+        pressSource !== "pointer" ||
+        activePointer === null ||
+        event.pointerId !== activePointer
+      ) {
+        return;
+      }
+      endPress(false);
+    }
+
+    function onLostPointerCapture(event) {
+      if (
+        pressing &&
+        pressSource === "pointer" &&
+        (activePointer === null || event.pointerId === activePointer)
+      ) {
+        endPress(false);
+      }
+    }
+
+    function isHoldKey(event) {
+      return event.key === " " || event.key === "Spacebar" || event.key === "Enter";
+    }
+
+    function onKeyDown(event) {
+      if (!isHoldKey(event) || event.repeat) return;
+      event.preventDefault();
+      startPress("keyboard");
+    }
+
+    function onKeyUp(event) {
+      if (!isHoldKey(event)) return;
+      if (pressSource !== "keyboard") return;
+      event.preventDefault();
+      endPress(true);
+    }
+
+    function handleReturn() {
+      if (document.hidden) return;
+
+      const dayChanged = rolloverIfNeeded();
+      if (!dayChanged || pressing) return;
+
+      if (releaseTimer) {
+        window.clearTimeout(releaseTimer);
+        releaseTimer = 0;
+      }
+      setIdle(false);
+      setFeedback("新的一天，次数已从零开始。按住开始。");
+    }
+
+    function boot(restored) {
+      if (booted) {
+        const nextCount = restoredCount(restored);
+        if (nextCount !== null && nextCount !== count) {
+          count = nextCount;
+          renderCount(false);
+        }
+        return;
+      }
+
+      booted = true;
+      dailyKey = localDateKey();
+      updateDateLabel();
+
+      const hotCount = restoredCount(restored);
+      count = hotCount !== null ? hotCount : readStoredCount();
+      if (hotCount !== null) saveCount();
+
+      renderCount(false);
+      updateDateLabel();
+      setIdle(true);
+      bindEvents();
+    }
+
+    function bindEvents() {
+      el.bloom.addEventListener("pointerdown", onPointerDown);
+      el.bloom.addEventListener("pointerup", onPointerUp);
+      el.bloom.addEventListener("pointercancel", onPointerCancel);
+      el.bloom.addEventListener("lostpointercapture", onLostPointerCapture);
+      el.bloom.addEventListener("keydown", onKeyDown);
+      el.bloom.addEventListener("keyup", onKeyUp);
+      el.bloom.addEventListener("contextmenu", (event) => event.preventDefault());
+      el.bloom.addEventListener("blur", () => {
+        if (pressing && pressSource === "keyboard") cancelPress();
+      });
+
+      el.resetBtn.addEventListener("click", handleResetClick);
+
+      window.addEventListener("blur", () => {
+        if (pressing) cancelPress();
+      });
+      window.addEventListener("focus", handleReturn);
+
+      document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+          if (pressing) cancelPress();
+        } else {
+          handleReturn();
+        }
+      });
+    }
+
+    try {
+      window.claude?.hot?.snapshot?.(() => ({ date: dailyKey, count }));
+    } catch (error) {
+      // The standalone page has no hot-update bridge.
+    }
+
+    if (window.claude?.hot?.ready) {
+      window.claude.hot.ready(boot);
+    } else {
+      boot(window.claude?.hot?.data ?? {});
+    }
+  })();
+</script>
