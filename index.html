@@ -1,7 +1,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>提气练习</title>
-<meta name="description" content="提气：按 3 秒收紧、3 秒放松的凯格尔练习小游戏。有轻音乐、每日目标、分组成就与人群练习说明。">
+<title>提气</title>
+<meta name="description" content="提气：按住，等光环满一圈，再松开。一个关于收与放的三十口小游戏。">
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -335,7 +335,7 @@
   }
 
   .lead {
-    max-width: 34ch;
+    max-width: 46ch;
     margin: 22px 0 0;
     color: var(--muted);
     font-size: clamp(14px, 1.15vw, 16px);
@@ -2060,7 +2060,131 @@
     }
   }
 
+  .mood-line {
+    margin: 24px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--muted);
+    font-size: 12px;
+    line-height: 1.6;
+    letter-spacing: 0.035em;
+  }
+
+  .mood-dot {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 0 4px var(--glow);
+  }
+
+  .progress-orbit {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(94%, 560px, 58vh);
+    aspect-ratio: 1;
+    z-index: 1;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    transition: transform 900ms cubic-bezier(0.22, 1.2, 0.36, 1);
+  }
+
+  .arena.is-active .progress-orbit {
+    transform: translate(-50%, -50%) scale(0.96);
+    transition-duration: 620ms;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .progress-node {
+    position: absolute;
+    inset: 0;
+    transform: rotate(var(--a));
+  }
+
+  .progress-node::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--line);
+    opacity: 0.55;
+    transform: translate(-50%, -50%) scale(0.8);
+    transition:
+      transform 0.35s cubic-bezier(0.2, 1.2, 0.36, 1),
+      background 0.35s ease,
+      box-shadow 0.35s ease,
+      opacity 0.35s ease;
+  }
+
+  .progress-node:nth-child(10n + 1)::before {
+    width: 5px;
+    height: 5px;
+  }
+
+  .progress-node.is-lit::before {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  .progress-node[data-group="0"].is-lit::before {
+    background: var(--mint);
+    box-shadow: 0 0 7px var(--glow-soft);
+  }
+
+  .progress-node[data-group="1"].is-lit::before {
+    background: var(--accent);
+    box-shadow: 0 0 7px var(--glow);
+  }
+
+  .progress-node[data-group="2"].is-lit::before {
+    background: var(--gold);
+    box-shadow: 0 0 7px var(--gold-soft);
+  }
+
+  .arena.is-complete .progress-orbit {
+    filter: drop-shadow(0 0 7px var(--gold-soft));
+  }
+
+  .arena-foot {
+    min-height: 54px;
+    gap: 0;
+    justify-content: center;
+  }
+
+  .feedback {
+    min-height: 0;
+    font-size: clamp(13px, 1.15vw, 15px);
+  }
+
   @media (max-width: 560px) {
+    .mood-line {
+      margin-top: 18px;
+    }
+
+    .progress-node::before {
+      width: 3.5px;
+      height: 3.5px;
+    }
+
+    .progress-node:nth-child(10n + 1)::before {
+      width: 4.5px;
+      height: 4.5px;
+    }
+
+    .arena-foot {
+      min-height: 46px;
+    }
+
+    .feedback {
+      min-height: 0;
+    }
+
     .top-actions {
       gap: 0;
     }
@@ -2120,8 +2244,10 @@
     }
 
     .reward-toast {
-      top: max(12px, env(safe-area-inset-top, 0px));
+      top: auto;
+      bottom: max(16px, env(safe-area-inset-bottom, 0px));
       max-width: calc(100vw - 24px);
+      transform: translate(-50%, 12px);
     }
 
     .guide-dialog {
@@ -2170,7 +2296,7 @@
       <span class="brand-mark" aria-hidden="true"></span>
       <div class="brand-copy">
         <p class="brand-name">提气</p>
-        <p class="brand-sub">PELVIC FLOOR PRACTICE</p>
+        <p class="brand-sub">ONE BREATH AT A TIME</p>
       </div>
     </div>
     <div class="top-actions">
@@ -2195,64 +2321,32 @@
 
   <main class="layout">
     <section class="intro" aria-labelledby="pageTitle">
-      <p class="eyebrow">KEGEL PRACTICE · 3S RHYTHM</p>
+      <p class="eyebrow">TODAY'S LITTLE RITUAL</p>
       <h1 id="pageTitle">
-        <span class="h1-part">收紧，</span>
-        <span class="h1-part h1-em">再松开。</span>
+        <span class="h1-part">偷偷，</span>
+        <span class="h1-part h1-em">练一口气。</span>
       </h1>
       <p class="lead">
-        按住 3 秒，收紧并向上提；松开 3 秒，完全放松。<strong>一次完整的收放，记作一次。</strong>
+        按住，收；松开，放。<strong>没人看见，但身体记得。</strong>
       </p>
-
-      <p class="safety-note">
-        <span class="safety-mark" aria-hidden="true"></span>
-        <span>无痛再练。孕期、产后、盆腔术后或已有盆底疼痛，先咨询专业人员。<button class="inline-link" type="button" data-open-guide>看看人群差异</button></span>
+      <p class="mood-line">
+        <span class="mood-dot" aria-hidden="true"></span>
+        <span id="moodText">今日 · 气还没聚</span>
       </p>
-
-      <div class="protocol" aria-label="练习方法">
-        <div class="step">
-          <span class="step-index" aria-hidden="true">01</span>
-          <div>
-            <h2>按住 <span>HOLD 3S</span></h2>
-            <p>像忍住排气一样轻轻向上提，保持自然呼吸。</p>
-          </div>
-        </div>
-        <div class="step">
-          <span class="step-index" aria-hidden="true">02</span>
-          <div>
-            <h2>松开 <span>RELAX 3S</span></h2>
-            <p>完全放松，别夹着，也别急着开始下一次。</p>
-          </div>
-        </div>
-        <div class="step">
-          <span class="step-index" aria-hidden="true">03</span>
-          <div>
-            <h2>每天 <span>3 SETS</span></h2>
-            <p>每天 3 组、每组 10 次。练到位就收工，明天的底气还在。</p>
-          </div>
-        </div>
-      </div>
-
-      <p class="breath-note">30 次是今日目标，不是 KPI。多多益善，也要见好就收。</p>
     </section>
 
-    <section class="arena" id="arena" aria-label="凯格尔练习区">
+    <section class="arena" id="arena" aria-label="互动区">
       <div class="arena-head">
         <div class="status-pill">
           <span class="status-dot" aria-hidden="true"></span>
-          <span id="statusText">准备就绪</span>
+          <span id="statusText">等你</span>
         </div>
-        <div class="score" id="scoreBox" role="group" aria-label="今日完成 0 次，目标 30 次">
-          <span class="score-label">今日完成 <span class="score-target" id="scoreTarget">/ 30</span></span>
+        <div class="score" id="scoreBox" role="group" aria-label="今日气数 0 口，目标 30 口">
+          <span class="score-label">今日气数 <span class="score-target" id="scoreTarget">/ 30</span></span>
           <span class="score-line">
             <span class="score-num" id="count">0</span>
-            <span class="score-unit">次</span>
+            <span class="score-unit">口</span>
           </span>
-          <div class="goal-meter" id="goalMeter" role="progressbar" aria-label="今日目标，3 组，每组 10 次" aria-valuemin="0" aria-valuemax="30" aria-valuenow="0">
-            <span class="goal-seg"><i></i></span>
-            <span class="goal-seg"><i></i></span>
-            <span class="goal-seg"><i></i></span>
-          </div>
         </div>
       </div>
 
@@ -2263,13 +2357,15 @@
           <span class="orbit orbit-c"></span>
         </div>
 
+        <div class="progress-orbit" id="progressOrbit" aria-hidden="true"></div>
+
         <div class="bloom-stage">
           <button
             class="bloom"
             id="bloom"
             type="button"
             aria-pressed="false"
-            aria-label="按住收紧，松开放松"
+            aria-label="按住蓄气，等光环满后松开"
             aria-describedby="howTo"
           >
             <span class="aura" aria-hidden="true"></span>
@@ -2305,7 +2401,7 @@
             <span class="core">
               <span class="core-copy">
                 <span class="core-action" id="actionText">按住</span>
-                <span class="core-hint" id="actionHint">3S</span>
+                <span class="core-hint" id="actionHint">HOLD</span>
               </span>
             </span>
 
@@ -2322,108 +2418,28 @@
       </div>
 
       <p id="howTo" class="sr-only">
-        按住按钮收紧盆底肌并保持三秒，然后松开按钮。收满三秒才会计入一次；之后会引导你放松三秒，等放松结束后再开始下一次。也可以聚焦按钮后按住空格键。
+        按住按钮，等到光环满一圈再松开。松开后等它完全散开，再进行下一口。收满才计数。也可以聚焦按钮后按住空格键。
       </p>
 
       <div class="arena-foot">
-        <p class="feedback" id="feedback" aria-live="polite">按住 3 秒，开始第一次。</p>
-        <div class="phases" aria-hidden="true">
-          <span class="phase phase-contract"><span class="phase-dot"></span>按住 · 收紧 3 秒</span>
-          <span class="phase-sep"></span>
-          <span class="phase phase-relax"><span class="phase-dot"></span>松开 · 放松 3 秒</span>
-        </div>
+        <p class="feedback" id="feedback" aria-live="polite">按住，让光环满一圈。</p>
       </div>
     </section>
   </main>
 
   <footer class="footer">
-    <p>建议收紧 3 秒、放松 3 秒。按住鼠标、触屏或空格键均可；声音在首次点击后开始。出现疼痛请停止。</p>
-    <div class="footer-actions">
-      <button class="guide-btn" type="button" data-open-guide>练法与人群</button>
-      <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
-    </div>
+    <p>身体不舒服，就停。声音在首次点击后开始。</p>
+    <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
   </footer>
 </div>
 
 <div class="reward-toast" id="rewardToast" aria-hidden="true" hidden lang="zh-CN">
   <span class="reward-seal" id="rewardSeal">一</span>
   <span class="reward-body">
-    <strong id="rewardTitle">第一组达成</strong>
-    <span id="rewardCopy">十次，妙不可言。</span>
+    <strong id="rewardTitle">十口 · 妙不可言</strong>
+    <span id="rewardCopy">气顺了。</span>
   </span>
 </div>
-
-<dialog class="guide-dialog" id="guideDialog" aria-labelledby="guideTitle" lang="zh-CN">
-  <div class="guide-sheet">
-    <div class="guide-head">
-      <div>
-        <p class="eyebrow guide-eyebrow">HOW TO PRACTISE</p>
-        <h2 id="guideTitle">练得准，比练得多重要。</h2>
-      </div>
-      <button class="guide-close" id="guideClose" type="button" aria-label="关闭练习说明">
-        <span aria-hidden="true"></span>
-      </button>
-    </div>
-
-    <div class="guide-body">
-      <p class="guide-intro">
-        本页采用一个通用入门节奏：收紧 3 秒、放松 3 秒，10 次一组，每天 3 组。收满 3 秒才计入一次；不足 3 秒会提示重来，放松时间会自动匹配你的收紧时长。适合无痛、无特殊禁忌的日常练习，不替代专业评估。如果你的医生或盆底康复师给了不同剂量，按他们的来。
-      </p>
-
-      <section>
-        <h3>先把动作做对</h3>
-        <ul class="guide-list">
-          <li>先排空膀胱；坐着或躺着，让肩膀、腹部、臀部都放松。</li>
-          <li>想象同时忍住排气和尿意，会阴轻轻“向上提”。</li>
-          <li>全程自然呼吸，不憋气，不夹臀、不夹腿。</li>
-          <li>松开要真的松到底。不要把“中断排尿”当成日常训练。</li>
-          <li>3 秒是入门目标，可逐步向 5–10 秒过渡；完全放松和完整收缩同样重要。</li>
-          <li>本页只练慢速收放；如果你的训练计划还包括快速收缩，请按专业方案另行练习。</li>
-        </ul>
-      </section>
-
-      <section>
-        <h3>不同人，重点不一样</h3>
-        <div class="guide-grid">
-          <article>
-            <h4>日常保养 / 轻度漏尿</h4>
-            <p>没有特殊禁忌的成年人（包括老年人）都可以练，重点是动作准确、完全放松。女性若持续出现压力性或混合性漏尿，NICE 建议在专业指导下进行至少 3 个月的盆底肌训练。多数人的改善需要坚持数周到数月。</p>
-          </article>
-          <article>
-            <h4>孕期 / 产后</h4>
-            <p>通常可以练，但何时开始要看孕周、分娩方式、伤口和出血情况。拔除尿管且排尿正常后再练；有阴道出血、规律宫缩、胎膜早破等情况先问医生。产后 6 周仍漏尿或找不到发力感，找助产士、全科医生或盆底理疗评估。</p>
-          </article>
-          <article>
-            <h4>男性 / 前列腺术后</h4>
-            <p>同样是“提肛”，别憋气。术后控尿训练通常有益，但术前或术后的开始时间和剂量，应按泌尿外科或盆底康复团队安排。</p>
-          </article>
-          <article>
-            <h4>盆底疼痛 / 高张力</h4>
-            <p>不要默认“越紧越好”。高张力盆底往往先做放松、呼吸和协调训练；继续加练收缩可能加重不适。先做盆底评估，疼痛时不要用本游戏硬练。</p>
-          </article>
-        </div>
-      </section>
-
-      <section class="guide-warning">
-        <h3>这些情况先停下来</h3>
-        <p>疼痛、明显坠胀、排尿或排便困难、血尿、近期盆腔手术、孕期异常症状，或练习后症状加重。请咨询医生或盆底康复师。</p>
-      </section>
-
-      <p class="guide-disclaimer">这是通用健康教育，不构成诊断或个体化处方。不同指南的保持时长和次数略有差异，请以专业评估为准。</p>
-      <p class="guide-music-note">背景音乐和收放音效分开控制，都在右上角。浏览器要求首次点击后才能播放声音。所有声音都由浏览器实时合成，不加载外部音轨。</p>
-
-      <div class="guide-sources" lang="en">
-        <strong lang="zh-CN">资料参考</strong>
-        <a href="https://www.nice.org.uk/guidance/ng123" target="_blank" rel="noopener noreferrer">NICE NG123</a>
-        <a href="https://leedscommunityhealthcare.nhs.uk/our-services-a-z/continence-urology-and-colorectal-cucs/bladder-problems-cucs/pelvic-floor-exercises-for-men-cucs/" target="_blank" rel="noopener noreferrer">NHS Leeds · 男性盆底练习</a>
-        <a href="https://www.lscft.nhs.uk/our-services/service-finder-z/continence-service/pelvic-floor-physiotherapy/pelvic-floor-muscle-exercise-information-sheet-women" target="_blank" rel="noopener noreferrer">NHS LSCFT · 女性盆底练习</a>
-        <a href="https://www.mkuh.nhs.uk/maternity-services/your-pregnancy-journey/postnatal-care/care-of-the-pelvic-floor-and-perineum" target="_blank" rel="noopener noreferrer">NHS MKUH · 产后盆底护理</a>
-        <a href="https://www.rightdecisions.scot.nhs.uk/patient-information-leaflets/primary-community-services/physiotherapy/pelvic-floor-exercises-during-pregnancy/" target="_blank" rel="noopener noreferrer">NHS · 孕期盆底练习</a>
-        <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10953682/" target="_blank" rel="noopener noreferrer">Obstetrics &amp; Gynecology · 高张力盆底治疗</a>
-      </div>
-    </div>
-  </div>
-</dialog>
 
 <script>
 (() => {
@@ -2435,11 +2451,10 @@
   const WEEKDAYS = ["日", "一", "二", "三", "四", "五", "六"];
   const HOLD_TARGET = 3;
   const DAILY_GOAL = 30;
-  const SET_SIZE = 10;
   const MILESTONES = new Map([
-    [10, { seal: "一", title: "第一组达成", copy: "十次，妙不可言。" }],
-    [20, { seal: "二", title: "第二组达成", copy: "是努力的轨迹，也是实力的证明。" }],
-    [30, { seal: "满", title: "今日达标 · 收放自如", copy: "多多益善，但见好就收也是本事。" }]
+    [10, { seal: "一", title: "十口 · 妙不可言", copy: "气顺了。", short: "十口达成。" }],
+    [20, { seal: "二", title: "二十口 · 实力+1", copy: "是努力的轨迹，也是实力的证明。", short: "二十口达成。" }],
+    [30, { seal: "满", title: "今日圆满", copy: "多多益善，但见好就收也是本事。", short: "今日圆满。" }]
   ]);
 
   const el = {
@@ -2453,10 +2468,11 @@
     count: document.getElementById("count"),
     scoreBox: document.getElementById("scoreBox"),
     scoreTarget: document.getElementById("scoreTarget"),
-    goalMeter: document.getElementById("goalMeter"),
     resetBtn: document.getElementById("resetBtn"),
     fx: document.getElementById("fx"),
     todayLabel: document.getElementById("todayLabel"),
+    moodText: document.getElementById("moodText"),
+    progressOrbit: document.getElementById("progressOrbit"),
     musicToggle: document.getElementById("musicToggle"),
     musicState: document.getElementById("musicState"),
     sfxToggle: document.getElementById("sfxToggle"),
@@ -2464,13 +2480,9 @@
     rewardToast: document.getElementById("rewardToast"),
     rewardSeal: document.getElementById("rewardSeal"),
     rewardTitle: document.getElementById("rewardTitle"),
-    rewardCopy: document.getElementById("rewardCopy"),
-    guideDialog: document.getElementById("guideDialog"),
-    guideClose: document.getElementById("guideClose")
+    rewardCopy: document.getElementById("rewardCopy")
   };
 
-  const goalSegments = Array.from(document.querySelectorAll(".goal-seg"));
-  const guideOpeners = Array.from(document.querySelectorAll("[data-open-guide]"));
   const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
 
   let dailyKey = "";
@@ -2492,7 +2504,7 @@
   let resetArmed = false;
   let rewardHideTimer = 0;
   let rewardCleanupTimer = 0;
-  let lastGuideTrigger = null;
+  let progressDots = [];
   let musicEnabled = true;
   let sfxEnabled = true;
 
@@ -3122,9 +3134,9 @@
     el.arena.classList.remove("is-active", "is-target", "is-resting");
     el.bloom.setAttribute("aria-pressed", "false");
     el.bloom.setAttribute("aria-disabled", "false");
-    el.bloom.setAttribute("aria-label", "按住收紧三秒，松开放松");
+    el.bloom.setAttribute("aria-label", "按住蓄气，等光环满后松开");
     el.actionText.textContent = "按住";
-    el.actionHint.textContent = "3S";
+    el.actionHint.textContent = "HOLD";
     setHoldProgress(0);
   }
 
@@ -3152,31 +3164,51 @@
     window.setTimeout(remove, 1100);
   }
 
+  function buildProgressOrbit() {
+    if (!el.progressOrbit || progressDots.length) return;
+
+    const fragment = document.createDocumentFragment();
+    for (let index = 0; index < DAILY_GOAL; index += 1) {
+      const node = document.createElement("span");
+      node.className = "progress-node";
+      node.style.setProperty("--a", `${6 + index * 12}deg`);
+      node.dataset.group = String(Math.floor(index / 10));
+      fragment.appendChild(node);
+      progressDots.push(node);
+    }
+    el.progressOrbit.appendChild(fragment);
+  }
+
+  function moodForCount(value) {
+    if (value <= 0) return "今日 · 气还没聚";
+    if (value < 10) return "今日 · 有点儿意思了";
+    if (value < 20) return "今日 · 气顺了";
+    if (value < 30) return "今日 · 气势来了";
+    return "今日 · 圆满了";
+  }
+
   function renderDaily(animate) {
     el.count.textContent = String(count);
     const complete = count >= DAILY_GOAL;
+    const litCount = Math.min(count, DAILY_GOAL);
 
     el.scoreBox.classList.toggle("is-complete", complete);
     el.arena.classList.toggle("is-complete", complete);
-    el.scoreTarget.textContent = complete ? "已达标" : "/ 30";
+    el.scoreTarget.textContent = complete ? "已圆满" : "/ 30";
     el.scoreBox.setAttribute(
       "aria-label",
       complete
-        ? `今日完成 ${count} 次，目标 30 次，已达标`
-        : `今日完成 ${count} 次，目标 30 次`
+        ? `今日气数 ${count} 口，目标 30 口，已圆满`
+        : `今日气数 ${count} 口，目标 30 口`
     );
 
-    goalSegments.forEach((segment, index) => {
-      const filled = Math.min(SET_SIZE, Math.max(0, count - index * SET_SIZE));
-      const fill = segment.querySelector("i");
-      if (fill) fill.style.setProperty("--fill", `${(filled / SET_SIZE) * 100}%`);
+    progressDots.forEach((node, index) => {
+      node.classList.toggle("is-lit", index < litCount);
     });
 
-    el.goalMeter.setAttribute("aria-valuenow", String(Math.min(count, DAILY_GOAL)));
-    el.goalMeter.setAttribute(
-      "aria-valuetext",
-      complete ? `已达成今日 30 次目标，当前 ${count} 次` : `${count} / 30 次`
-    );
+    if (el.moodText) {
+      el.moodText.textContent = moodForCount(count);
+    }
 
     syncResetButton();
 
@@ -3256,25 +3288,21 @@
     if (pressing || resting) return;
 
     clearHoldUI();
-    setStatus(count >= DAILY_GOAL ? "今日达标" : count > 0 ? "准备继续" : "准备就绪");
+    setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
 
     let message;
     if (initial) {
       if (count >= DAILY_GOAL) {
-        message = "今日已达标。是努力的轨迹，也是实力的证明。";
+        message = "今日圆满。想再来，就量力。";
       } else if (count > 0) {
-        message = `今天已记下 ${count} 次。按住，继续攒底气。`;
+        message = `今天攒了 ${count} 口。按住，继续。`;
       } else {
-        message = "按住 3 秒，开始第一次。";
+        message = "按住，让光环满一圈。";
       }
-    } else if (count >= DAILY_GOAL) {
-      message = count === DAILY_GOAL
-        ? "今日达标。收工或量力加练，都算数。"
-        : "今日已达标。加练一次，量力而行。";
-    } else if (count > 0 && count % SET_SIZE === 0) {
-      message = "放松到位。这一组完成得漂亮，下一组继续。";
     } else {
-      message = "放松到位。按住，开始下一次。";
+      message = count >= DAILY_GOAL
+        ? "今日圆满。想再来，就量力。"
+        : "散完了，再来一口。";
     }
 
     setFeedback(message, !initial);
@@ -3306,12 +3334,12 @@
     el.arena.classList.add("is-active");
     el.bloom.setAttribute("aria-pressed", "true");
     el.bloom.setAttribute("aria-disabled", "false");
-    el.bloom.setAttribute("aria-label", "正在收紧，请保持三秒");
-    el.actionText.textContent = "保持";
+    el.bloom.setAttribute("aria-label", "正在聚气，保持到光环满");
+    el.actionText.textContent = "聚";
     el.actionHint.textContent = "0.0s";
     setHoldProgress(0);
-    setStatus("收紧中");
-    setFeedback("收住，别憋气。想象一次轻轻的向上提。");
+    setStatus("聚气中");
+    setFeedback("让光聚起来。");
 
     window.cancelAnimationFrame(holdFrame);
     holdFrame = window.requestAnimationFrame(tickHold);
@@ -3322,23 +3350,28 @@
     if (!pressing) return;
 
     const elapsed = Math.max(0, (performance.now() - holdStartedAt) / 1000);
-    el.actionHint.textContent = `${elapsed.toFixed(1)}s`;
-    setHoldProgress(Math.min(1, elapsed / HOLD_TARGET) * 100);
+
+    if (!targetReached) {
+      el.actionHint.textContent = `${elapsed.toFixed(1)}s`;
+      setHoldProgress(Math.min(1, elapsed / HOLD_TARGET) * 100);
+    }
 
     if (!targetReached && elapsed >= HOLD_TARGET) {
       targetReached = true;
       el.arena.classList.add("is-target");
-      el.actionText.textContent = "可以松";
-      el.bloom.setAttribute("aria-label", "达标，可以松开了");
-      setStatus("到位了");
-      setFeedback("达标，慢慢松开。");
+      el.actionText.textContent = "松手";
+      el.actionHint.textContent = "满了";
+      el.bloom.setAttribute("aria-label", "光环满了，可以松开");
+      setStatus("满格");
+      setFeedback("满了，松手。");
+      setHoldProgress(100);
       if (sound) sound.target();
       vibrate(6);
     }
 
     if (!longHoldNoted && elapsed >= 10) {
       longHoldNoted = true;
-      setFeedback("够了，慢慢松开，不用硬撑。");
+      setFeedback("够久了，松手吧。");
     }
 
     holdFrame = window.requestAnimationFrame(tickHold);
@@ -3361,17 +3394,15 @@
 
     if (!shouldCount) {
       clearHoldUI();
-      setStatus(count >= DAILY_GOAL ? "今日达标" : count > 0 ? "准备继续" : "准备就绪");
-      setFeedback("这次不计。按住三秒，我们重新来。");
+      setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
+      setFeedback("这次不算。");
       return;
     }
 
     if (!valid) {
       clearHoldUI();
-      setStatus("再来一次");
-      setFeedback(
-        `还差 ${Math.max(0, HOLD_TARGET - heldSeconds).toFixed(1)} 秒，这次不计。稳住，再来。`
-      );
+      setStatus("差一点");
+      setFeedback("差一点，这次不算。再来。");
       if (sound) sound.invalid();
       vibrate(5);
       return;
@@ -3405,18 +3436,18 @@
 
     el.arena.classList.add("is-resting");
     el.bloom.setAttribute("aria-disabled", "true");
-    el.bloom.setAttribute("aria-label", "放松中，稍后再开始下一次");
-    el.actionText.textContent = "放松";
+    el.bloom.setAttribute("aria-label", "散气中，稍后再来");
+    el.actionText.textContent = "散";
     el.actionHint.textContent = `${seconds.toFixed(1)}s`;
-    setStatus("放松中");
+    setStatus("散气中");
     setHoldProgress(100);
 
     if (milestone) {
-      setFeedback(`${milestone.title}。${milestone.copy} 松到底。`);
+      setFeedback(`${milestone.short}散一散。`);
     } else if (count >= DAILY_GOAL) {
-      setFeedback(`今日第 ${count} 次。已达标，量力加练。松到底。`);
+      setFeedback("又一口。见好就收。");
     } else {
-      setFeedback(`第 ${count} 次完成。松到底，给肌肉一点时间。`);
+      setFeedback("漂亮，散一散。");
     }
 
     window.cancelAnimationFrame(restFrame);
@@ -3445,7 +3476,7 @@
 
   function nudgeRest() {
     if (!resting) return;
-    setFeedback("别急，先把这口气松完。");
+    setFeedback("先散完。");
     vibrate(5);
   }
 
@@ -3459,8 +3490,8 @@
     holdFrame = 0;
 
     clearHoldUI();
-    setStatus(count >= DAILY_GOAL ? "今日达标" : count > 0 ? "准备继续" : "准备就绪");
-    setFeedback("已松开，这次不计。想继续时再按住就行。");
+    setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
+    setFeedback("这次不算。");
   }
 
   function resetToday() {
@@ -3484,8 +3515,8 @@
     count = 0;
     saveCount();
     renderDaily(false);
-    setStatus("准备就绪");
-    setFeedback("今日记录已清零。按住 3 秒，重新开始。");
+    setStatus("等你");
+    setFeedback("归零。再来一口？");
     vibrate(12);
   }
 
@@ -3541,31 +3572,6 @@
     }
   }
 
-  function openGuide(event) {
-    if (!el.guideDialog) return;
-    lastGuideTrigger = event && event.currentTarget ? event.currentTarget : document.activeElement;
-
-    if (typeof el.guideDialog.showModal === "function") {
-      if (!el.guideDialog.open) el.guideDialog.showModal();
-    } else {
-      el.guideDialog.setAttribute("open", "");
-    }
-    document.body.classList.add("dialog-open");
-  }
-
-  function closeGuide() {
-    if (!el.guideDialog) return;
-    if (typeof el.guideDialog.close === "function" && el.guideDialog.open) {
-      el.guideDialog.close();
-    } else {
-      el.guideDialog.removeAttribute("open");
-      document.body.classList.remove("dialog-open");
-      if (lastGuideTrigger && typeof lastGuideTrigger.focus === "function") {
-        lastGuideTrigger.focus();
-      }
-    }
-  }
-
   function isHoldKey(event) {
     return event.key === " " || event.key === "Spacebar" || event.key === "Enter";
   }
@@ -3580,7 +3586,7 @@
       restFrame = 0;
       clearHoldUI();
       setIdle(false);
-      setFeedback("新的一天，次数已从零开始。按住开始。");
+      setFeedback("新的一天，从零开始。");
     }
 
     if (sound && sound.hasStarted() && (musicEnabled || sfxEnabled)) {
@@ -3672,26 +3678,6 @@
     document.addEventListener("keydown", unlockSoundFromGesture, { capture: true });
     document.addEventListener("click", unlockSoundFromGesture, { capture: true });
 
-    guideOpeners.forEach((button) => {
-      button.addEventListener("click", openGuide);
-    });
-
-    if (el.guideClose) {
-      el.guideClose.addEventListener("click", closeGuide);
-    }
-
-    if (el.guideDialog) {
-      el.guideDialog.addEventListener("click", (event) => {
-        if (event.target === el.guideDialog) closeGuide();
-      });
-      el.guideDialog.addEventListener("close", () => {
-        document.body.classList.remove("dialog-open");
-        if (lastGuideTrigger && typeof lastGuideTrigger.focus === "function") {
-          lastGuideTrigger.focus();
-        }
-      });
-    }
-
     window.addEventListener("blur", () => {
       if (pressing) cancelPress();
     });
@@ -3741,6 +3727,7 @@
     count = hotCount !== null ? hotCount : readStoredCount();
     if (hotCount !== null) saveCount();
 
+    buildProgressOrbit();
     renderDaily(false);
     bindEvents();
     setIdle(true);
