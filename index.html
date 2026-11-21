@@ -3294,12 +3294,18 @@
       setFeedback(`已切到 ${holdTarget} 秒节奏，按住试一口。`);
     }
 
-    /* Sound Engine (Web Audio API) */
+    /* Sound Engine (Web Audio API + iOS/Mobile Audio Unlock) */
     function createSoundSystem() {
       const AudioCtor = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtor) return null;
 
-      const padNotes = [73.416, 110, 146.832, 185];
+      // Tiny valid 0.05s silent WAV used to route iOS Web Audio through media playback channel
+      const SILENT_WAV = "data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+      // Phone-speaker-friendly warm Dmaj7 pad & pentatonic melody
+      const padNotes = [146.832, 220, 293.66, 369.99];
       const melody = [
         293.66, 369.99, 440, 493.88, 440, 369.99, 329.63, 293.66,
         null, 440, 369.99, 329.63
@@ -3319,17 +3325,58 @@
       let userStarted = false;
       let suspendTimer = 0;
       let holdDrone = null;
+      let silentAudio = null;
+      let audioSessionConfigured = false;
+      let onStateUpdate = null;
+
+      function configureMediaChannel(active) {
+        if ("audioSession" in navigator && navigator.audioSession) {
+          try {
+            navigator.audioSession.type = active ? "playback" : "ambient";
+            audioSessionConfigured = true;
+          } catch (e) {}
+        }
+
+        if (!isIOS || audioSessionConfigured) return;
+
+        try {
+          if (!silentAudio) {
+            silentAudio = new Audio(SILENT_WAV);
+            silentAudio.playsInline = true;
+            silentAudio.setAttribute("playsinline", "");
+            silentAudio.setAttribute("webkit-playsinline", "");
+            silentAudio.loop = true;
+            silentAudio.volume = 1;
+          }
+          if (active) {
+            if (silentAudio.paused) {
+              const p = silentAudio.play();
+              if (p && typeof p.catch === "function") p.catch(() => {});
+            }
+          } else if (!silentAudio.paused) {
+            silentAudio.pause();
+          }
+        } catch (e) {}
+      }
 
       function init() {
         if (ctx) return true;
         try {
           ctx = new AudioCtor();
+          ctx.addEventListener("statechange", () => {
+            if (ctx && ctx.state === "running") {
+              applyGains();
+              if (musicOn) startMusicSchedule();
+            }
+            if (typeof onStateUpdate === "function") onStateUpdate();
+          });
+
           master = ctx.createGain();
           master.gain.value = 0;
 
           compressor = ctx.createDynamicsCompressor();
-          compressor.threshold.value = -16;
-          compressor.knee.value = 16;
+          compressor.threshold.value = -14;
+          compressor.knee.value = 18;
           compressor.ratio.value = 4;
           compressor.attack.value = 0.004;
           compressor.release.value = 0.24;
@@ -3342,15 +3389,15 @@
           musicBus.connect(master);
 
           sfxBus = ctx.createGain();
-          sfxBus.gain.value = 0.92;
+          sfxBus.gain.value = 1;
           sfxBus.connect(master);
 
           delayNode = ctx.createDelay(1.4);
           delayNode.delayTime.value = 0.42;
           const feedback = ctx.createGain();
-          feedback.gain.value = 0.22;
+          feedback.gain.value = 0.24;
           const wet = ctx.createGain();
-          wet.gain.value = 0.16;
+          wet.gain.value = 0.2;
           delayNode.connect(feedback);
           feedback.connect(delayNode);
           delayNode.connect(wet);
@@ -3358,10 +3405,10 @@
 
           const padFilter = ctx.createBiquadFilter();
           padFilter.type = "lowpass";
-          padFilter.frequency.value = 620;
-          padFilter.Q.value = 0.2;
+          padFilter.frequency.value = 920;
+          padFilter.Q.value = 0.3;
           const padGain = ctx.createGain();
-          padGain.gain.value = 0.11;
+          padGain.gain.value = 0.22;
           padFilter.connect(padGain);
           padGain.connect(musicBus);
 
@@ -3370,7 +3417,7 @@
             const gain = ctx.createGain();
             osc.type = index === 0 ? "sine" : "triangle";
             osc.frequency.value = frequency;
-            gain.gain.value = index === 0 ? 0.34 : 0.11;
+            gain.gain.value = index === 0 ? 0.3 : 0.14;
             osc.connect(gain);
             gain.connect(padFilter);
             osc.start();
@@ -3381,6 +3428,26 @@
           ctx = null;
           return false;
         }
+      }
+
+      function applyGains() {
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        master.gain.cancelScheduledValues(now);
+        master.gain.setTargetAtTime(0.95, now, 0.12);
+        musicBus.gain.cancelScheduledValues(now);
+        musicBus.gain.setTargetAtTime(musicOn ? 0.78 : 0.0001, now, 0.18);
+      }
+
+      function nudgeHardwareOutput() {
+        if (!ctx) return;
+        try {
+          const buf = ctx.createBuffer(1, 1, ctx.sampleRate || 22050);
+          const src = ctx.createBufferSource();
+          src.buffer = buf;
+          src.connect(ctx.destination);
+          src.start(0);
+        } catch (e) {}
       }
 
       function playMusicNote(frequency, when) {
@@ -3396,15 +3463,15 @@
         osc.type = "sine";
         osc.frequency.value = frequency;
         shimmer.type = "sine";
-        shimmer.frequency.value = frequency * 2.008;
-        shimmerGain.gain.value = 0.09;
+        shimmer.frequency.value = frequency * 2.006;
+        shimmerGain.gain.value = 0.14;
         filter.type = "lowpass";
-        filter.frequency.value = 2100;
-        send.gain.value = 0.24;
+        filter.frequency.value = 2600;
+        send.gain.value = 0.26;
 
         gain.gain.setValueAtTime(0.0001, at);
-        gain.gain.exponentialRampToValueAtTime(0.15, at + 0.22);
-        gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.15);
+        gain.gain.exponentialRampToValueAtTime(0.24, at + 0.18);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.1);
 
         osc.connect(filter);
         shimmer.connect(shimmerGain);
@@ -3416,8 +3483,8 @@
 
         osc.start(at);
         shimmer.start(at);
-        osc.stop(at + 3.25);
-        shimmer.stop(at + 3.25);
+        osc.stop(at + 3.2);
+        shimmer.stop(at + 3.2);
 
         osc.addEventListener("ended", () => {
           try {
@@ -3437,13 +3504,13 @@
           const frequency = melody[noteIndex % melody.length];
           if (frequency) playMusicNote(frequency, nextNoteAt);
           noteIndex += 1;
-          nextNoteAt += 2.7;
+          nextNoteAt += 2.6;
         }
       }
 
       function startMusicSchedule() {
         if (!ctx || !musicOn || ctx.state !== "running" || scheduler) return;
-        nextNoteAt = ctx.currentTime + 0.25;
+        nextNoteAt = ctx.currentTime + 0.06;
         scheduler = window.setInterval(scheduleMusic, 420);
         scheduleMusic();
       }
@@ -3456,32 +3523,26 @@
       }
 
       function unlock(onReady) {
+        configureMediaChannel(musicOn || sfxOn);
         if (!init()) return false;
         userStarted = true;
         window.clearTimeout(suspendTimer);
 
-        const applyGains = () => {
-          if (!ctx) return;
-          const now = ctx.currentTime;
-          master.gain.cancelScheduledValues(now);
-          master.gain.setTargetAtTime(0.88, now, 0.16);
-          musicBus.gain.cancelScheduledValues(now);
-          musicBus.gain.setTargetAtTime(musicOn ? 0.52 : 0.0001, now, 0.22);
-          if (musicOn && ctx.state === "running") startMusicSchedule();
-        };
-
         if (ctx.state === "running") {
           applyGains();
+          if (musicOn) startMusicSchedule();
           if (typeof onReady === "function") onReady();
           return true;
         }
 
+        nudgeHardwareOutput();
         try {
           const p = ctx.resume();
           applyGains();
           if (p && typeof p.then === "function") {
             p.then(() => {
               applyGains();
+              if (musicOn && ctx && ctx.state === "running") startMusicSchedule();
               if (typeof onReady === "function") onReady();
             }).catch(() => {});
           }
@@ -3504,6 +3565,7 @@
         if (!ctx || musicOn || sfxOn) return;
         stopHoldDrone(true);
         stopMusicSchedule();
+        configureMediaChannel(false);
         const now = ctx.currentTime;
         master.gain.cancelScheduledValues(now);
         master.gain.setTargetAtTime(0.0001, now, 0.06);
@@ -3532,18 +3594,18 @@
 
           oscA.type = "sine";
           oscB.type = "triangle";
-          oscA.frequency.setValueAtTime(146.83, now); // D3
-          oscB.frequency.setValueAtTime(220.0, now);  // A3
+          oscA.frequency.setValueAtTime(220.0, now);  // A3 (clear on mobile speakers)
+          oscB.frequency.setValueAtTime(329.63, now); // E4
 
           filter.type = "lowpass";
-          filter.frequency.setValueAtTime(260, now);
+          filter.frequency.setValueAtTime(480, now);
           filter.Q.value = 1.4;
 
           gain.gain.setValueAtTime(0.0001, now);
-          gain.gain.setTargetAtTime(0.06, now, 0.12);
+          gain.gain.setTargetAtTime(0.11, now, 0.12);
 
           const gainB = ctx.createGain();
-          gainB.gain.value = 0.22;
+          gainB.gain.value = 0.28;
 
           oscA.connect(filter);
           oscB.connect(gainB);
@@ -3562,9 +3624,9 @@
         const now = ctx.currentTime;
         const p = Math.max(0, Math.min(1, progress));
         const extra = Math.max(0, Math.min(1, overholdRatio));
-        const baseFreq = 146.83 + p * 73.17 + extra * 26.94; // D3 -> A3 -> B3
-        const cutoff = 260 + p * 760 + extra * 360;
-        const level = 0.055 + p * 0.055 + extra * 0.015;
+        const baseFreq = 220.0 + p * 109.63 + extra * 40.36; // A3 -> E4 -> F#4
+        const cutoff = 480 + p * 1250 + extra * 480;
+        const level = 0.11 + p * 0.095 + extra * 0.025;
 
         holdDrone.oscA.frequency.setTargetAtTime(baseFreq, now, 0.06);
         holdDrone.oscB.frequency.setTargetAtTime(baseFreq * 1.5, now, 0.06);
@@ -3607,9 +3669,9 @@
           osc.frequency.setValueAtTime(fromFreq, at);
           osc.frequency.exponentialRampToValueAtTime(Math.max(20, toFreq), at + duration * 0.85);
           filter.type = "lowpass";
-          filter.frequency.value = 2200;
+          filter.frequency.value = 2600;
           gain.gain.setValueAtTime(0.0001, at);
-          gain.gain.exponentialRampToValueAtTime(peak, at + 0.035);
+          gain.gain.exponentialRampToValueAtTime(peak, at + 0.032);
           gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
 
           osc.connect(filter);
@@ -3637,9 +3699,9 @@
           osc.frequency.value = frequency;
           shimmer.type = "sine";
           shimmer.frequency.value = frequency * 2.008;
-          shimmerGain.gain.value = 0.13;
+          shimmerGain.gain.value = 0.18;
           filter.type = "lowpass";
-          filter.frequency.value = 3200;
+          filter.frequency.value = 3600;
           gain.gain.setValueAtTime(0.0001, at);
           gain.gain.exponentialRampToValueAtTime(peak, at + 0.014);
           gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
@@ -3668,10 +3730,14 @@
           musicOn = music;
           sfxOn = sfx;
         },
+        setStateListener(fn) {
+          onStateUpdate = fn;
+        },
         unlock,
         suspend() {
           stopHoldDrone(true);
           stopMusicSchedule();
+          configureMediaChannel(false);
           window.clearTimeout(suspendTimer);
           if (!ctx) return;
           try {
@@ -3710,28 +3776,30 @@
           }
         },
         hasStarted: () => userStarted,
+        isRunning: () => Boolean(ctx && ctx.state === "running"),
+        isChannelReady: () => !isIOS || audioSessionConfigured || Boolean(silentAudio && !silentAudio.paused),
         isMusicPlaying: () => Boolean(ctx && musicOn && userStarted && ctx.state === "running"),
         holdStart() {
-          playSweep(196, 293.66, 0.55, 0.085, "sine");
+          playSweep(220, 369.99, 0.55, 0.18, "sine");
           startHoldDrone();
         },
         updateHold: updateHoldDrone,
         stopHold: stopHoldDrone,
         target() {
-          playBell(587.33, 0, 0.09, 1.3);
-          playBell(880, 0.09, 0.07, 1.1);
+          playBell(587.33, 0, 0.22, 1.3);
+          playBell(880, 0.09, 0.18, 1.1);
         },
         release(deep = false) {
           stopHoldDrone(false);
-          playSweep(deep ? 493.88 : 440, 246.94, deep ? 1.15 : 0.92, 0.085, "sine");
-          if (deep) playBell(659.25, 0.06, 0.045, 1.0);
+          playSweep(deep ? 523.25 : 440, 261.63, deep ? 1.15 : 0.92, 0.18, "sine");
+          if (deep) playBell(659.25, 0.06, 0.11, 1.0);
         },
         invalid() {
           stopHoldDrone(true);
-          playSweep(196, 155.56, 0.28, 0.045, "sine");
+          playSweep(246.94, 185, 0.28, 0.12, "sine");
         },
         restReady() {
-          playBell(523.25, 0, 0.038, 0.72);
+          playBell(587.33, 0, 0.11, 0.72);
         },
         reward(level) {
           const notes = level >= 30
@@ -3739,11 +3807,11 @@
             : level >= 20
               ? [587.33, 739.99, 880]
               : [587.33, 880];
-          notes.forEach((f, idx) => playBell(f, 0.03 + idx * 0.13, 0.085, 1.5 + idx * 0.12));
+          notes.forEach((f, idx) => playBell(f, 0.03 + idx * 0.13, 0.2, 1.5 + idx * 0.12));
         },
         preview() {
-          playBell(523.25, 0, 0.075, 0.9);
-          playBell(659.25, 0.12, 0.06, 0.85);
+          playBell(523.25, 0, 0.2, 0.9);
+          playBell(659.25, 0.12, 0.17, 0.85);
         }
       };
     }
@@ -3781,20 +3849,22 @@
     function unlockSoundFromGesture(event) {
       if (!sound || (!musicEnabled && !sfxEnabled)) return;
       const target = event && event.target;
-      if (target && typeof target.closest === "function" && target.closest(".sound-controls")) {
+      if (target && typeof target.closest === "function" && target.closest("#musicToggle, #sfxToggle")) {
         return;
       }
+      if (sound.isRunning() && sound.isChannelReady()) return;
       sound.configure(musicEnabled, sfxEnabled);
       sound.unlock(() => syncMusicIndicator());
     }
 
     function toggleMusic() {
       if (!sound) return;
-      const firstStart = musicEnabled && !sound.hasStarted();
-      if (!firstStart) {
+      const needsWake = musicEnabled && !sound.isRunning();
+      if (!needsWake) {
         musicEnabled = !musicEnabled;
         savePref(MUSIC_KEY, musicEnabled ? "on" : "off");
       }
+      sound.configure(musicEnabled, sfxEnabled);
       sound.setMusic(musicEnabled);
       updateSoundUI();
       window.setTimeout(syncMusicIndicator, 180);
@@ -3802,11 +3872,12 @@
 
     function toggleSfx() {
       if (!sound) return;
-      const firstStart = sfxEnabled && !sound.hasStarted();
-      if (!firstStart) {
+      const needsWake = sfxEnabled && !sound.isRunning();
+      if (!needsWake) {
         sfxEnabled = !sfxEnabled;
         savePref(SFX_KEY, sfxEnabled ? "on" : "off");
       }
+      sound.configure(musicEnabled, sfxEnabled);
       sound.setSfx(sfxEnabled);
       if (sfxEnabled) {
         sound.preview();
@@ -5334,8 +5405,18 @@
         btn.blur();
       });
 
+      document.addEventListener("touchstart", unlockSoundFromGesture, { capture: true, passive: true });
+      document.addEventListener("touchend", unlockSoundFromGesture, { capture: true, passive: true });
       document.addEventListener("pointerdown", unlockSoundFromGesture, { capture: true });
+      document.addEventListener("pointerup", unlockSoundFromGesture, { capture: true });
+      document.addEventListener("click", unlockSoundFromGesture, { capture: true });
       document.addEventListener("keydown", unlockSoundFromGesture, { capture: true });
+      document.addEventListener("WeixinJSBridgeReady", () => {
+        if (sound && (musicEnabled || sfxEnabled)) {
+          sound.configure(musicEnabled, sfxEnabled);
+          sound.unlock(() => syncMusicIndicator());
+        }
+      });
 
       el.motionEnable.addEventListener("click", () => {
         motionOverride = true;
@@ -5421,7 +5502,10 @@
 
       musicEnabled = sound ? readPref(MUSIC_KEY, "on") !== "off" : false;
       sfxEnabled = sound ? readPref(SFX_KEY, "on") !== "off" : false;
-      if (sound) sound.configure(musicEnabled, sfxEnabled);
+      if (sound) {
+        sound.configure(musicEnabled, sfxEnabled);
+        sound.setStateListener(syncMusicIndicator);
+      }
 
       updateSoundUI();
       applyTheme();
