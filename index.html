@@ -3763,7 +3763,7 @@
       setFeedback(`已切到 ${holdTarget} 秒档位，按住试一下。`);
     }
 
-    /* Sound Engine (Web Audio API + iOS/Mobile Audio Unlock) */
+    /* Sound Engine (Playful Sneaky BGM + Comic Elastic SFX + iOS/Mobile Audio Unlock) */
     function createSoundSystem() {
       const AudioCtor = window.AudioContext || window.webkitAudioContext;
       if (!AudioCtor) return null;
@@ -3773,11 +3773,19 @@
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
         (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 
-      // Phone-speaker-friendly warm Dmaj7 pad & pentatonic melody
-      const padNotes = [146.832, 220, 293.66, 369.99];
-      const melody = [
-        293.66, 369.99, 440, 493.88, 440, 369.99, 329.63, 293.66,
-        null, 440, 369.99, 329.63
+      // 32-step (4-bar) cheeky sneaky-pizzicato BGM loop in C major (~108 BPM, 8th-note grid)
+      const STEP_DUR = 0.278;
+      const BASS_PATTERN = [
+        130.81, null, 164.81, 196.0, 220.0, null, 196.0, 164.81,
+        146.83, null, 174.61, 220.0, 196.0, null, 246.94, 196.0,
+        130.81, null, 164.81, 196.0, 220.0, null, 261.63, 220.0,
+        146.83, 174.61, 196.0, null, 196.0, null, 220.0, 246.94
+      ];
+      const LEAD_PATTERN = [
+        659.25, null, 783.99, 659.25, null, 523.25, 587.33, 659.25,
+        698.46, null, 587.33, null, 493.88, 587.33, 783.99, null,
+        659.25, null, 783.99, 880.0, null, 783.99, 659.25, 523.25,
+        587.33, 659.25, 587.33, null, 523.25, null, null, null
       ];
 
       let ctx = null;
@@ -3785,12 +3793,13 @@
       let compressor = null;
       let musicBus = null;
       let sfxBus = null;
-      let delayNode = null;
+      let noiseBuffer = null;
       let scheduler = 0;
-      let nextNoteAt = 0;
-      let noteIndex = 0;
+      let nextStepAt = 0;
+      let stepIndex = 0;
       let musicOn = false;
       let sfxOn = false;
+      let musicDucked = false;
       let userStarted = false;
       let suspendTimer = 0;
       let holdDrone = null;
@@ -3828,6 +3837,18 @@
         } catch (e) {}
       }
 
+      function ensureNoiseBuffer() {
+        if (noiseBuffer || !ctx) return noiseBuffer;
+        const len = Math.floor((ctx.sampleRate || 44100) * 0.7);
+        const buf = ctx.createBuffer(1, len, ctx.sampleRate || 44100);
+        const data = buf.getChannelData(0);
+        for (let i = 0; i < len; i += 1) {
+          data[i] = Math.random() * 2 - 1;
+        }
+        noiseBuffer = buf;
+        return buf;
+      }
+
       function init() {
         if (ctx) return true;
         try {
@@ -3848,7 +3869,7 @@
           compressor.knee.value = 18;
           compressor.ratio.value = 4;
           compressor.attack.value = 0.004;
-          compressor.release.value = 0.24;
+          compressor.release.value = 0.22;
 
           master.connect(compressor);
           compressor.connect(ctx.destination);
@@ -3861,37 +3882,7 @@
           sfxBus.gain.value = 1;
           sfxBus.connect(master);
 
-          delayNode = ctx.createDelay(1.4);
-          delayNode.delayTime.value = 0.42;
-          const feedback = ctx.createGain();
-          feedback.gain.value = 0.24;
-          const wet = ctx.createGain();
-          wet.gain.value = 0.2;
-          delayNode.connect(feedback);
-          feedback.connect(delayNode);
-          delayNode.connect(wet);
-          wet.connect(musicBus);
-
-          const padFilter = ctx.createBiquadFilter();
-          padFilter.type = "lowpass";
-          padFilter.frequency.value = 920;
-          padFilter.Q.value = 0.3;
-          const padGain = ctx.createGain();
-          padGain.gain.value = 0.22;
-          padFilter.connect(padGain);
-          padGain.connect(musicBus);
-
-          padNotes.forEach((frequency, index) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = index === 0 ? "sine" : "triangle";
-            osc.frequency.value = frequency;
-            gain.gain.value = index === 0 ? 0.3 : 0.14;
-            osc.connect(gain);
-            gain.connect(padFilter);
-            osc.start();
-          });
-
+          ensureNoiseBuffer();
           return true;
         } catch (error) {
           ctx = null;
@@ -3899,13 +3890,27 @@
         }
       }
 
+      function targetMusicGain() {
+        if (!musicOn) return 0.0001;
+        return musicDucked ? 0.26 : 0.62;
+      }
+
       function applyGains() {
         if (!ctx) return;
         const now = ctx.currentTime;
         master.gain.cancelScheduledValues(now);
-        master.gain.setTargetAtTime(0.95, now, 0.12);
+        master.gain.setTargetAtTime(0.95, now, 0.1);
         musicBus.gain.cancelScheduledValues(now);
-        musicBus.gain.setTargetAtTime(musicOn ? 0.78 : 0.0001, now, 0.18);
+        musicBus.gain.setTargetAtTime(targetMusicGain(), now, 0.14);
+      }
+
+      function setMusicDuck(ducked) {
+        musicDucked = ducked;
+        if (ctx && ctx.state === "running") {
+          const now = ctx.currentTime;
+          musicBus.gain.cancelScheduledValues(now);
+          musicBus.gain.setTargetAtTime(targetMusicGain(), now, ducked ? 0.08 : 0.22);
+        }
       }
 
       function nudgeHardwareOutput() {
@@ -3919,68 +3924,134 @@
         } catch (e) {}
       }
 
-      function playMusicNote(frequency, when) {
-        if (!ctx || !musicBus || !delayNode) return;
+      /* BGM Instruments: Bouncy Pizzicato Bass + Playful Marimba + Soft Brush */
+      function playPizzBass(freq, when) {
+        if (!ctx || !musicBus) return;
         const at = Math.max(when, ctx.currentTime);
         const osc = ctx.createOscillator();
-        const shimmer = ctx.createOscillator();
-        const shimmerGain = ctx.createGain();
+        const overtone = ctx.createOscillator();
+        const overGain = ctx.createGain();
         const filter = ctx.createBiquadFilter();
         const gain = ctx.createGain();
-        const send = ctx.createGain();
 
-        osc.type = "sine";
-        osc.frequency.value = frequency;
-        shimmer.type = "sine";
-        shimmer.frequency.value = frequency * 2.006;
-        shimmerGain.gain.value = 0.14;
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(freq * 1.03, at);
+        osc.frequency.exponentialRampToValueAtTime(freq, at + 0.035);
+
+        overtone.type = "sine";
+        overtone.frequency.value = freq * 2;
+        overGain.gain.value = 0.28;
+
         filter.type = "lowpass";
-        filter.frequency.value = 2600;
-        send.gain.value = 0.26;
+        filter.frequency.setValueAtTime(1200, at);
+        filter.frequency.exponentialRampToValueAtTime(420, at + 0.22);
 
         gain.gain.setValueAtTime(0.0001, at);
-        gain.gain.exponentialRampToValueAtTime(0.24, at + 0.18);
-        gain.gain.exponentialRampToValueAtTime(0.0001, at + 3.1);
+        gain.gain.exponentialRampToValueAtTime(0.24, at + 0.012);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.26);
 
         osc.connect(filter);
-        shimmer.connect(shimmerGain);
-        shimmerGain.connect(filter);
+        overtone.connect(overGain);
+        overGain.connect(filter);
         filter.connect(gain);
         gain.connect(musicBus);
-        gain.connect(send);
-        send.connect(delayNode);
 
         osc.start(at);
-        shimmer.start(at);
-        osc.stop(at + 3.2);
-        shimmer.stop(at + 3.2);
-
+        overtone.start(at);
+        osc.stop(at + 0.28);
+        overtone.stop(at + 0.28);
         osc.addEventListener("ended", () => {
-          try {
-            osc.disconnect();
-            shimmer.disconnect();
-            shimmerGain.disconnect();
-            filter.disconnect();
-            gain.disconnect();
-            send.disconnect();
-          } catch (e) {}
+          try { osc.disconnect(); overtone.disconnect(); overGain.disconnect(); filter.disconnect(); gain.disconnect(); } catch (e) {}
+        }, { once: true });
+      }
+
+      function playMarimba(freq, when, peak = 0.16, dur = 0.34, bus = null) {
+        if (!ctx) return;
+        const dest = bus || musicBus;
+        if (!dest) return;
+        const at = Math.max(when, ctx.currentTime);
+        const osc = ctx.createOscillator();
+        const knock = ctx.createOscillator();
+        const knockGain = ctx.createGain();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.value = freq;
+
+        knock.type = "triangle";
+        knock.frequency.value = freq * 4;
+        knockGain.gain.setValueAtTime(0.14, at);
+        knockGain.gain.exponentialRampToValueAtTime(0.0001, at + 0.03);
+
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(peak, at + 0.009);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + dur);
+
+        osc.connect(gain);
+        knock.connect(knockGain);
+        knockGain.connect(gain);
+        gain.connect(dest);
+
+        osc.start(at);
+        knock.start(at);
+        osc.stop(at + dur + 0.04);
+        knock.stop(at + 0.04);
+        osc.addEventListener("ended", () => {
+          try { osc.disconnect(); knock.disconnect(); knockGain.disconnect(); gain.disconnect(); } catch (e) {}
+        }, { once: true });
+      }
+
+      function playBrushTick(when, accent = false) {
+        if (!ctx || !musicBus) return;
+        const buf = ensureNoiseBuffer();
+        if (!buf) return;
+        const at = Math.max(when, ctx.currentTime);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        const hp = ctx.createBiquadFilter();
+        hp.type = "highpass";
+        hp.frequency.value = accent ? 4800 : 6200;
+        const gain = ctx.createGain();
+        gain.gain.setValueAtTime(0.0001, at);
+        gain.gain.exponentialRampToValueAtTime(accent ? 0.045 : 0.025, at + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.0001, at + 0.045);
+
+        src.connect(hp);
+        hp.connect(gain);
+        gain.connect(musicBus);
+        src.start(at, 0, 0.055);
+        src.addEventListener("ended", () => {
+          try { src.disconnect(); hp.disconnect(); gain.disconnect(); } catch (e) {}
         }, { once: true });
       }
 
       function scheduleMusic() {
         if (!ctx || !musicOn || ctx.state !== "running") return;
-        while (nextNoteAt < ctx.currentTime + 1.6) {
-          const frequency = melody[noteIndex % melody.length];
-          if (frequency) playMusicNote(frequency, nextNoteAt);
-          noteIndex += 1;
-          nextNoteAt += 2.6;
+        while (nextStepAt < ctx.currentTime + 0.45) {
+          const idx = stepIndex % 32;
+          // Light swing on odd 8th-notes for sneaky playful groove
+          const swingOffset = (idx % 2 === 1) ? 0.032 : 0;
+          const when = nextStepAt + swingOffset;
+
+          const bass = BASS_PATTERN[idx];
+          if (bass) playPizzBass(bass, when);
+
+          const lead = LEAD_PATTERN[idx];
+          if (lead) playMarimba(lead, when, 0.145, 0.36, musicBus);
+
+          if (idx % 2 === 1) {
+            playBrushTick(when, idx % 4 === 3);
+          }
+
+          stepIndex += 1;
+          nextStepAt += STEP_DUR;
         }
       }
 
       function startMusicSchedule() {
         if (!ctx || !musicOn || ctx.state !== "running" || scheduler) return;
-        nextNoteAt = ctx.currentTime + 0.06;
-        scheduler = window.setInterval(scheduleMusic, 420);
+        nextStepAt = ctx.currentTime + 0.05;
+        scheduler = window.setInterval(scheduleMusic, 120);
         scheduleMusic();
       }
 
@@ -4049,32 +4120,42 @@
         }, 420);
       }
 
-      /* Continuous hold resonance drone */
+      /* "提" (Hold) Continuous Elastic Tension Synth with Strain Vibrato */
       function startHoldDrone() {
         stopHoldDrone(true);
+        setMusicDuck(true);
         withSfxReady(() => {
           if (!pressing || !sfxOn || !ctx || ctx.state !== "running") return;
           stopHoldDrone(true);
           const now = ctx.currentTime;
           const oscA = ctx.createOscillator();
           const oscB = ctx.createOscillator();
+          const lfo = ctx.createOscillator();
+          const lfoGain = ctx.createGain();
+          const gainB = ctx.createGain();
           const filter = ctx.createBiquadFilter();
           const gain = ctx.createGain();
 
-          oscA.type = "sine";
-          oscB.type = "triangle";
-          oscA.frequency.setValueAtTime(220.0, now);  // A3 (clear on mobile speakers)
-          oscB.frequency.setValueAtTime(329.63, now); // E4
+          oscA.type = "triangle";
+          oscB.type = "sine";
+          oscA.frequency.setValueAtTime(220.0, now);
+          oscB.frequency.setValueAtTime(330.0, now);
+
+          // Comedy strain vibrato (starts subtle, trembles intensely near target!)
+          lfo.type = "sine";
+          lfo.frequency.setValueAtTime(5.0, now);
+          lfoGain.gain.setValueAtTime(1.5, now);
+          lfo.connect(lfoGain);
+          lfoGain.connect(oscA.frequency);
+
+          gainB.gain.value = 0.35;
 
           filter.type = "lowpass";
           filter.frequency.setValueAtTime(480, now);
-          filter.Q.value = 1.4;
+          filter.Q.value = 2.6;
 
           gain.gain.setValueAtTime(0.0001, now);
-          gain.gain.setTargetAtTime(0.11, now, 0.12);
-
-          const gainB = ctx.createGain();
-          gainB.gain.value = 0.28;
+          gain.gain.setTargetAtTime(0.11, now, 0.1);
 
           oscA.connect(filter);
           oscB.connect(gainB);
@@ -4084,7 +4165,8 @@
 
           oscA.start(now);
           oscB.start(now);
-          holdDrone = { oscA, oscB, gainB, filter, gain };
+          lfo.start(now);
+          holdDrone = { oscA, oscB, lfo, lfoGain, gainB, filter, gain };
         });
       }
 
@@ -4093,32 +4175,45 @@
         const now = ctx.currentTime;
         const p = Math.max(0, Math.min(1, progress));
         const extra = Math.max(0, Math.min(1, overholdRatio));
-        const baseFreq = 220.0 + p * 109.63 + extra * 40.36; // A3 -> E4 -> F#4
-        const cutoff = 480 + p * 1250 + extra * 480;
-        const level = 0.11 + p * 0.095 + extra * 0.025;
 
-        holdDrone.oscA.frequency.setTargetAtTime(baseFreq, now, 0.06);
-        holdDrone.oscB.frequency.setTargetAtTime(baseFreq * 1.5, now, 0.06);
-        holdDrone.filter.frequency.setTargetAtTime(cutoff, now, 0.07);
-        holdDrone.gain.gain.setTargetAtTime(level, now, 0.12);
+        // Rubber-band pitch stretch: A3 (220) -> A4 (440) -> C5 (523)
+        const baseFreq = 220.0 * Math.pow(2, p * 0.92 + extra * 0.26);
+        const cutoff = 480 + p * 1450 + extra * 650;
+        const level = 0.105 + p * 0.085 + extra * 0.02;
+
+        // Tremble ramps up dramatically in strain zone (p > 0.55)
+        const strain = Math.max(0, (p - 0.52) / 0.48);
+        const vibRate = 5.2 + strain * 6.5 + extra * 3.5;
+        const vibDepth = 1.5 + strain * 8.5 + extra * 4.0;
+
+        holdDrone.oscA.frequency.setTargetAtTime(baseFreq, now, 0.055);
+        holdDrone.oscB.frequency.setTargetAtTime(baseFreq * 1.5, now, 0.055);
+        holdDrone.lfo.frequency.setTargetAtTime(vibRate, now, 0.08);
+        holdDrone.lfoGain.gain.setTargetAtTime(vibDepth, now, 0.08);
+        holdDrone.filter.frequency.setTargetAtTime(cutoff, now, 0.06);
+        holdDrone.gain.gain.setTargetAtTime(level, now, 0.1);
       }
 
       function stopHoldDrone(immediate = false) {
+        setMusicDuck(false);
         if (!holdDrone) return;
         const d = holdDrone;
         holdDrone = null;
         try {
           const now = ctx ? ctx.currentTime : 0;
-          const fade = immediate ? 0.04 : 0.26;
+          const fade = immediate ? 0.04 : 0.18;
           d.gain.gain.cancelScheduledValues(now);
           d.gain.gain.setTargetAtTime(0.0001, now, fade * 0.3);
           const stopAt = now + fade + 0.06;
           d.oscA.stop(stopAt);
           d.oscB.stop(stopAt);
+          d.lfo.stop(stopAt);
           window.setTimeout(() => {
             try {
               d.oscA.disconnect();
               d.oscB.disconnect();
+              d.lfo.disconnect();
+              d.lfoGain.disconnect();
               d.gainB.disconnect();
               d.filter.disconnect();
               d.gain.disconnect();
@@ -4127,9 +4222,9 @@
         } catch (e) {}
       }
 
-      function playSweep(fromFreq, toFreq, duration, peak, type = "sine") {
+      function playSweep(fromFreq, toFreq, duration, peak, type = "sine", delay = 0) {
         withSfxReady(() => {
-          const at = ctx.currentTime + 0.01;
+          const at = ctx.currentTime + 0.01 + delay;
           const osc = ctx.createOscillator();
           const filter = ctx.createBiquadFilter();
           const gain = ctx.createGain();
@@ -4140,7 +4235,7 @@
           filter.type = "lowpass";
           filter.frequency.value = 2600;
           gain.gain.setValueAtTime(0.0001, at);
-          gain.gain.exponentialRampToValueAtTime(peak, at + 0.032);
+          gain.gain.exponentialRampToValueAtTime(peak, at + 0.025);
           gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
 
           osc.connect(filter);
@@ -4152,6 +4247,60 @@
           osc.addEventListener("ended", () => {
             try { osc.disconnect(); filter.disconnect(); gain.disconnect(); } catch (e) {}
           }, { once: true });
+        });
+      }
+
+      /* "放" (Release): Juicy Spring Boing + Cozy Sigh Cloud + Relief Chime */
+      function playElasticRelease(deep = false) {
+        withSfxReady(() => {
+          const at = ctx.currentTime + 0.01;
+
+          // 1. Elastic spring "BOING-POP!" matching the jelly petal overshoot
+          const boing = ctx.createOscillator();
+          const boingGain = ctx.createGain();
+          boing.type = "sine";
+          boing.frequency.setValueAtTime(deep ? 587.33 : 523.25, at);
+          boing.frequency.exponentialRampToValueAtTime(196.0, at + 0.11);
+          boing.frequency.exponentialRampToValueAtTime(329.63, at + 0.22);
+          boing.frequency.exponentialRampToValueAtTime(261.63, at + 0.42);
+          boingGain.gain.setValueAtTime(0.0001, at);
+          boingGain.gain.exponentialRampToValueAtTime(0.24, at + 0.016);
+          boingGain.gain.exponentialRampToValueAtTime(0.0001, at + 0.46);
+          boing.connect(boingGain);
+          boingGain.connect(sfxBus);
+          boing.start(at);
+          boing.stop(at + 0.5);
+          boing.addEventListener("ended", () => {
+            try { boing.disconnect(); boingGain.disconnect(); } catch (e) {}
+          }, { once: true });
+
+          // 2. Soft "phew~" cozy exhale breath cloud
+          const buf = ensureNoiseBuffer();
+          if (buf) {
+            const sigh = ctx.createBufferSource();
+            sigh.buffer = buf;
+            const bp = ctx.createBiquadFilter();
+            bp.type = "bandpass";
+            bp.Q.value = 1.6;
+            bp.frequency.setValueAtTime(1450, at + 0.04);
+            bp.frequency.exponentialRampToValueAtTime(420, at + 0.58);
+            const sighGain = ctx.createGain();
+            sighGain.gain.setValueAtTime(0.0001, at + 0.04);
+            sighGain.gain.exponentialRampToValueAtTime(0.11, at + 0.14);
+            sighGain.gain.exponentialRampToValueAtTime(0.0001, at + 0.62);
+            sigh.connect(bp);
+            bp.connect(sighGain);
+            sighGain.connect(sfxBus);
+            sigh.start(at + 0.04, 0, 0.65);
+            sigh.addEventListener("ended", () => {
+              try { sigh.disconnect(); bp.disconnect(); sighGain.disconnect(); } catch (e) {}
+            }, { once: true });
+          }
+
+          // 3. Cheerful relief marimba notes
+          playMarimba(deep ? 783.99 : 659.25, at + 0.06, 0.18, 0.42, sfxBus);
+          playMarimba(523.25, at + 0.16, 0.17, 0.5, sfxBus);
+          if (deep) playMarimba(1046.5, at + 0.22, 0.16, 0.6, sfxBus);
         });
       }
 
@@ -4168,11 +4317,11 @@
           osc.frequency.value = frequency;
           shimmer.type = "sine";
           shimmer.frequency.value = frequency * 2.008;
-          shimmerGain.gain.value = 0.18;
+          shimmerGain.gain.value = 0.2;
           filter.type = "lowpass";
-          filter.frequency.value = 3600;
+          filter.frequency.value = 3800;
           gain.gain.setValueAtTime(0.0001, at);
-          gain.gain.exponentialRampToValueAtTime(peak, at + 0.014);
+          gain.gain.exponentialRampToValueAtTime(peak, at + 0.012);
           gain.gain.exponentialRampToValueAtTime(0.0001, at + duration);
 
           osc.connect(filter);
@@ -4249,43 +4398,62 @@
         isChannelReady: () => !isIOS || audioSessionConfigured || Boolean(silentAudio && !silentAudio.paused),
         isMusicPlaying: () => Boolean(ctx && musicOn && userStarted && ctx.state === "running"),
         holdStart() {
-          playSweep(220, 369.99, 0.55, 0.18, "sine");
+          // Snappy cartoon upward "bwoop!" lift cue
+          playSweep(196, 392, 0.22, 0.2, "triangle");
           startHoldDrone();
         },
         updateHold: updateHoldDrone,
         stopHold: stopHoldDrone,
         target() {
-          playBell(587.33, 0, 0.2, 0.75);
-          playBell(739.99, 0.06, 0.2, 0.85);
-          playBell(880, 0.12, 0.22, 1.15);
+          // Cool "Deal With It" sunglasses drop sparkle arpeggio
+          [523.25, 659.25, 783.99, 1046.5].forEach((f, idx) => {
+            playBell(f, idx * 0.055, 0.2, 0.72 + idx * 0.12);
+          });
+        },
+        overhold() {
+          // Super Saiyan Chrysanthemum power-up burst!
+          [783.99, 987.77, 1174.66, 1567.98].forEach((f, idx) => {
+            playBell(f, idx * 0.048, 0.18, 0.65);
+          });
         },
         release(deep = false) {
           stopHoldDrone(false);
-          playSweep(deep ? 587.33 : 493.88, 246.94, deep ? 1.05 : 0.82, 0.2, "sine");
-          playBell(deep ? 659.25 : 523.25, 0.06, 0.12, 0.9);
+          playElasticRelease(deep);
         },
         invalid() {
           stopHoldDrone(true);
-          // Comedy cartoon deflate "wah-wah"
-          playSweep(330, 277.18, 0.2, 0.16, "triangle");
-          window.setTimeout(() => {
-            playSweep(261.63, 174.61, 0.34, 0.15, "triangle");
-          }, 150);
+          // Comedy cartoon deflate "wah-wah~"
+          playSweep(349.23, 311.13, 0.2, 0.18, "triangle", 0);
+          playSweep(293.66, 185.0, 0.38, 0.18, "triangle", 0.18);
+        },
+        nudge() {
+          // Playful double wooden "bonk-bonk" when impatiently tapping during rest
+          playSweep(340, 230, 0.08, 0.17, "sine", 0);
+          playSweep(300, 210, 0.09, 0.15, "sine", 0.1);
         },
         restReady() {
-          playBell(587.33, 0, 0.11, 0.72);
+          // Cheerful 2-note marimba "ready for next one!"
+          withSfxReady(() => {
+            const at = ctx.currentTime + 0.01;
+            playMarimba(659.25, at, 0.17, 0.26, sfxBus);
+            playMarimba(783.99, at + 0.09, 0.19, 0.34, sfxBus);
+          });
         },
         reward(level) {
           const notes = level >= 30
-            ? [587.33, 739.99, 880, 1174.66]
+            ? [523.25, 659.25, 783.99, 1046.5, 1318.5]
             : level >= 20
-              ? [587.33, 739.99, 880]
-              : [587.33, 880];
-          notes.forEach((f, idx) => playBell(f, 0.03 + idx * 0.13, 0.2, 1.5 + idx * 0.12));
+              ? [523.25, 659.25, 783.99, 1046.5]
+              : [523.25, 659.25, 783.99];
+          notes.forEach((f, idx) => playBell(f, 0.03 + idx * 0.1, 0.2, 1.2 + idx * 0.1));
         },
         preview() {
-          playBell(523.25, 0, 0.2, 0.9);
-          playBell(659.25, 0.12, 0.17, 0.85);
+          withSfxReady(() => {
+            const at = ctx.currentTime + 0.01;
+            playMarimba(523.25, at, 0.2, 0.28, sfxBus);
+            playMarimba(659.25, at + 0.09, 0.2, 0.28, sfxBus);
+            playMarimba(783.99, at + 0.18, 0.22, 0.36, sfxBus);
+          });
         }
       };
     }
@@ -5661,6 +5829,7 @@
         setFace("deep");
         setStatus(BRAND.statusDeep);
         spawnPopTag("超级赛亚菊！", "gold");
+        if (sound) sound.overhold();
       }
 
       if (!longHoldNoted && elapsed >= MAX_HOLD_REF) {
@@ -5815,6 +5984,7 @@
       if (!resting) return;
       triggerWobble();
       spawnPopTag("先松透！", "oops");
+      if (sound) sound.nudge();
       setFeedback(pickFrom("nudge", COPY_POOL.nudge));
       vibrate(5);
     }
