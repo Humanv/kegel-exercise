@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>一吸一呼 · 妙不可言</title>
-  <meta name="description" content="一吸一呼，妙不可言。按住收，松开放，偷偷练一口气的三十口小游戏。">
-  <meta property="og:title" content="一吸一呼 · 妙不可言">
-  <meta property="og:description" content="按住收，松开放。别人看不出，花看得出来。来偷偷练几口气。">
+  <title>菊部健身 · 一提一放，功力暴涨</title>
+  <meta name="description" content="菊部健身：按住往上提，松开彻底松。别人看你在赏花，其实你在暗中练底盘。男女通用，懂的都懂。">
+  <meta property="og:title" content="菊部健身 · 一提一放，功力暴涨">
+  <meta property="og:description" content="别人以为你在发呆，其实你在暗中变强。男女通用，练完谁强谁知道。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://humanv.github.io/kegel-exercise/">
   <meta property="og:image" content="https://humanv.github.io/kegel-exercise/preview.png">
@@ -1259,14 +1259,23 @@
       width: min(84%, 440px, 47vh);
       aspect-ratio: 1;
       z-index: 2;
+      transform: translate(var(--jx, 0px), var(--jy, 0px));
     }
 
     .arena.is-target .bloom-stage {
-      animation: heldTension 0.95s ease-in-out infinite;
+      animation: heldTension 0.72s ease-in-out infinite;
     }
 
     .arena.is-overhold .bloom-stage {
-      animation: heldTensionDeep 0.75s ease-in-out infinite;
+      animation: heldTensionDeep 0.52s ease-in-out infinite;
+    }
+
+    .bloom-stage.is-spring-pop {
+      animation: jellyPop 620ms cubic-bezier(0.22, 1.4, 0.36, 1);
+    }
+
+    .bloom-stage.is-wobble {
+      animation: headWobble 460ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
     }
 
     .bloom {
@@ -1340,7 +1349,7 @@
       inset: 2.5%;
       z-index: 1;
       pointer-events: none;
-      animation: idleBloom 6.8s ease-in-out infinite;
+      animation: idleBloom 4.6s ease-in-out infinite;
     }
 
     .arena.is-active .petal-art,
@@ -1470,20 +1479,20 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 27%;
+      width: 30%;
       aspect-ratio: 1;
       z-index: 4;
       border-radius: 50%;
       display: grid;
       place-items: center;
       color: var(--on-core);
-      background: radial-gradient(circle at 36% 30%, var(--core-hi) 0%, var(--core) 72%);
+      background: radial-gradient(circle at 36% 28%, var(--core-hi) 0%, var(--core) 74%);
       box-shadow:
         0 24px 48px -26px var(--petal-shadow),
         inset 0 0 0 1px var(--core-ring);
-      transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.13));
+      transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.12));
       pointer-events: none;
-      transition: box-shadow 420ms ease;
+      transition: box-shadow 360ms ease;
     }
 
     .core::after {
@@ -1530,18 +1539,63 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
+      gap: 3px;
       pointer-events: none;
+      transform: translateY(-1px);
+    }
+
+    .core-face {
+      width: clamp(34px, 4vw, 48px);
+      height: auto;
+      display: block;
+      overflow: visible;
+      margin-bottom: 1px;
+    }
+
+    .core-face .face-cheek {
+      fill: #e45e40;
+      opacity: 0;
+      transition: opacity 0.22s ease;
+    }
+
+    .arena.is-active .core-face .face-cheek {
+      opacity: calc(0.18 + var(--squeeze, 0) * 0.55);
+    }
+
+    .arena.is-target .core-face .face-cheek,
+    .arena.is-overhold .core-face .face-cheek {
+      opacity: 0.72;
+    }
+
+    .arena.is-resting .core-face .face-cheek {
+      opacity: 0.28;
+    }
+
+    .core-face .face-eye-idle {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: faceBlink 4.2s ease-in-out infinite;
+    }
+
+    .core-face .face-sweat {
+      fill: #fff8e2;
+      opacity: 0.92;
+      animation: sweatDrop 1.1s ease-in-out infinite;
+    }
+
+    .core-face .face-star {
+      fill: #fff7d4;
+      animation: starTwinkle 0.8s ease-in-out infinite alternate;
     }
 
     .core-action {
       font-family: var(--font-display);
-      font-size: clamp(20px, 2.2vw, 27px);
+      font-size: clamp(18px, 1.9vw, 24px);
       font-weight: 400;
       line-height: 1;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.1em;
       white-space: nowrap;
-      transform: translateX(0.06em);
+      transform: translateX(0.05em);
     }
 
     .core-hint {
@@ -1551,11 +1605,47 @@
       font-size: 8.5px;
       font-weight: 600;
       line-height: 1;
-      letter-spacing: 0.08em;
+      letter-spacing: 0.06em;
       text-align: center;
       font-variant-numeric: tabular-nums;
       opacity: 0.78;
       white-space: nowrap;
+    }
+
+    .pop-tag {
+      position: absolute;
+      top: 16%;
+      left: 50%;
+      z-index: 8;
+      padding: 5px 12px;
+      border: 1px solid var(--accent);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--accent-strong);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+      box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.25);
+      pointer-events: none;
+      transform: translate(-50%, 0);
+      animation: popTagFly 1180ms cubic-bezier(0.22, 1.35, 0.36, 1) forwards;
+    }
+
+    .pop-tag.is-gold {
+      border-color: var(--gold);
+      background: var(--surface);
+      color: var(--gold-strong);
+    }
+
+    .pop-tag.is-oops {
+      border-color: var(--line);
+      color: var(--muted);
+    }
+
+    .progress-node.is-just-lit::before {
+      animation: nodePop 520ms cubic-bezier(0.22, 1.6, 0.36, 1);
     }
 
     .hold-meter {
@@ -2111,12 +2201,13 @@
     }
 
     .poster-quote {
-      max-width: 30ch;
+      max-width: 36ch;
       margin: 5px auto 0;
       color: var(--poster-soft);
       font-size: 11.5px;
       line-height: 1.68;
       text-align: center;
+      text-wrap: balance;
     }
 
     .poster-dots {
@@ -2274,7 +2365,53 @@
 
     @keyframes idleBloom {
       0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.018) rotate(1.1deg); }
+      25% { transform: scale(1.022) rotate(1.6deg); }
+      50% { transform: scale(0.992) rotate(0deg); }
+      75% { transform: scale(1.022) rotate(-1.6deg); }
+    }
+
+    @keyframes jellyPop {
+      0% { transform: scale(0.92, 0.92); }
+      28% { transform: scale(1.075, 0.955); }
+      52% { transform: scale(0.975, 1.04); }
+      74% { transform: scale(1.022, 0.99); }
+      100% { transform: scale(1, 1); }
+    }
+
+    @keyframes headWobble {
+      0%, 100% { transform: translateX(0) rotate(0deg); }
+      20% { transform: translateX(-7px) rotate(-3.5deg); }
+      45% { transform: translateX(6px) rotate(3deg); }
+      70% { transform: translateX(-4px) rotate(-1.8deg); }
+      88% { transform: translateX(2px) rotate(0.8deg); }
+    }
+
+    @keyframes faceBlink {
+      0%, 44%, 49%, 100% { transform: scaleY(1); }
+      46.5% { transform: scaleY(0.12); }
+    }
+
+    @keyframes sweatDrop {
+      0%, 100% { transform: translateY(0) scale(0.92); opacity: 0.7; }
+      50% { transform: translateY(3px) scale(1.08); opacity: 1; }
+    }
+
+    @keyframes starTwinkle {
+      from { transform: scale(0.88); opacity: 0.85; }
+      to { transform: scale(1.16); opacity: 1; }
+    }
+
+    @keyframes popTagFly {
+      0% { opacity: 0; transform: translate(-50%, 16px) scale(0.7); }
+      22% { opacity: 1; transform: translate(-50%, -6px) scale(1.06); }
+      68% { opacity: 1; transform: translate(-50%, -22px) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -44px) scale(0.94); }
+    }
+
+    @keyframes nodePop {
+      0% { transform: translate(-50%, -50%) scale(0.8); }
+      45% { transform: translate(-50%, -50%) scale(2.2); }
+      100% { transform: translate(-50%, -50%) scale(1.22); }
     }
 
     @keyframes ringOut {
@@ -2620,8 +2757,8 @@
       <div class="brand">
         <span class="brand-mark" aria-hidden="true"></span>
         <div class="brand-copy">
-          <p class="brand-name">一吸一呼</p>
-          <p class="brand-sub">ONE BREATH AT A TIME</p>
+          <p class="brand-name" id="brandName">菊部健身</p>
+          <p class="brand-sub" id="brandSub">LOCAL CORE WORKOUT</p>
         </div>
       </div>
 
@@ -2658,26 +2795,26 @@
 
     <main class="layout">
       <section class="intro" aria-labelledby="pageTitle">
-        <p class="eyebrow">TODAY'S LITTLE RITUAL</p>
+        <p class="eyebrow" id="eyebrowText">SECRET CORE RITUAL · 男女通用</p>
         <h1 id="pageTitle">
-          <span class="h1-part">一吸一呼，</span>
-          <span class="h1-part h1-em">妙不可言。</span>
+          <span class="h1-part" id="titlePart1">一提一放，</span>
+          <span class="h1-part h1-em" id="titlePart2">功力暴涨。</span>
         </h1>
-        <p class="lead">
-          按住，收；松开，放。<strong>别人看不出，花看得出来。</strong>
+        <p class="lead" id="leadText">
+          按住，往上提；松开，彻底松。<strong>别人看你在赏花，其实你在练底盘。</strong>
         </p>
         <p class="mood-line">
           <span class="mood-dot" aria-hidden="true"></span>
-          <span id="moodText">今日 · 气还没聚</span>
+          <span id="moodText">今日 · 底盘待机中</span>
         </p>
 
         <div class="ritual-panel" aria-label="节奏与记录">
           <div class="ritual-row">
-            <span class="ritual-label">聚气节奏</span>
-            <div class="pace-group" id="paceGroup" role="group" aria-label="选择聚气目标时长">
+            <span class="ritual-label">修炼档位</span>
+            <div class="pace-group" id="paceGroup" role="group" aria-label="选择目标时长">
               <button class="pace-btn" type="button" data-pace="3" aria-pressed="true">入门 3s</button>
               <button class="pace-btn" type="button" data-pace="5" aria-pressed="false">进阶 5s</button>
-              <button class="pace-btn" type="button" data-pace="8" aria-pressed="false">资深 8s</button>
+              <button class="pace-btn" type="button" data-pace="8" aria-pressed="false">狠人 8s</button>
             </div>
           </div>
 
@@ -2688,8 +2825,8 @@
 
           <div class="micro-stats" id="microStats">
             <span>连练 <strong id="streakNum">0</strong> 天</span>
-            <span>累计 <strong id="totalNum">0</strong> 口</span>
-            <span id="bestHoldWrap" hidden>今日最深 <strong id="bestHoldNum">0.0s</strong></span>
+            <span>累计 <strong id="totalNum">0</strong> <span id="totalUnit">下</span></span>
+            <span id="bestHoldWrap" hidden>今日最久 <strong id="bestHoldNum">0.0s</strong></span>
           </div>
         </div>
       </section>
@@ -2698,13 +2835,13 @@
         <div class="arena-head">
           <div class="status-pill">
             <span class="status-dot" aria-hidden="true"></span>
-            <span id="statusText">等你</span>
+            <span id="statusText">等你开练</span>
           </div>
-          <div class="score" id="scoreBox" role="group" aria-label="今日气数 0 口，目标 30 口">
-            <span class="score-label">今日气数 <span class="score-target" id="scoreTarget">/ 30</span></span>
+          <div class="score" id="scoreBox" role="group" aria-label="今日修炼 0 下，目标 30 下">
+            <span class="score-label">今日修炼 <span class="score-target" id="scoreTarget">/ 30</span></span>
             <span class="score-line">
               <span class="score-num" id="count">0</span>
-              <span class="score-unit">口</span>
+              <span class="score-unit" id="scoreUnit">下</span>
             </span>
           </div>
         </div>
@@ -2716,8 +2853,8 @@
 
         <div class="challenge-bar" id="challengeBar" hidden>
           <span class="challenge-mark" aria-hidden="true"></span>
-          <span>收到挑衅：有人偷偷练了 <strong id="challengeScore">0</strong> 口。</span>
-          <span class="challenge-state" id="challengeState">超过他。</span>
+          <span>收到挑衅：有人偷偷练了 <strong id="challengeScore">0</strong> <span id="challengeUnit">下</span>。</span>
+          <span class="challenge-state" id="challengeState">干翻他。</span>
           <button class="challenge-counter" id="challengeCounter" type="button" hidden>反杀炫耀</button>
           <button class="challenge-dismiss" id="challengeDismiss" type="button" aria-label="忽略这次挑衅">×</button>
         </div>
@@ -2734,13 +2871,13 @@
           <div class="progress-orbit" id="progressOrbit" aria-hidden="true"></div>
           <div class="wave-layer" id="waveLayer" aria-hidden="true"></div>
 
-          <div class="bloom-stage">
+          <div class="bloom-stage" id="bloomStage">
             <button
               class="bloom"
               id="bloom"
               type="button"
               aria-pressed="false"
-              aria-label="按住蓄气，等光环满后松开"
+              aria-label="按住往上提，等光环满后松开"
               aria-describedby="howTo"
             >
               <span class="aura" aria-hidden="true"></span>
@@ -2749,6 +2886,7 @@
 
               <span class="core">
                 <span class="core-copy">
+                  <svg class="core-face" id="coreFace" viewBox="0 0 48 24" aria-hidden="true"></svg>
                   <span class="core-action" id="actionText">按住</span>
                   <span class="core-hint" id="actionHint">HOLD</span>
                 </span>
@@ -2767,18 +2905,18 @@
         </div>
 
         <p id="howTo" class="sr-only">
-          按住圆盘或按住空格键，等到光环满一圈再松开。松开后等花瓣完全散开，再进行下一口。收满才计数。
+          按住圆盘或长按空格键，等到光环满一圈再松开。松开后等花瓣完全摊平，再进行下一次。收满才计数。
         </p>
 
         <div class="arena-foot">
-          <p class="feedback" id="feedback" aria-live="polite">按住，让光环满一圈。</p>
-          <p class="key-hint">按住圆盘或长按 <kbd>Space</kbd> 蓄气</p>
+          <p class="feedback" id="feedback" aria-live="polite">按住 3 秒往上提，让光环满一圈。</p>
+          <p class="key-hint">按住圆盘或长按 <kbd>Space</kbd> 暗中发力</p>
         </div>
       </section>
     </main>
 
     <footer class="footer">
-      <p>身体不舒服，就停。声音在首次交互后开始。</p>
+      <p>身体不舒服就停，量力而行。声音在首次点击后开始。</p>
       <div class="footer-actions">
         <button class="share-btn" id="shareBtn" type="button">拿去炫耀</button>
         <button class="reset-btn" id="resetBtn" type="button" disabled>清零今日</button>
@@ -2787,10 +2925,10 @@
   </div>
 
   <div class="reward-toast" id="rewardToast" aria-hidden="true" hidden>
-    <span class="reward-seal" id="rewardSeal">一</span>
+    <span class="reward-seal" id="rewardSeal">稳</span>
     <span class="reward-body">
-      <strong id="rewardTitle">十口 · 妙不可言</strong>
-      <span id="rewardCopy">气顺了。</span>
+      <strong id="rewardTitle">十下 · 菊部热身</strong>
+      <span id="rewardCopy">表面在发呆，实则已经卷赢半个工位。</span>
     </span>
   </div>
 
@@ -2809,7 +2947,7 @@
       <div class="share-poster" id="sharePoster">
         <span class="poster-stamp" id="posterStamp" aria-hidden="true">密</span>
         <div class="poster-top">
-          <span class="poster-brand">一吸一呼</span>
+          <span class="poster-brand" id="posterBrand">菊部健身</span>
           <span id="shareDate">今日 · 密报</span>
         </div>
         <div class="poster-flower-wrap">
@@ -2817,15 +2955,15 @@
           <div class="poster-count">
             <span class="poster-count-inner">
               <span class="poster-num" id="shareCount">0</span>
-              <span class="poster-unit">口</span>
+              <span class="poster-unit" id="posterUnit">下</span>
             </span>
           </div>
         </div>
-        <p class="poster-rank" id="shareRank">还没开局</p>
-        <p class="poster-quote" id="shareQuote">真正的高手，连开始都不露声色。</p>
+        <p class="poster-rank" id="shareRank">纸老虎</p>
+        <p class="poster-quote" id="shareQuote">还没开练，气势倒是很足。</p>
         <div class="poster-dots" id="shareDots" aria-hidden="true"></div>
         <div class="poster-bottom">
-          <span id="posterMeta">偷偷练的</span>
+          <span id="posterMeta">男女通用 · 偷偷练的</span>
           <span id="posterChallenge" hidden></span>
         </div>
       </div>
@@ -2862,96 +3000,226 @@
     const VALID_PACES = [3, 5, 8];
     const MAX_HOLD_REF = 10;
 
+    const BRAND_PRESETS = {
+      jubu: {
+        name: "菊部健身",
+        spacedName: "菊 部 健 身",
+        sub: "LOCAL CORE WORKOUT",
+        eyebrow: "SECRET CORE RITUAL · 男女通用",
+        title1: "一提一放，",
+        title2: "功力暴涨。",
+        leadHtml: "按住，往上提；松开，彻底松。<strong>别人看你在赏花，其实你在练底盘。</strong>",
+        unit: "下",
+        actionHold: "提住",
+        actionTarget: "稳了",
+        actionDeep: "狠人",
+        actionRest: "松透",
+        statusIdle0: "等你开练",
+        statusIdle: "再来一下",
+        statusDone: "今日封神",
+        statusHold: "暗中发力",
+        statusTarget: "顶住了",
+        statusDeep: "狠人加码",
+        statusRest: "装作没事",
+        statusShort: "太快了",
+        posterTag: "菊部健身 · 懂的都懂",
+        posterMetaPrefix: "男女通用 · 偷偷练的",
+        filePrefix: "jubu-fitness"
+      },
+      toutou: {
+        name: "偷偷变强",
+        spacedName: "偷 偷 变 强",
+        sub: "SILENT CORE POWER",
+        eyebrow: "SECRET CORE RITUAL · 男女通用",
+        title1: "一紧一松，",
+        title2: "深藏不露。",
+        leadHtml: "按住，收紧；松开，彻底放。<strong>别人以为你在发呆，其实你在暗中变强。</strong>",
+        unit: "下",
+        actionHold: "收紧",
+        actionTarget: "稳了",
+        actionDeep: "狠人",
+        actionRest: "放空",
+        statusIdle0: "等你开练",
+        statusIdle: "再来一下",
+        statusDone: "今日封神",
+        statusHold: "暗中发力",
+        statusTarget: "顶住了",
+        statusDeep: "狠人加码",
+        statusRest: "装作没事",
+        statusShort: "太快了",
+        posterTag: "偷偷变强 · 谁强谁知道",
+        posterMetaPrefix: "男女通用 · 偷偷练的",
+        filePrefix: "toutou-strong"
+      }
+    };
+
+    const brandParam = (() => {
+      try { return new URLSearchParams(window.location.search).get("brand"); } catch (e) { return null; }
+    })();
+    const BRAND = BRAND_PRESETS[brandParam] || BRAND_PRESETS.jubu;
+
     const MILESTONES = new Map([
-      [10, { seal: "一", title: "十口 · 妙不可言", copy: "气顺了，花色渐暖。", short: "十口达成。" }],
-      [20, { seal: "二", title: "二十口 · 内功初成", copy: "是努力的轨迹，也是暗中的底气。", short: "二十口达成。" }],
-      [30, { seal: "满", title: "今日圆满", copy: "多多益善，但见好就收也是本事。", short: "今日圆满。" }]
+      [10, { seal: "稳", title: "十下 · 菊部热身", copy: "表面在发呆，实则已经卷赢半个工位。", short: "十下达成！" }],
+      [20, { seal: "狠", title: "二十下 · 底盘宗师", copy: "这定力，干啥大事都不带虚的。", short: "二十下达成！" }],
+      [30, { seal: "神", title: "三十下 · 今日封神", copy: "男女通吃，见好就收才是真高手。", short: "今日封神！" }]
     ]);
 
     const COPY_POOL = {
       holding: [
-        "偷偷使劲。",
-        "不动声色，往里收。",
-        "别皱眉，别人看着呢。",
-        "气沉下去，稳住。",
-        "表情放松，里头用功。"
+        "脸别憋红，表情要淡定。",
+        "老板在讲PPT，你在练核心竞争力。",
+        "想象正在偷偷夹住一张百元大钞。",
+        "别咬牙，微笑着往上提。",
+        "保持优雅，底下暗中较劲。",
+        "工位不动声色，底盘稳如老狗。"
       ],
       target: [
-        "满了，悄悄松手。",
-        "成了，慢慢放开。",
-        "火候刚好，可以松。",
-        "稳住了，悄悄卸力。"
+        "稳了！慢慢松开，别露馅。",
+        "顶住了！现在优雅地放开。",
+        "火候到位，悄悄卸力。",
+        "漂亮，这下够扎实，可以松了。"
       ],
       restNormal: [
-        "漂亮，装作什么都没发生。",
-        "这一口，神不知鬼不觉。",
-        "表情管理满分，继续。",
-        "别人以为你在发呆。",
-        "稳得很，像在思考人生。",
-        "暗中攒了一分底气。",
-        "表面风平浪静，内里自有功夫。",
-        "行云流水，旁人毫无察觉。",
-        "松透了，才算真本事。",
-        "悄悄完成，不留痕迹。"
+        "行云流水，旁人还以为你在认真工作。",
+        "男女通用，练完谁强谁知道。",
+        "今天多练这一下，关键时刻不掉链子。",
+        "打喷嚏更有底气，关键时刻更有实力。",
+        "收得住、放得开，才是真正的高手。",
+        "笑死，旁边的人完全看不出来。",
+        "这一提，胜过盲目泡枸杞。",
+        "表面云淡风轻，内里已经卷赢同龄人。",
+        "菊部小有成就，整体气质拉满。",
+        "松彻底了，才算把这下练明白。"
       ],
       restDeep: [
-        "这一口够深，慢慢散。",
-        "内力浑厚，多松一会儿。",
-        "沉得住气，彻底放空。",
-        "加了火候，让花慢慢舒展。"
+        "好家伙，这一下够深，慢慢回血！",
+        "真是个狠人，多松一会儿别客气。",
+        "憋得这么稳，关键时刻实力+100。",
+        "加码成功！彻底放空，别绷着。"
       ],
       invalid: [
-        "没满，不算。再来。",
-        "差一点，沉住气。",
-        "太急了，等光环合拢。"
+        "太快了，这可不行，再来！",
+        "差一点就顶住了，沉住气。",
+        "别急呀，等光环合拢才算数。"
       ],
       nudge: [
-        "先散完。",
-        "松透了再来下一口。",
-        "别急，花还没摊开。"
+        "别急，还没松透呢！",
+        "急什么，松得透才提得稳。",
+        "等花摊平了再继续，稳住节奏。"
       ],
       idleAfter: [
-        "散完了，继续装没事。",
-        "归位了，随时再来一口。",
-        "风平浪静，可以继续。"
+        "回血完毕，假装什么都没发生。",
+        "松透了，趁没人注意再来一下。",
+        "风平浪静，随时继续暗中变强。"
+      ],
+      popNormal: [
+        "功力 +1",
+        "底盘 +1",
+        "稳如老狗",
+        "暗中变强",
+        "深藏不露",
+        "实力 +1"
+      ],
+      popDeep: [
+        "狠人加码！",
+        "核心拉满！",
+        "顶级定力！"
       ]
     };
 
     const SHARE_FLAVORS = {
       zero: [
-        { rank: "还没开局", quote: "真正的高手，连开始都不露声色。" },
-        { rank: "按兵不动", quote: "今天先观望，明天惊艳所有人。" },
-        { rank: "蓄势待发", quote: "只要心中有花，随时都能开练。" }
+        { rank: "纸老虎", quote: "还没开练，气势倒是很足。" },
+        { rank: "纯属路过", quote: "光看不练，底盘可不会自己变强。" },
+        { rank: "按兵不动", quote: "真正的高手，明天再开始练。" }
       ],
       low: [
-        { rank: "暗中蓄力", quote: "别人以为我在发呆，其实我在偷偷用功。" },
-        { rank: "初试锋芒", quote: "不动声色练几口，气质先涨一截。" },
-        { rank: "暗度陈仓", quote: "开会走神？不，我在悄悄修炼。" },
-        { rank: "微有底气", quote: "动作很小，野心很大。" }
+        { rank: "菊部萌新", quote: "刚练几下就觉得自己深藏不露了。" },
+        { rank: "摸鱼练功侠", quote: "别人以为我在发呆，其实我在偷偷变强。" },
+        { rank: "隐形卷王", quote: "动作幅度为零，内卷程度拉满。" },
+        { rank: "初露锋芒", quote: "今天悄悄练几下，关键时刻不掉链子。" }
       ],
       mid: [
-        { rank: "小有内功", quote: "看不出来吧？这就是高级。" },
-        { rank: "气定神闲", quote: "嘴上说随便练练，背地已经十几口。" },
-        { rank: "不动声色", quote: "工位上最稳的人，往往都在暗中发力。" },
-        { rank: "渐入佳境", quote: "花都开了一半，旁人还以为我在看表。" }
+        { rank: "暗中狠人", quote: "表面风平浪静，工位底下已经暗流涌动。" },
+        { rank: "人肉液压机", quote: "看不出来吧？这就是隐形核心的力量。" },
+        { rank: "底盘稳健派", quote: "打喷嚏更有底气，关键时刻更有实力。" },
+        { rank: "懂的都懂", quote: "别问练的是哪块肌肉，男女练了都说好。" }
       ],
       high: [
-        { rank: "深藏不露", quote: "表面云淡风轻，内里已经练成了一朵花。" },
-        { rank: "内劲浑厚", quote: "能忍到二十多口的，都不是一般人。" },
-        { rank: "沉稳如山", quote: "不动摇，不声张，悄悄甩开同龄人。" },
-        { rank: "气势已成", quote: "离今日圆满只差最后几口底气。" }
+        { rank: "菊部宗师", quote: "能不动声色练到二十多下的，都不是一般人。" },
+        { rank: "核心天花板", quote: "表面温柔淡定，内里已经练成钢铁底盘。" },
+        { rank: "深夜实力派", quote: "白天偷偷练功，懂的人自然懂。" },
+        { rank: "稳如泰山", quote: "收放自如，旁人毫无察觉，高级。" }
       ],
       full: [
-        { rank: "今日圆满", quote: "所谓气质，都是背地里偷偷练出来的。" },
-        { rank: "圆满收功", quote: "三十口已毕，从此江湖不问出处。" },
-        { rank: "大隐于市", quote: "人前风轻云淡，人后日满三十口。" },
-        { rank: "功德圆满", quote: "见好就收，是高手最后的体面。" }
+        { rank: "菊部战神", quote: "日满三十下，男女通吃，江湖从此有你的传说。" },
+        { rank: "核心永动机", quote: "所谓气质和底气，都是背地里偷偷练出来的。" },
+        { rank: "今日封神", quote: "三十下已毕，见好就收，是高手最后的体面。" },
+        { rank: "终极狠角色", quote: "别人靠喝枸杞，我靠菊部健身。" }
       ]
+    };
+
+    const FACE_SVG = {
+      idle: `
+        <circle class="face-cheek" cx="10" cy="15" r="3.6"></circle>
+        <circle class="face-cheek" cx="38" cy="15" r="3.6"></circle>
+        <circle class="face-eye-idle" cx="15" cy="10" r="2.2" fill="currentColor"></circle>
+        <circle class="face-eye-idle" cx="33" cy="10" r="2.2" fill="currentColor"></circle>
+        <path d="M19.5 14.5 Q24 18.2 28.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      `,
+      hold: `
+        <circle class="face-cheek" cx="9.5" cy="15" r="4.2"></circle>
+        <circle class="face-cheek" cx="38.5" cy="15" r="4.2"></circle>
+        <path d="M11.5 7.5 L17.5 10.5 L11.5 13.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M36.5 7.5 L30.5 10.5 L36.5 13.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M18.5 16.5 Q21.2 14.2 24 16.5 Q26.8 18.8 29.5 16.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+        <path class="face-sweat" d="M42.5 2.5 C42.5 2.5 45 6 45 7.6 A2.5 2.5 0 0 1 40 7.6 C40 6 42.5 2.5 42.5 2.5 Z"></path>
+      `,
+      target: `
+        <circle class="face-cheek" cx="9.5" cy="15" r="4"></circle>
+        <circle class="face-cheek" cx="38.5" cy="15" r="4"></circle>
+        <path d="M11.5 11.5 Q15 6.8 18.5 11.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+        <path d="M29.5 11.5 Q33 6.8 36.5 11.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+        <path d="M18.5 14.5 Q24 20.5 29.5 14.5 Z" fill="currentColor"></path>
+        <path class="face-star" d="M43 3 L44 5.5 L46.5 6.5 L44 7.5 L43 10 L42 7.5 L39.5 6.5 L42 5.5 Z"></path>
+      `,
+      deep: `
+        <circle class="face-cheek" cx="9.5" cy="15" r="4.4"></circle>
+        <circle class="face-cheek" cx="38.5" cy="15" r="4.4"></circle>
+        <path class="face-star" d="M15 5 L16.6 8.6 L20.2 10.2 L16.6 11.8 L15 15.4 L13.4 11.8 L9.8 10.2 L13.4 8.6 Z"></path>
+        <path class="face-star" d="M33 5 L34.6 8.6 L38.2 10.2 L34.6 11.8 L33 15.4 L31.4 11.8 L27.8 10.2 L31.4 8.6 Z"></path>
+        <path d="M18 15.2 Q24 21.2 30 15.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+      `,
+      rest: `
+        <circle class="face-cheek" cx="10" cy="15" r="3.6"></circle>
+        <circle class="face-cheek" cx="38" cy="15" r="3.6"></circle>
+        <path d="M11.8 11 Q15 13.8 18.2 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        <path d="M29.8 11 Q33 13.8 36.2 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        <ellipse cx="24" cy="16.4" rx="2.6" ry="2.1" fill="none" stroke="currentColor" stroke-width="1.8"></ellipse>
+      `,
+      oops: `
+        <circle cx="15" cy="10.5" r="2.1" fill="currentColor"></circle>
+        <circle cx="33" cy="10.5" r="2.1" fill="currentColor"></circle>
+        <path d="M19 16.5 L29 15.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+      `
     };
 
     const el = {
       arena: document.getElementById("arena"),
+      bloomStage: document.getElementById("bloomStage"),
       bloom: document.getElementById("bloom"),
+      coreFace: document.getElementById("coreFace"),
+      brandName: document.getElementById("brandName"),
+      brandSub: document.getElementById("brandSub"),
+      eyebrowText: document.getElementById("eyebrowText"),
+      titlePart1: document.getElementById("titlePart1"),
+      titlePart2: document.getElementById("titlePart2"),
+      leadText: document.getElementById("leadText"),
+      scoreUnit: document.getElementById("scoreUnit"),
+      totalUnit: document.getElementById("totalUnit"),
+      challengeUnit: document.getElementById("challengeUnit"),
+      posterBrand: document.getElementById("posterBrand"),
+      posterUnit: document.getElementById("posterUnit"),
       actionText: document.getElementById("actionText"),
       actionHint: document.getElementById("actionHint"),
       holdFill: document.getElementById("holdFill"),
@@ -3225,7 +3493,7 @@
         const item = document.createElement("span");
         item.className = i === 0 ? "week-day is-today" : "week-day";
         item.dataset.level = String(level);
-        item.title = `${d.getMonth() + 1}月${d.getDate()}日：${dayCount} 口`;
+        item.title = `${d.getMonth() + 1}月${d.getDate()}日：${dayCount} ${BRAND.unit}`;
 
         const dot = document.createElement("span");
         dot.className = "week-dot";
@@ -3291,7 +3559,7 @@
       holdTarget = seconds;
       savePref(PACE_KEY, holdTarget);
       syncPaceUI();
-      setFeedback(`已切到 ${holdTarget} 秒节奏，按住试一口。`);
+      setFeedback(`已切到 ${holdTarget} 秒档位，按住试一下。`);
     }
 
     /* Sound Engine (Web Audio API + iOS/Mobile Audio Unlock) */
@@ -4303,19 +4571,19 @@
       el.challengeCounter.hidden = !beaten;
 
       if (beaten) {
-        el.challengeState.textContent = "已超过，别声张。";
+        el.challengeState.textContent = "已干翻，别声张。";
         if (!challengeBeatenAnnounced) {
           challengeBeatenAnnounced = true;
           showReward({
             seal: "胜",
-            title: `已超过 ${challengeCount} 口挑衅`,
+            title: `已反超 ${challengeCount} ${BRAND.unit}挑衅`,
             copy: "低调反杀，现在可以发回去炫耀了。"
           });
         }
       } else if (tied) {
-        el.challengeState.textContent = "追平了，再来一口反超。";
+        el.challengeState.textContent = `追平了，再来一${BRAND.unit}反超。`;
       } else {
-        el.challengeState.textContent = `还差 ${challengeCount - count} 口。`;
+        el.challengeState.textContent = `还差 ${challengeCount - count} ${BRAND.unit}。`;
       }
     }
 
@@ -4346,13 +4614,17 @@
     function buildShareLink() {
       const base = baseShareUrl();
       const challenge = Math.min(count, DAILY_GOAL);
-      if (challenge <= 0) return base;
       try {
         const url = new URL(base);
-        url.searchParams.set("c", String(challenge));
+        if (brandParam && BRAND_PRESETS[brandParam]) {
+          url.searchParams.set("brand", brandParam);
+        }
+        if (challenge > 0) {
+          url.searchParams.set("c", String(challenge));
+        }
         return url.toString();
       } catch (e) {
-        return `${base}?c=${challenge}`;
+        return challenge > 0 ? `${base}?c=${challenge}` : base;
       }
     }
 
@@ -4360,12 +4632,12 @@
       const flavor = currentShareFlavor || pickShareFlavor(false);
       const link = buildShareLink();
       if (challengeCount > 0 && count > challengeCount) {
-        return `有人挑衅我练了 ${challengeCount} 口，我悄悄在「一吸一呼」练了 ${count} 口已经超过了（今日称号：${flavor.rank}），轮到你了：${link}`;
+        return `刚才有人挑衅我练了 ${challengeCount} ${BRAND.unit}，不好意思，我在「${BRAND.name}」表面摸鱼背地直接干到 ${count} ${BRAND.unit}（称号：${flavor.rank}），轮到你接招了：${link}`;
       }
       if (count <= 0) {
-        return `我在「一吸一呼」准备偷偷练一口气，你也来（今日称号：${flavor.rank}）：${link}`;
+        return `发现一个贼好玩的「${BRAND.name}」，别问练哪儿，男女练了关键时刻都变强，来试试你能稳住几秒：${link}`;
       }
-      return `我在「一吸一呼」偷偷练了 ${count} 口气（今日称号：${flavor.rank}），来超过我：${link}`;
+      return `我今天在「${BRAND.name}」趁大家不注意偷偷练了 ${count} ${BRAND.unit}（称号：${flavor.rank}）。别问练哪块肌肉，男女练了都变强，敢超过我吗：${link}`;
     }
 
     function ensurePosterDots() {
@@ -4392,11 +4664,11 @@
       el.shareRank.textContent = flavor.rank;
       el.shareQuote.textContent = flavor.quote;
       el.shareDate.textContent = `${now.getMonth() + 1}月${now.getDate()}日 · 密报`;
-      el.posterStamp.textContent = count >= DAILY_GOAL ? "满" : (challengeCount > 0 && count > challengeCount ? "胜" : "密");
+      el.posterStamp.textContent = count >= DAILY_GOAL ? "神" : (challengeCount > 0 && count > challengeCount ? "胜" : "密");
 
-      const metaParts = ["偷偷练的"];
+      const metaParts = [BRAND.posterMetaPrefix];
       if (streak >= 2) metaParts.push(`连练 ${streak} 天`);
-      if (bestHoldToday >= 3) metaParts.push(`最深 ${bestHoldToday.toFixed(1)}s`);
+      if (bestHoldToday >= 3) metaParts.push(`最久 ${bestHoldToday.toFixed(1)}s`);
       el.posterMeta.textContent = metaParts.join(" · ");
 
       ensurePosterDots();
@@ -4414,11 +4686,11 @@
       if (challengeCount > 0) {
         el.posterChallenge.hidden = false;
         if (count > challengeCount) {
-          el.posterChallenge.textContent = `反超 ${challengeCount} 口挑衅`;
+          el.posterChallenge.textContent = `反超 ${challengeCount} ${BRAND.unit}挑衅`;
         } else if (count === challengeCount) {
-          el.posterChallenge.textContent = `追平 ${challengeCount} 口挑衅`;
+          el.posterChallenge.textContent = `追平 ${challengeCount} ${BRAND.unit}挑衅`;
         } else {
-          el.posterChallenge.textContent = `还差 ${challengeCount - count} 口`;
+          el.posterChallenge.textContent = `还差 ${challengeCount - count} ${BRAND.unit}`;
         }
       } else {
         el.posterChallenge.hidden = true;
@@ -4453,7 +4725,7 @@
       const now = new Date();
       const { streak } = computeStats();
       const litCount = Math.min(count, DAILY_GOAL);
-      const stampChar = count >= DAILY_GOAL ? "满" : (challengeCount > 0 && count > challengeCount ? "胜" : "密");
+      const stampChar = count >= DAILY_GOAL ? "神" : (challengeCount > 0 && count > challengeCount ? "胜" : "密");
 
       // Background
       const bgGrad = ctx.createLinearGradient(0, 0, W * 0.35, H);
@@ -4483,7 +4755,7 @@
       ctx.font = '400 42px "ZCOOL XiaoWei", "Noto Serif SC", "Songti SC", serif';
       ctx.textBaseline = "top";
       ctx.textAlign = "left";
-      ctx.fillText("一 吸 一 呼", 68, 66);
+      ctx.fillText(BRAND.spacedName, 68, 66);
 
       ctx.fillStyle = "#c9bfa1";
       ctx.font = '500 22px "Space Grotesk", "Noto Sans SC", sans-serif';
@@ -4602,7 +4874,7 @@
       ctx.font = `600 ${numSize}px "Space Grotesk", "Noto Sans SC", sans-serif`;
       const numWidth = ctx.measureText(countStr).width;
       ctx.font = '500 24px "Noto Sans SC", sans-serif';
-      const unitWidth = ctx.measureText("口").width;
+      const unitWidth = ctx.measureText(BRAND.unit).width;
       const gap = 6;
       const startX = cx - (numWidth + gap + unitWidth) / 2;
 
@@ -4611,7 +4883,7 @@
       ctx.fillText(countStr, startX, cy + 2);
       ctx.font = '500 24px "Noto Sans SC", sans-serif';
       ctx.globalAlpha = 0.78;
-      ctx.fillText("口", startX + numWidth + gap, cy + 16);
+      ctx.fillText(BRAND.unit, startX + numWidth + gap, cy + 16);
       ctx.globalAlpha = 1;
 
       // Rank title
@@ -4654,9 +4926,9 @@
       ctx.stroke();
 
       // Bottom metadata
-      const metaParts = ["偷偷练的"];
+      const metaParts = [BRAND.posterMetaPrefix];
       if (streak >= 2) metaParts.push(`连练 ${streak} 天`);
-      if (bestHoldToday >= 3) metaParts.push(`最深 ${bestHoldToday.toFixed(1)}s`);
+      if (bestHoldToday >= 3) metaParts.push(`最久 ${bestHoldToday.toFixed(1)}s`);
 
       ctx.textAlign = "left";
       ctx.textBaseline = "middle";
@@ -4666,11 +4938,11 @@
 
       ctx.textAlign = "right";
       ctx.fillStyle = "#f1bd4f";
-      let rightLabel = "一吸一呼 · 妙不可言";
+      let rightLabel = BRAND.posterTag;
       if (challengeCount > 0) {
-        if (count > challengeCount) rightLabel = `反超 ${challengeCount} 口挑衅`;
-        else if (count === challengeCount) rightLabel = `追平 ${challengeCount} 口挑衅`;
-        else rightLabel = `距挑衅还差 ${challengeCount - count} 口`;
+        if (count > challengeCount) rightLabel = `反超 ${challengeCount} ${BRAND.unit}挑衅`;
+        else if (count === challengeCount) rightLabel = `追平 ${challengeCount} ${BRAND.unit}挑衅`;
+        else rightLabel = `距挑衅还差 ${challengeCount - count} ${BRAND.unit}`;
       }
       ctx.fillText(rightLabel, W - 68, 1118);
 
@@ -4695,7 +4967,7 @@
         const url = blob ? URL.createObjectURL(blob) : canvas.toDataURL("image/png");
         const a = document.createElement("a");
         a.href = url;
-        a.download = `yixiyihu-${dailyKey}.png`;
+        a.download = `${BRAND.filePrefix}-${dailyKey}.png`;
         document.body.appendChild(a);
         a.click();
         a.remove();
@@ -4758,10 +5030,10 @@
         const canvas = renderPosterCanvas();
         const blob = await canvasToBlob(canvas);
         if (blob && typeof File === "function") {
-          const file = new File([blob], `yixiyihu-${dailyKey}.png`, { type: "image/png" });
+          const file = new File([blob], `${BRAND.filePrefix}-${dailyKey}.png`, { type: "image/png" });
           if (typeof navigator.canShare === "function" && navigator.canShare({ files: [file] })) {
             await navigator.share({
-              title: "一吸一呼 · 妙不可言",
+              title: `${BRAND.name} · ${BRAND.title1}${BRAND.title2}`,
               text,
               files: [file]
             });
@@ -4769,12 +5041,74 @@
             return;
           }
         }
-        await navigator.share({ title: "一吸一呼 · 妙不可言", text });
+        await navigator.share({ title: `${BRAND.name} · ${BRAND.title1}${BRAND.title2}`, text });
         el.shareStatus.textContent = "发出去了。继续保持低调。";
       } catch (error) {
         if (error && error.name === "AbortError") return;
         el.shareStatus.textContent = "没发出去，可以试试复制文案或保存战绩卡。";
       }
+    }
+
+    /* Expressive Face & Playful Motion Helpers */
+    let currentFace = "";
+    let oopsTimer = 0;
+
+    function applyBrand() {
+      document.title = `${BRAND.name} · ${BRAND.title1}${BRAND.title2}`;
+      el.brandName.textContent = BRAND.name;
+      el.brandSub.textContent = BRAND.sub;
+      el.eyebrowText.textContent = BRAND.eyebrow;
+      el.titlePart1.textContent = BRAND.title1;
+      el.titlePart2.textContent = BRAND.title2;
+      el.leadText.innerHTML = BRAND.leadHtml;
+      el.scoreUnit.textContent = BRAND.unit;
+      el.totalUnit.textContent = BRAND.unit;
+      el.challengeUnit.textContent = BRAND.unit;
+      el.posterBrand.textContent = BRAND.name;
+      el.posterUnit.textContent = BRAND.unit;
+    }
+
+    function setFace(mood) {
+      if (!el.coreFace || currentFace === mood || !FACE_SVG[mood]) return;
+      currentFace = mood;
+      el.coreFace.innerHTML = FACE_SVG[mood];
+    }
+
+    function setJitter(x = 0, y = 0) {
+      if (!el.bloomStage) return;
+      el.bloomStage.style.setProperty("--jx", `${x.toFixed(2)}px`);
+      el.bloomStage.style.setProperty("--jy", `${y.toFixed(2)}px`);
+    }
+
+    function triggerJellyPop() {
+      if (!el.bloomStage || motionReduced()) return;
+      el.bloomStage.classList.remove("is-spring-pop", "is-wobble");
+      void el.bloomStage.offsetWidth;
+      el.bloomStage.classList.add("is-spring-pop");
+      el.bloomStage.addEventListener("animationend", () => {
+        el.bloomStage.classList.remove("is-spring-pop");
+      }, { once: true });
+    }
+
+    function triggerWobble() {
+      if (!el.bloomStage || motionReduced()) return;
+      el.bloomStage.classList.remove("is-wobble", "is-spring-pop");
+      void el.bloomStage.offsetWidth;
+      el.bloomStage.classList.add("is-wobble");
+      el.bloomStage.addEventListener("animationend", () => {
+        el.bloomStage.classList.remove("is-wobble");
+      }, { once: true });
+    }
+
+    function spawnPopTag(text, variant = "") {
+      if (!el.fx || motionReduced()) return;
+      const tag = document.createElement("span");
+      tag.className = variant ? `pop-tag is-${variant}` : "pop-tag";
+      tag.textContent = text;
+      el.fx.appendChild(tag);
+      const remove = () => tag.remove();
+      tag.addEventListener("animationend", remove, { once: true });
+      window.setTimeout(remove, 1400);
     }
 
     /* Stage, Score, Rewards */
@@ -4786,11 +5120,11 @@
     }
 
     function moodForCount(value) {
-      if (value <= 0) return "今日 · 气还没聚";
-      if (value < 10) return "今日 · 有点儿意思了";
-      if (value < 20) return "今日 · 气顺了";
-      if (value < 30) return "今日 · 气势来了";
-      return "今日 · 圆满了";
+      if (value <= 0) return "今日 · 底盘待机中";
+      if (value < 10) return "今日 · 菊部热身完毕";
+      if (value < 20) return "今日 · 隐形内功已上线";
+      if (value < 30) return "今日 · 狠人气质藏不住了";
+      return "今日 · 菊部封神，深藏不露";
     }
 
     function showPlusOne(isDeep = false) {
@@ -4798,7 +5132,7 @@
       const plus = document.createElement("span");
       plus.className = isDeep ? "plus-one is-deep" : "plus-one";
       plus.setAttribute("aria-hidden", "true");
-      plus.textContent = isDeep ? "+1 深气" : "+1";
+      plus.textContent = isDeep ? "+1 狠人" : "+1";
       el.scoreBox.appendChild(plus);
       const remove = () => plus.remove();
       plus.addEventListener("animationend", remove, { once: true });
@@ -4826,16 +5160,24 @@
       document.body.dataset.stage = String(stage);
       el.scoreBox.classList.toggle("is-complete", complete);
       el.arena.classList.toggle("is-complete", complete);
-      el.scoreTarget.textContent = complete ? "已圆满" : `/ ${DAILY_GOAL}`;
+      el.scoreTarget.textContent = complete ? "已封神" : `/ ${DAILY_GOAL}`;
       el.scoreBox.setAttribute(
         "aria-label",
         complete
-          ? `今日气数 ${count} 口，目标 ${DAILY_GOAL} 口，已圆满`
-          : `今日气数 ${count} 口，目标 ${DAILY_GOAL} 口`
+          ? `今日修炼 ${count} ${BRAND.unit}，目标 ${DAILY_GOAL} ${BRAND.unit}，已封神`
+          : `今日修炼 ${count} ${BRAND.unit}，目标 ${DAILY_GOAL} ${BRAND.unit}`
       );
 
       progressDots.forEach((node, index) => {
-        node.classList.toggle("is-lit", index < litCount);
+        const shouldLit = index < litCount;
+        const wasLit = node.classList.contains("is-lit");
+        node.classList.toggle("is-lit", shouldLit);
+        if (animate && shouldLit && !wasLit && !motionReduced()) {
+          node.classList.remove("is-just-lit");
+          void node.offsetWidth;
+          node.classList.add("is-just-lit");
+          node.addEventListener("animationend", () => node.classList.remove("is-just-lit"), { once: true });
+        }
       });
 
       el.moodText.textContent = moodForCount(count);
@@ -4922,21 +5264,24 @@
 
     function setIdle(initial = false) {
       if (pressing || resting) return;
+      window.clearTimeout(oopsTimer);
+      setJitter(0, 0);
       clearHoldUI();
-      setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
+      setFace("idle");
+      setStatus(count >= DAILY_GOAL ? BRAND.statusDone : count > 0 ? BRAND.statusIdle : BRAND.statusIdle0);
 
       let message;
       if (initial) {
         if (count >= DAILY_GOAL) {
-          message = "今日圆满。你已经可以假装什么都没发生了。";
+          message = "今日已封神。现在可以假装什么都没发生过。";
         } else if (count > 0) {
-          message = `今天攒了 ${count} 口。按住，继续装没事。`;
+          message = `今天已偷偷练了 ${count} ${BRAND.unit}。按住，继续装没事。`;
         } else {
-          message = `按住 ${holdTarget} 秒，让光环满一圈。`;
+          message = `按住 ${holdTarget} 秒往上提，让光环满一圈。`;
         }
       } else {
         message = count >= DAILY_GOAL
-          ? "今日圆满。继续低调。"
+          ? "今日已封神，继续保持神秘。"
           : pickFrom("idleAfter", COPY_POOL.idleAfter);
       }
       setFeedback(message, !initial);
@@ -4950,6 +5295,7 @@
         return;
       }
 
+      window.clearTimeout(oopsTimer);
       rolloverIfNeeded();
       disarmReset();
 
@@ -4974,11 +5320,12 @@
       el.arena.classList.add("is-active");
       el.bloom.setAttribute("aria-pressed", "true");
       el.bloom.setAttribute("aria-disabled", "false");
-      el.bloom.setAttribute("aria-label", "正在聚气，保持到光环满");
-      el.actionText.textContent = "聚";
+      el.bloom.setAttribute("aria-label", "正在暗中发力，保持到光环满");
+      el.actionText.textContent = BRAND.actionHold;
       el.actionHint.textContent = `0.0 / ${holdTarget}s`;
+      setFace("hold");
       setHoldProgress(0);
-      setStatus("聚气中");
+      setStatus(BRAND.statusHold);
       setFeedback(pickFrom("holding", COPY_POOL.holding));
       syncPaceUI();
 
@@ -5000,6 +5347,15 @@
         const eased = 1 - Math.pow(1 - progress, 2.25);
         const extraTension = overholdRatio * 0.08;
         setSqueeze(squeezeBase + (1 - squeezeBase) * eased + extraTension);
+
+        // Playful subtle effort jitter as tension builds
+        if (progress > 0.35) {
+          const amp = (progress - 0.35) * 2.1 + overholdRatio * 2.2;
+          const t = performance.now() * 0.048;
+          setJitter(Math.sin(t) * amp, Math.cos(t * 1.37) * amp * 0.72);
+        } else {
+          setJitter(0, 0);
+        }
       }
 
       if (sound && sfxEnabled) {
@@ -5009,12 +5365,14 @@
       if (!targetReached && elapsed >= holdTarget) {
         targetReached = true;
         el.arena.classList.add("is-target");
-        el.actionText.textContent = "松手";
+        el.actionText.textContent = BRAND.actionTarget;
         el.bloom.setAttribute("aria-label", "光环满了，可以松开");
-        setStatus("满格");
+        setFace("target");
+        setStatus(BRAND.statusTarget);
         setFeedback(pickFrom("target", COPY_POOL.target));
         setHoldProgress(100);
-        triggerShake(2.2);
+        triggerShake(2.4);
+        spawnPopTag("稳了！", "gold");
         if (sound) sound.target();
         vibrate([8, 22, 10]);
       }
@@ -5022,12 +5380,15 @@
       if (!overholdReached && elapsed >= holdTarget + 1.5 && holdTarget < MAX_HOLD_REF) {
         overholdReached = true;
         el.arena.classList.add("is-overhold");
-        setStatus("深蓄中");
+        el.actionText.textContent = BRAND.actionDeep;
+        setFace("deep");
+        setStatus(BRAND.statusDeep);
+        spawnPopTag("狠人加码！", "gold");
       }
 
       if (!longHoldNoted && elapsed >= MAX_HOLD_REF) {
         longHoldNoted = true;
-        setFeedback("够久了，慢慢松手吧。");
+        setFeedback("够猛了够猛了，快松手回血吧！");
       }
 
       if (!targetReached) {
@@ -5037,7 +5398,7 @@
         el.actionHint.textContent = elapsed >= MAX_HOLD_REF
           ? `${elapsed.toFixed(1)}s · 够了`
           : overholdReached
-            ? `${elapsed.toFixed(1)}s · 深蓄`
+            ? `${elapsed.toFixed(1)}s · 加码`
             : `${elapsed.toFixed(1)}s · 满`;
       }
 
@@ -5057,6 +5418,7 @@
       overholdReached = false;
       window.cancelAnimationFrame(holdFrame);
       holdFrame = 0;
+      setJitter(0, 0);
 
       el.arena.classList.remove("is-active", "is-target", "is-overhold");
       el.bloom.setAttribute("aria-pressed", "false");
@@ -5065,7 +5427,8 @@
         if (sound) sound.stopHold(true);
         releaseSqueeze(0.35);
         clearHoldUI();
-        setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
+        setFace("idle");
+        setStatus(count >= DAILY_GOAL ? BRAND.statusDone : count > 0 ? BRAND.statusIdle : BRAND.statusIdle0);
         setFeedback("这次不算。");
         return;
       }
@@ -5075,7 +5438,13 @@
         if (moteField) moteField.burst(0.55);
         emitExhale(0.55);
         clearHoldUI();
-        setStatus("差一点");
+        setFace("oops");
+        triggerWobble();
+        spawnPopTag("太快了！", "oops");
+        oopsTimer = window.setTimeout(() => {
+          if (!pressing && !resting) setFace("idle");
+        }, 1250);
+        setStatus(BRAND.statusShort);
         setFeedback(pickFrom("invalid", COPY_POOL.invalid));
         if (sound) sound.invalid();
         vibrate(5);
@@ -5094,9 +5463,14 @@
       const restSeconds = Math.min(MAX_HOLD_REF, Math.max(holdTarget, heldSeconds));
 
       releaseSqueeze(1, restSeconds * 1000);
-      if (moteField) moteField.burst(isDeep ? 1.15 : 1);
-      emitExhale(isDeep ? 1.15 : 1);
-      triggerShake(isDeep ? 1.8 : 1.3);
+      triggerJellyPop();
+      if (moteField) moteField.burst(isDeep ? 1.2 : 1);
+      emitExhale(isDeep ? 1.2 : 1);
+      triggerShake(isDeep ? 2.0 : 1.4);
+      spawnPopTag(
+        isDeep ? pickFrom("popDeep", COPY_POOL.popDeep) : pickFrom("popNormal", COPY_POOL.popNormal),
+        isDeep || milestone ? "gold" : ""
+      );
       if (sound) sound.release(isDeep);
       beginRest(restSeconds, milestone, isDeep);
       spawnBurst(Boolean(milestone) || isDeep);
@@ -5117,17 +5491,18 @@
 
       el.arena.classList.add("is-resting");
       el.bloom.setAttribute("aria-disabled", "true");
-      el.bloom.setAttribute("aria-label", "散气中，稍后再来");
-      el.actionText.textContent = "散";
+      el.bloom.setAttribute("aria-label", "彻底放松中，稍后再来");
+      el.actionText.textContent = BRAND.actionRest;
       el.actionHint.textContent = `${seconds.toFixed(1)}s`;
-      setStatus("散气中");
+      setFace("rest");
+      setStatus(BRAND.statusRest);
       setHoldProgress(100);
       syncPaceUI();
 
       if (milestone) {
-        setFeedback(`${milestone.short}散一散。`);
+        setFeedback(`${milestone.short}先彻底松透。`);
       } else if (count >= DAILY_GOAL) {
-        setFeedback("又一口。见好就收。");
+        setFeedback("又多练一下，见好就收别太卷。");
       } else if (isDeep) {
         setFeedback(pickFrom("restDeep", COPY_POOL.restDeep));
       } else {
@@ -5158,6 +5533,8 @@
 
     function nudgeRest() {
       if (!resting) return;
+      triggerWobble();
+      spawnPopTag("先松透！", "oops");
       setFeedback(pickFrom("nudge", COPY_POOL.nudge));
       vibrate(5);
     }
@@ -5170,15 +5547,18 @@
       overholdReached = false;
       window.cancelAnimationFrame(holdFrame);
       holdFrame = 0;
+      setJitter(0, 0);
       if (sound) sound.stopHold(true);
       releaseSqueeze(0.35);
       clearHoldUI();
-      setStatus(count >= DAILY_GOAL ? "今日圆满" : count > 0 ? "再来一口" : "等你");
+      setFace("idle");
+      setStatus(count >= DAILY_GOAL ? BRAND.statusDone : count > 0 ? BRAND.statusIdle : BRAND.statusIdle0);
       setFeedback("这次不算。");
     }
 
     function resetToday() {
       window.clearTimeout(resetTimer);
+      window.clearTimeout(oopsTimer);
       resetTimer = 0;
       window.cancelAnimationFrame(holdFrame);
       holdFrame = 0;
@@ -5191,6 +5571,7 @@
       pressSource = null;
       activePointer = null;
       resetArmed = false;
+      setJitter(0, 0);
 
       if (sound) sound.stopHold(true);
       window.cancelAnimationFrame(squeezeFrame);
@@ -5202,6 +5583,7 @@
       if (moteField) moteField.reset();
 
       clearHoldUI();
+      setFace("idle");
       hideReward();
       el.fx.replaceChildren();
 
@@ -5210,8 +5592,8 @@
       challengeBeatenAnnounced = false;
       persistState();
       renderDaily(false);
-      setStatus("等你");
-      setFeedback("归零。再来一口？");
+      setStatus(BRAND.statusIdle0);
+      setFeedback("已归零。重开一局？");
       vibrate(12);
     }
 
@@ -5486,6 +5868,7 @@
     }
 
     function boot() {
+      applyBrand();
       dailyKey = localDateKey();
       updateDateLabel();
 
