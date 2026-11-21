@@ -1346,15 +1346,19 @@
 
     .petal-art {
       position: absolute;
-      inset: 2.5%;
+      inset: 1.5%;
       z-index: 1;
       pointer-events: none;
-      animation: idleBloom 4.6s ease-in-out infinite;
+      animation: idleBloom 3.8s ease-in-out infinite;
     }
 
     .arena.is-active .petal-art,
     .arena.is-resting .petal-art {
       animation-play-state: paused;
+    }
+
+    .arena.is-oops .petal-art {
+      filter: saturate(0.68) brightness(0.95);
     }
 
     .petal-layer {
@@ -1365,25 +1369,19 @@
     .layer-guard {
       inset: 0;
       z-index: 1;
-      transform: rotate(calc(var(--squeeze, 0) * 14deg)) scale(calc(1 - var(--squeeze, 0) * 0.06));
+      transform: rotate(calc(var(--squeeze, 0) * 26deg)) scale(calc(1 - var(--squeeze, 0) * 0.1));
     }
 
     .layer-mid {
-      inset: 4%;
+      inset: 5%;
       z-index: 2;
-      transform: rotate(calc(var(--squeeze, 0) * -18deg)) scale(calc(1 - var(--squeeze, 0) * 0.05));
+      transform: rotate(calc(var(--squeeze, 0) * -32deg)) scale(calc(1 - var(--squeeze, 0) * 0.08));
     }
 
     .layer-inner {
-      inset: 9%;
+      inset: 11%;
       z-index: 3;
-      transform: rotate(calc(var(--squeeze, 0) * 24deg)) scale(calc(1 - var(--squeeze, 0) * 0.04));
-    }
-
-    .layer-heart {
-      inset: 14%;
-      z-index: 4;
-      transform: rotate(calc(var(--squeeze, 0) * -28deg)) scale(calc(1 - var(--squeeze, 0) * 0.03));
+      transform: rotate(calc(var(--squeeze, 0) * 38deg)) scale(calc(1 - var(--squeeze, 0) * 0.06));
     }
 
     .petal {
@@ -1396,134 +1394,187 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: var(--w, 15%);
-      height: var(--h, 32%);
-      border-radius: 48% 52% 44% 56% / 58% 58% 42% 42%;
-      background: linear-gradient(to top, var(--petal-base) 0%, var(--petal-mid) 58%, var(--petal-tip) 100%);
+      width: var(--w, 18%);
+      height: var(--h, 38%);
+      border-radius: 50% 50% 44% 56% / 60% 60% 40% 40%;
+      background: linear-gradient(to top, #e28d0e 0%, #ffca3a 56%, #ffef99 100%);
       box-shadow:
-        inset 0 0 0 1px var(--petal-line),
-        0 18px 30px -22px var(--petal-shadow);
-      opacity: var(--leaf-opacity, 0.7);
+        inset 0 2px 0 rgba(255, 253, 236, 0.72),
+        0 0 0 1.4px rgba(74, 42, 6, 0.36),
+        0 12px 20px -14px var(--petal-shadow);
+      opacity: var(--leaf-opacity, 0.94);
       transform:
         translate(-50%, -100%)
         rotate(var(--bend, 0deg))
-        scaleY(calc(1 - var(--squeeze, 0) * var(--fold, 0.46)))
-        scaleX(calc(1 - var(--squeeze, 0) * 0.2));
+        scaleY(calc(1 - var(--squeeze, 0) * var(--fold, 0.56)))
+        scaleX(calc(1 - var(--squeeze, 0) * 0.28));
       transform-origin: 50% 100%;
-      transition: filter 450ms ease, opacity 450ms ease;
+      transition: filter 320ms ease, opacity 320ms ease;
     }
 
     .arena.is-overhold .leaf {
-      filter: brightness(1.08) saturate(1.12);
+      background: linear-gradient(to top, #f07d0a 0%, #ffd83b 52%, #fff8be 100%);
+      filter: brightness(1.1) saturate(1.18);
     }
 
     .arena.is-complete .leaf {
-      filter: saturate(1.06);
+      filter: saturate(1.08);
     }
 
     .leaf::after {
       content: "";
       position: absolute;
-      top: 14%;
-      bottom: 9%;
+      top: 15%;
+      bottom: 14%;
       left: 50%;
-      width: 1px;
-      border-radius: 1px;
-      background: linear-gradient(to top, var(--petal-line), transparent 86%);
-      opacity: 0.55;
+      width: 1.5px;
+      border-radius: 2px;
+      background: linear-gradient(to top, rgba(255, 252, 230, 0.55), transparent 86%);
+      opacity: 0.7;
       pointer-events: none;
       transform: translateX(-50%);
     }
 
-    .layer-guard .leaf { --fold: 0.48; }
-    .layer-mid .leaf { --fold: 0.46; }
-    .layer-inner .leaf { --fold: 0.4; }
-    .layer-heart .leaf {
-      --fold: 0.34;
-      border-radius: 50% 50% 44% 56% / 62% 62% 38% 38%;
-      background: linear-gradient(to top, var(--petal-base) 0%, var(--petal-inner) 52%, transparent 100%);
-      box-shadow: none;
-    }
+    .layer-guard .leaf { --fold: 0.38; }
+    .layer-mid .leaf { --fold: 0.32; }
+    .layer-inner .leaf { --fold: 0.22; }
 
     @media (hover: hover) and (pointer: fine) {
       .bloom:hover:not([aria-disabled="true"]) .leaf {
-        filter: brightness(1.05);
+        filter: brightness(1.06);
       }
+    }
+
+    .speed-lines {
+      position: absolute;
+      inset: -12%;
+      z-index: 1;
+      border-radius: 50%;
+      background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg 8.5deg,
+        rgba(228, 94, 64, 0.16) 8.5deg 10deg
+      );
+      -webkit-mask-image: radial-gradient(circle, transparent 36%, #000 68%, transparent 95%);
+      mask-image: radial-gradient(circle, transparent 36%, #000 68%, transparent 95%);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.22s ease;
+    }
+
+    .arena.is-strain .speed-lines {
+      opacity: 0.72;
+      animation: speedSpin 7s linear infinite;
+    }
+
+    .arena.is-overhold .speed-lines {
+      opacity: 0.95;
+      background: repeating-conic-gradient(
+        from 0deg,
+        transparent 0deg 7deg,
+        rgba(241, 189, 79, 0.34) 7deg 9deg
+      );
+      animation: speedSpin 3.6s linear infinite;
     }
 
     .core-glow {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 66%;
+      width: 70%;
       aspect-ratio: 1;
       z-index: 0;
       border-radius: 50%;
       background: radial-gradient(circle, var(--bloom-halo) 0%, transparent 68%);
-      filter: blur(9px);
-      opacity: calc(0.32 + var(--squeeze, 0) * 0.58);
+      filter: blur(10px);
+      opacity: calc(0.36 + var(--squeeze, 0) * 0.6);
       pointer-events: none;
-      transform: translate(-50%, -50%) scale(calc(0.9 - var(--squeeze, 0) * 0.2));
-      transition: background 0.35s ease;
+      transform: translate(-50%, -50%) scale(calc(0.92 - var(--squeeze, 0) * 0.18));
+      transition: background 0.3s ease;
+    }
+
+    .arena.is-strain .core-glow {
+      background: radial-gradient(circle, rgba(238, 82, 54, 0.45) 0%, transparent 68%);
     }
 
     .arena.is-target .core-glow {
-      background: radial-gradient(circle, var(--glow) 0%, transparent 68%);
+      background: radial-gradient(circle, rgba(241, 189, 79, 0.48) 0%, transparent 68%);
     }
 
     .arena.is-overhold .core-glow {
-      background: radial-gradient(circle, rgba(244, 195, 72, 0.55) 0%, transparent 68%);
+      background: radial-gradient(circle, rgba(255, 212, 66, 0.72) 0%, transparent 68%);
     }
 
     .core {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 30%;
+      width: 39%;
       aspect-ratio: 1;
       z-index: 4;
       border-radius: 50%;
       display: grid;
       place-items: center;
-      color: var(--on-core);
-      background: radial-gradient(circle at 36% 28%, var(--core-hi) 0%, var(--core) 74%);
+      color: #3a1f04;
+      background: radial-gradient(circle at 34% 26%, #fff4b8 0%, #f6c23b 66%, #da9015 100%);
+      border: 2.4px solid rgba(74, 42, 6, 0.68);
       box-shadow:
-        0 24px 48px -26px var(--petal-shadow),
-        inset 0 0 0 1px var(--core-ring);
-      transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.12));
+        0 18px 36px -18px rgba(74, 42, 6, 0.48),
+        inset 0 4px 10px rgba(255, 255, 240, 0.45),
+        inset 0 -6px 12px rgba(178, 102, 8, 0.35);
+      transform: translate(-50%, -50%) scale(calc(1 - var(--squeeze, 0) * 0.08));
       pointer-events: none;
-      transition: box-shadow 360ms ease;
+      transition: box-shadow 300ms ease, border-color 300ms ease;
+    }
+
+    .core::before {
+      content: "";
+      position: absolute;
+      top: 11%;
+      left: 17%;
+      width: 24%;
+      height: 11%;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.46);
+      transform: rotate(-28deg);
+      pointer-events: none;
     }
 
     .core::after {
       content: "";
       position: absolute;
-      inset: -9%;
-      border: 1px solid var(--core-invite);
+      inset: -10%;
+      border: 1.5px dashed rgba(74, 42, 6, 0.26);
       border-radius: 50%;
-      opacity: 0.5;
-      animation: invite 3.6s ease-in-out infinite;
+      opacity: 0.6;
+      animation: invite 3.2s ease-in-out infinite;
       pointer-events: none;
     }
 
-    .arena.is-active .core {
-      box-shadow:
-        0 20px 46px -24px var(--petal-shadow),
-        inset 0 0 0 1px var(--core-ring);
+    .core-blush {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: radial-gradient(circle at 50% 46%, rgba(255, 96, 68, 0.72) 0%, rgba(224, 44, 28, 0.86) 100%);
+      opacity: calc(var(--blush, 0) * 0.74);
+      pointer-events: none;
+      transition: opacity 140ms linear;
     }
 
     .arena.is-target .core {
+      border-color: #261404;
       box-shadow:
-        0 24px 48px -26px var(--petal-shadow),
-        inset 0 0 0 1.5px var(--accent-strong),
-        0 0 0 2px var(--glow);
+        0 18px 38px -16px rgba(74, 42, 6, 0.55),
+        0 0 0 4px var(--glow),
+        inset 0 4px 10px rgba(255, 255, 240, 0.5);
     }
 
     .arena.is-overhold .core {
+      border-color: #8f5600;
       box-shadow:
-        0 24px 52px -24px var(--petal-shadow),
-        inset 0 0 0 1.5px var(--gold-strong),
-        0 0 22px var(--gold-soft);
+        0 0 0 4px rgba(255, 212, 66, 0.5),
+        0 0 28px rgba(255, 198, 42, 0.65),
+        inset 0 4px 12px rgba(255, 255, 240, 0.7);
     }
 
     .arena.is-active .core::after,
@@ -1535,108 +1586,136 @@
       transition: opacity 0.25s ease;
     }
 
-    .core-copy {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 3px;
-      pointer-events: none;
-      transform: translateY(-1px);
-    }
-
     .core-face {
-      width: clamp(34px, 4vw, 48px);
-      height: auto;
+      position: relative;
+      z-index: 2;
+      width: 82%;
+      height: 82%;
       display: block;
       overflow: visible;
-      margin-bottom: 1px;
+      transform: translateY(-3%);
     }
 
-    .core-face .face-cheek {
-      fill: #e45e40;
-      opacity: 0;
-      transition: opacity 0.22s ease;
+    .core-pill {
+      position: absolute;
+      bottom: -12%;
+      left: 50%;
+      z-index: 6;
+      display: inline-flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 5px;
+      padding: 4px 11px;
+      border: 1.8px solid rgba(68, 36, 4, 0.72);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--ink);
+      box-shadow: 0 6px 16px -6px rgba(0, 0, 0, 0.28);
+      transform: translateX(-50%);
+      white-space: nowrap;
+      pointer-events: none;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     }
 
-    .arena.is-active .core-face .face-cheek {
-      opacity: calc(0.18 + var(--squeeze, 0) * 0.55);
+    .arena.is-active .core-pill {
+      border-color: var(--accent-strong);
+      color: var(--accent-strong);
     }
 
-    .arena.is-target .core-face .face-cheek,
-    .arena.is-overhold .core-face .face-cheek {
-      opacity: 0.72;
+    .arena.is-target .core-pill,
+    .arena.is-overhold .core-pill {
+      background: #1d140a;
+      border-color: #f1bd4f;
+      color: #ffdf8c;
     }
 
-    .arena.is-resting .core-face .face-cheek {
-      opacity: 0.28;
-    }
-
-    .core-face .face-eye-idle {
-      transform-origin: center;
-      transform-box: fill-box;
-      animation: faceBlink 4.2s ease-in-out infinite;
-    }
-
-    .core-face .face-sweat {
-      fill: #fff8e2;
-      opacity: 0.92;
-      animation: sweatDrop 1.1s ease-in-out infinite;
-    }
-
-    .core-face .face-star {
-      fill: #fff7d4;
-      animation: starTwinkle 0.8s ease-in-out infinite alternate;
+    .arena.is-resting .core-pill {
+      border-color: var(--mint-deep);
+      color: var(--mint-deep);
     }
 
     .core-action {
       font-family: var(--font-display);
-      font-size: clamp(18px, 1.9vw, 24px);
+      font-size: clamp(13px, 1.35vw, 16px);
       font-weight: 400;
-      line-height: 1;
-      letter-spacing: 0.1em;
-      white-space: nowrap;
-      transform: translateX(0.05em);
+      line-height: 1.1;
+      letter-spacing: 0.06em;
     }
 
     .core-hint {
-      min-width: 6ch;
-      color: var(--on-core);
       font-family: var(--font-mono);
-      font-size: 8.5px;
+      font-size: 9.5px;
       font-weight: 600;
       line-height: 1;
-      letter-spacing: 0.06em;
-      text-align: center;
+      letter-spacing: 0.04em;
       font-variant-numeric: tabular-nums;
-      opacity: 0.78;
-      white-space: nowrap;
+      opacity: 0.82;
+    }
+
+    /* Face micro animations */
+    .core-face .eye-pupil {
+      animation: eyePeek 4.6s ease-in-out infinite;
+    }
+
+    .core-face .eye-blink {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: faceBlink 4.6s ease-in-out infinite;
+    }
+
+    .core-face .face-sweat {
+      animation: sweatDrop 0.9s ease-in-out infinite;
+    }
+
+    .core-face .face-vein {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: veinPulse 0.42s ease-in-out infinite alternate;
+    }
+
+    .core-face .face-shades {
+      animation: shadesDrop 340ms cubic-bezier(0.22, 1.5, 0.36, 1) forwards;
+    }
+
+    .core-face .face-star {
+      transform-origin: center;
+      transform-box: fill-box;
+      animation: starTwinkle 0.6s ease-in-out infinite alternate;
+    }
+
+    .core-face .face-sigh {
+      animation: sighFloat 1.8s ease-out infinite;
+    }
+
+    .core-face .face-bolt {
+      animation: starTwinkle 0.32s ease-in-out infinite alternate;
     }
 
     .pop-tag {
       position: absolute;
-      top: 16%;
+      top: 12%;
       left: 50%;
       z-index: 8;
-      padding: 5px 12px;
-      border: 1px solid var(--accent);
+      padding: 6px 13px;
+      border: 1.5px solid var(--accent);
       border-radius: 999px;
       background: var(--surface);
       color: var(--accent-strong);
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 12.5px;
+      font-weight: 700;
       line-height: 1.2;
       letter-spacing: 0.04em;
       white-space: nowrap;
-      box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 10px 24px -10px rgba(0, 0, 0, 0.28);
       pointer-events: none;
       transform: translate(-50%, 0);
-      animation: popTagFly 1180ms cubic-bezier(0.22, 1.35, 0.36, 1) forwards;
+      animation: popTagFly 1220ms cubic-bezier(0.22, 1.35, 0.36, 1) forwards;
     }
 
     .pop-tag.is-gold {
       border-color: var(--gold);
-      background: var(--surface);
-      color: var(--gold-strong);
+      background: #1d140a;
+      color: #ffdf8c;
     }
 
     .pop-tag.is-oops {
@@ -1652,13 +1731,13 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 47%;
+      width: 54%;
       aspect-ratio: 1;
       z-index: 4;
       opacity: 0;
       pointer-events: none;
       transform: translate(-50%, -50%);
-      transition: opacity 0.28s ease;
+      transition: opacity 0.24s ease;
     }
 
     .arena.is-active .hold-meter,
@@ -1678,7 +1757,7 @@
     .hold-track,
     .hold-fill {
       fill: none;
-      stroke-width: 1.75;
+      stroke-width: 2.6;
     }
 
     .hold-track {
@@ -2147,18 +2226,28 @@
       top: 50%;
       left: 50%;
       z-index: 3;
-      width: 31%;
+      width: 36%;
       aspect-ratio: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 2px;
       border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%, #f5d993 0%, #c18b22 72%);
+      border: 2px solid rgba(58, 31, 4, 0.6);
+      background: radial-gradient(circle at 35% 28%, #fff1a8 0%, #f1b62e 72%, #c98114 100%);
       color: #2b1a04;
       box-shadow:
         0 16px 30px -16px rgba(0, 0, 0, 0.68),
-        inset 0 0 0 1px rgba(43, 26, 4, 0.18);
+        inset 0 3px 8px rgba(255, 255, 240, 0.45);
       transform: translate(-50%, -50%);
+    }
+
+    .poster-face {
+      width: 62%;
+      height: auto;
+      display: block;
+      margin-top: -4px;
     }
 
     .poster-count-inner {
@@ -2365,30 +2454,58 @@
 
     @keyframes idleBloom {
       0%, 100% { transform: scale(1) rotate(0deg); }
-      25% { transform: scale(1.022) rotate(1.6deg); }
-      50% { transform: scale(0.992) rotate(0deg); }
-      75% { transform: scale(1.022) rotate(-1.6deg); }
+      25% { transform: scale(1.03) rotate(2.6deg); }
+      50% { transform: scale(0.985) rotate(0deg); }
+      75% { transform: scale(1.03) rotate(-2.6deg); }
     }
 
     @keyframes jellyPop {
-      0% { transform: scale(0.92, 0.92); }
-      28% { transform: scale(1.075, 0.955); }
-      52% { transform: scale(0.975, 1.04); }
-      74% { transform: scale(1.022, 0.99); }
+      0% { transform: scale(0.84, 0.84); }
+      26% { transform: scale(1.12, 0.92); }
+      48% { transform: scale(0.95, 1.07); }
+      72% { transform: scale(1.035, 0.98); }
       100% { transform: scale(1, 1); }
     }
 
     @keyframes headWobble {
       0%, 100% { transform: translateX(0) rotate(0deg); }
-      20% { transform: translateX(-7px) rotate(-3.5deg); }
-      45% { transform: translateX(6px) rotate(3deg); }
-      70% { transform: translateX(-4px) rotate(-1.8deg); }
-      88% { transform: translateX(2px) rotate(0.8deg); }
+      18% { transform: translateX(-10px) rotate(-6deg); }
+      42% { transform: translateX(9px) rotate(5.5deg); }
+      66% { transform: translateX(-6px) rotate(-3.5deg); }
+      86% { transform: translateX(3px) rotate(1.5deg); }
+    }
+
+    @keyframes eyePeek {
+      0%, 24%, 100% { transform: translate(0, 0); }
+      32%, 48% { transform: translate(4px, -1px); }
+      56%, 72% { transform: translate(-4px, -1px); }
+      80% { transform: translate(0, 0); }
     }
 
     @keyframes faceBlink {
       0%, 44%, 49%, 100% { transform: scaleY(1); }
-      46.5% { transform: scaleY(0.12); }
+      46.5% { transform: scaleY(0.1); }
+    }
+
+    @keyframes shadesDrop {
+      0% { opacity: 0; transform: translateY(-42px) rotate(-14deg) scale(1.15); }
+      68% { opacity: 1; transform: translateY(3px) rotate(2deg) scale(0.98); }
+      100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+    }
+
+    @keyframes veinPulse {
+      from { transform: scale(0.88); }
+      to { transform: scale(1.22); }
+    }
+
+    @keyframes sighFloat {
+      0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+      25% { opacity: 0.92; transform: translate(6px, -6px) scale(1); }
+      100% { opacity: 0; transform: translate(18px, -24px) scale(1.3); }
+    }
+
+    @keyframes speedSpin {
+      to { transform: rotate(360deg); }
     }
 
     @keyframes sweatDrop {
@@ -2880,13 +2997,15 @@
               aria-label="按住往上提，等光环满后松开"
               aria-describedby="howTo"
             >
+              <span class="speed-lines" aria-hidden="true"></span>
               <span class="aura" aria-hidden="true"></span>
               <span class="petal-art" id="petalArt" aria-hidden="true"></span>
               <span class="core-glow" aria-hidden="true"></span>
 
               <span class="core">
-                <span class="core-copy">
-                  <svg class="core-face" id="coreFace" viewBox="0 0 48 24" aria-hidden="true"></svg>
+                <span class="core-blush" aria-hidden="true"></span>
+                <svg class="core-face" id="coreFace" viewBox="0 0 100 100" aria-hidden="true"></svg>
+                <span class="core-pill">
                   <span class="core-action" id="actionText">按住</span>
                   <span class="core-hint" id="actionHint">HOLD</span>
                 </span>
@@ -2953,6 +3072,7 @@
         <div class="poster-flower-wrap">
           <div class="poster-flower" id="posterFlower" aria-hidden="true"></div>
           <div class="poster-count">
+            <svg class="poster-face" id="posterFace" viewBox="0 0 100 44" aria-hidden="true"></svg>
             <span class="poster-count-inner">
               <span class="poster-num" id="shareCount">0</span>
               <span class="poster-unit" id="posterUnit">下</span>
@@ -3116,14 +3236,20 @@
         "功力 +1",
         "底盘 +1",
         "稳如老狗",
+        "老板没发现",
         "暗中变强",
         "深藏不露",
-        "实力 +1"
+        "今晚稳了"
       ],
       popDeep: [
+        "超级赛亚菊！",
         "狠人加码！",
-        "核心拉满！",
-        "顶级定力！"
+        "铁裆功大成！"
+      ],
+      popOops: [
+        "就这？",
+        "太快了吧！",
+        "这就松了？"
       ]
     };
 
@@ -3160,47 +3286,121 @@
     };
 
     const FACE_SVG = {
+      // 1. Idle: cheeky side-eye glancing smirk (like checking if the boss is looking!)
       idle: `
-        <circle class="face-cheek" cx="10" cy="15" r="3.6"></circle>
-        <circle class="face-cheek" cx="38" cy="15" r="3.6"></circle>
-        <circle class="face-eye-idle" cx="15" cy="10" r="2.2" fill="currentColor"></circle>
-        <circle class="face-eye-idle" cx="33" cy="10" r="2.2" fill="currentColor"></circle>
-        <path d="M19.5 14.5 Q24 18.2 28.5 14.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        <ellipse cx="22" cy="59" rx="9" ry="5" fill="#ff7354" opacity="0.34"></ellipse>
+        <ellipse cx="78" cy="59" rx="9" ry="5" fill="#ff7354" opacity="0.34"></ellipse>
+        <path d="M22 30 Q33 24 41 31" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"></path>
+        <path d="M59 27 Q70 21 80 28" fill="none" stroke="currentColor" stroke-width="3.6" stroke-linecap="round"></path>
+        <g class="eye-blink">
+          <ellipse cx="33" cy="45" rx="10" ry="11" fill="#fffdf5" stroke="currentColor" stroke-width="3.2"></ellipse>
+          <ellipse cx="67" cy="45" rx="10" ry="11" fill="#fffdf5" stroke="currentColor" stroke-width="3.2"></ellipse>
+          <g class="eye-pupil">
+            <circle cx="34" cy="45" r="5" fill="currentColor"></circle>
+            <circle cx="68" cy="45" r="5" fill="currentColor"></circle>
+            <circle cx="36" cy="42.5" r="1.8" fill="#ffffff"></circle>
+            <circle cx="70" cy="42.5" r="1.8" fill="#ffffff"></circle>
+          </g>
+        </g>
+        <path d="M38 66 Q52 75 66 63" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round"></path>
       `,
+      // 2. Hold (0%–62%): squeezing hard, scrunched >< eyes, big blush & flying sweat drop
       hold: `
-        <circle class="face-cheek" cx="9.5" cy="15" r="4.2"></circle>
-        <circle class="face-cheek" cx="38.5" cy="15" r="4.2"></circle>
-        <path d="M11.5 7.5 L17.5 10.5 L11.5 13.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M36.5 7.5 L30.5 10.5 L36.5 13.5" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"></path>
-        <path d="M18.5 16.5 Q21.2 14.2 24 16.5 Q26.8 18.8 29.5 16.5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
-        <path class="face-sweat" d="M42.5 2.5 C42.5 2.5 45 6 45 7.6 A2.5 2.5 0 0 1 40 7.6 C40 6 42.5 2.5 42.5 2.5 Z"></path>
+        <ellipse cx="19" cy="60" rx="11" ry="6.5" fill="#ff4d36" opacity="0.58"></ellipse>
+        <ellipse cx="81" cy="60" rx="11" ry="6.5" fill="#ff4d36" opacity="0.58"></ellipse>
+        <path d="M22 28 L42 35" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M78 28 L58 35" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M23 39 L39 46 L23 53" fill="none" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M77 39 L61 46 L77 53" fill="none" stroke="currentColor" stroke-width="4.4" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M36 67 Q43 61 50 67 Q57 73 64 67" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        <path class="face-sweat" d="M84 14 C84 14 92 25 92 30 A8 8 0 0 1 76 30 C76 25 84 14 84 14 Z" fill="#9ee7ff" stroke="currentColor" stroke-width="2.4"></path>
       `,
+      // 3. Strain (62%–99%): maximum effort! Anime cross-vein 💢, gritted teeth, quivering tears
+      strain: `
+        <ellipse cx="18" cy="60" rx="12" ry="7.5" fill="#e62e1e" opacity="0.72"></ellipse>
+        <ellipse cx="82" cy="60" rx="12" ry="7.5" fill="#e62e1e" opacity="0.72"></ellipse>
+        <g class="face-vein" stroke="#ff2f2f" stroke-width="3.6" stroke-linecap="round" fill="none">
+          <path d="M74 16 Q79 21 84 16"></path>
+          <path d="M86 18 Q81 23 86 28"></path>
+          <path d="M84 30 Q79 25 74 30"></path>
+          <path d="M72 28 Q77 23 72 18"></path>
+        </g>
+        <path d="M25 38 L42 46 L25 54" fill="none" stroke="currentColor" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M75 38 L58 46 L75 54" fill="none" stroke="currentColor" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"></path>
+        <circle cx="22" cy="54" r="3.8" fill="#a8ebff"></circle>
+        <circle cx="78" cy="54" r="3.8" fill="#a8ebff"></circle>
+        <rect x="33" y="61" width="34" height="14" rx="7" fill="#fffdf5" stroke="currentColor" stroke-width="3.4"></rect>
+        <path d="M41 61 V75 M50 61 V75 M59 61 V75 M33 68 H67" stroke="currentColor" stroke-width="2.2"></path>
+        <path class="face-sweat" d="M16 14 C16 14 22 23 22 27 A6 6 0 0 1 10 27 C10 23 16 14 16 14 Z" fill="#9ee7ff" stroke="currentColor" stroke-width="2.2"></path>
+      `,
+      // 4. Target reached: Deal-With-It black sunglasses drop in + cocky grin!
       target: `
-        <circle class="face-cheek" cx="9.5" cy="15" r="4"></circle>
-        <circle class="face-cheek" cx="38.5" cy="15" r="4"></circle>
-        <path d="M11.5 11.5 Q15 6.8 18.5 11.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
-        <path d="M29.5 11.5 Q33 6.8 36.5 11.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
-        <path d="M18.5 14.5 Q24 20.5 29.5 14.5 Z" fill="currentColor"></path>
-        <path class="face-star" d="M43 3 L44 5.5 L46.5 6.5 L44 7.5 L43 10 L42 7.5 L39.5 6.5 L42 5.5 Z"></path>
+        <ellipse cx="20" cy="62" rx="10" ry="5.5" fill="#ff6642" opacity="0.5"></ellipse>
+        <ellipse cx="80" cy="62" rx="10" ry="5.5" fill="#ff6642" opacity="0.5"></ellipse>
+        <g class="face-shades">
+          <path d="M12 36 H88 V48 Q88 57 76 57 H61 Q54 57 52 48 H48 Q46 57 39 57 H24 Q12 57 12 48 Z" fill="#181410" stroke="#fff7d6" stroke-width="1.8"></path>
+          <path d="M19 41 L26 52 M28 41 L32 47 M59 41 L66 52 M68 41 L72 47" stroke="#ffffff" stroke-width="3" stroke-linecap="round" opacity="0.72"></path>
+        </g>
+        <path d="M35 66 Q52 79 71 61" fill="none" stroke="currentColor" stroke-width="4.2" stroke-linecap="round"></path>
+        <path class="face-star" d="M84 14 L87 21 L94 24 L87 27 L84 34 L81 27 L74 24 L81 21 Z" fill="#fff8c9"></path>
+        <path class="face-star" d="M16 18 L18 23 L23 25 L18 27 L16 32 L14 27 L9 25 L14 23 Z" fill="#fff8c9"></path>
       `,
+      // 5. Overhold (Super Saiyan Chrysanthemum!): blazing golden eyes + roaring grin + lightning!
       deep: `
-        <circle class="face-cheek" cx="9.5" cy="15" r="4.4"></circle>
-        <circle class="face-cheek" cx="38.5" cy="15" r="4.4"></circle>
-        <path class="face-star" d="M15 5 L16.6 8.6 L20.2 10.2 L16.6 11.8 L15 15.4 L13.4 11.8 L9.8 10.2 L13.4 8.6 Z"></path>
-        <path class="face-star" d="M33 5 L34.6 8.6 L38.2 10.2 L34.6 11.8 L33 15.4 L31.4 11.8 L27.8 10.2 L31.4 8.6 Z"></path>
-        <path d="M18 15.2 Q24 21.2 30 15.2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"></path>
+        <path class="face-bolt" d="M14 14 L22 25 L16 26 L23 36" fill="none" stroke="#fff9c4" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path class="face-bolt" d="M86 14 L78 25 L84 26 L77 36" fill="none" stroke="#fff9c4" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"></path>
+        <path d="M22 30 L42 38" fill="none" stroke="currentColor" stroke-width="4.4" stroke-linecap="round"></path>
+        <path d="M78 30 L58 38" fill="none" stroke="currentColor" stroke-width="4.4" stroke-linecap="round"></path>
+        <path class="face-star" d="M33 36 L36.5 43.5 L44 47 L36.5 50.5 L33 58 L29.5 50.5 L22 47 L29.5 43.5 Z" fill="#fffbe0" stroke="currentColor" stroke-width="2"></path>
+        <path class="face-star" d="M67 36 L70.5 43.5 L78 47 L70.5 50.5 L67 58 L63.5 50.5 L56 47 L63.5 43.5 Z" fill="#fffbe0" stroke="currentColor" stroke-width="2"></path>
+        <path d="M31 62 Q50 83 69 62 Z" fill="#b82514" stroke="currentColor" stroke-width="3.4" stroke-linejoin="round"></path>
+        <path d="M36 62 H64 V67 H36 Z" fill="#fffdf5"></path>
       `,
+      // 6. Rest: hot-spring melted bliss + happy sigh cloud floating away!
       rest: `
-        <circle class="face-cheek" cx="10" cy="15" r="3.6"></circle>
-        <circle class="face-cheek" cx="38" cy="15" r="3.6"></circle>
-        <path d="M11.8 11 Q15 13.8 18.2 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-        <path d="M29.8 11 Q33 13.8 36.2 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
-        <ellipse cx="24" cy="16.4" rx="2.6" ry="2.1" fill="none" stroke="currentColor" stroke-width="1.8"></ellipse>
+        <ellipse cx="21" cy="58" rx="11" ry="6" fill="#ff7c68" opacity="0.52"></ellipse>
+        <ellipse cx="79" cy="58" rx="11" ry="6" fill="#ff7c68" opacity="0.52"></ellipse>
+        <path d="M22 44 Q33 53 44 44" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        <path d="M56 44 Q67 53 78 44" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        <ellipse cx="50" cy="65" rx="6.5" ry="5.5" fill="#d84f3c" stroke="currentColor" stroke-width="3.2"></ellipse>
+        <g class="face-sigh">
+          <path d="M62 63 C66 57 74 56 78 60 C83 58 88 63 85 68 C82 72 74 72 70 69 Z" fill="#ffffff" opacity="0.9"></path>
+        </g>
       `,
+      // 7. Oops (too fast!): disgusted eye-roll + anime 3 gloom lines |||
       oops: `
-        <circle cx="15" cy="10.5" r="2.1" fill="currentColor"></circle>
-        <circle cx="33" cy="10.5" r="2.1" fill="currentColor"></circle>
-        <path d="M19 16.5 L29 15.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+        <g stroke="#2a3548" stroke-width="3" stroke-linecap="round" opacity="0.65">
+          <path d="M16 18 V32 M22 15 V30 M28 18 V31"></path>
+        </g>
+        <ellipse cx="34" cy="45" rx="9.5" ry="9.5" fill="#fffdf5" stroke="currentColor" stroke-width="3.2"></ellipse>
+        <ellipse cx="66" cy="45" rx="9.5" ry="9.5" fill="#fffdf5" stroke="currentColor" stroke-width="3.2"></ellipse>
+        <circle cx="34" cy="39.5" r="3.8" fill="currentColor"></circle>
+        <circle cx="66" cy="39.5" r="3.8" fill="currentColor"></circle>
+        <path d="M23 41 H45 M55 41 H77" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"></path>
+        <path d="M37 67 Q44 63 50 67 Q56 71 63 65" fill="none" stroke="currentColor" stroke-width="3.8" stroke-linecap="round"></path>
+      `
+    };
+
+    const POSTER_FACE_SVG = {
+      shades: `
+        <path d="M14 10 H86 V21 Q86 29 74 29 H61 Q54 29 52 21 H48 Q46 29 39 29 H26 Q14 29 14 21 Z" fill="#181410"></path>
+        <path d="M21 14 L27 24 M60 14 L66 24" stroke="#ffffff" stroke-width="2.6" stroke-linecap="round" opacity="0.72"></path>
+        <path d="M38 35 Q51 42 64 33" fill="none" stroke="#2b1a04" stroke-width="3.2" stroke-linecap="round"></path>
+      `,
+      smirk: `
+        <circle cx="33" cy="18" r="5" fill="#2b1a04"></circle>
+        <circle cx="67" cy="18" r="5" fill="#2b1a04"></circle>
+        <circle cx="35" cy="16" r="1.8" fill="#ffffff"></circle>
+        <circle cx="69" cy="16" r="1.8" fill="#ffffff"></circle>
+        <ellipse cx="22" cy="26" rx="6" ry="3.5" fill="#e45e40" opacity="0.45"></ellipse>
+        <ellipse cx="78" cy="26" rx="6" ry="3.5" fill="#e45e40" opacity="0.45"></ellipse>
+        <path d="M38 31 Q51 39 64 29" fill="none" stroke="#2b1a04" stroke-width="3.2" stroke-linecap="round"></path>
+      `,
+      gloom: `
+        <path d="M15 8 V20 M21 6 V18 M27 8 V19" stroke="#3a3324" stroke-width="2.4" stroke-linecap="round" opacity="0.6"></path>
+        <circle cx="36" cy="20" r="4" fill="#2b1a04"></circle>
+        <circle cx="64" cy="20" r="4" fill="#2b1a04"></circle>
+        <path d="M39 33 L61 31" stroke="#2b1a04" stroke-width="3" stroke-linecap="round"></path>
       `
     };
 
@@ -3220,6 +3420,7 @@
       challengeUnit: document.getElementById("challengeUnit"),
       posterBrand: document.getElementById("posterBrand"),
       posterUnit: document.getElementById("posterUnit"),
+      posterFace: document.getElementById("posterFace"),
       actionText: document.getElementById("actionText"),
       actionHint: document.getElementById("actionHint"),
       holdFill: document.getElementById("holdFill"),
@@ -4054,17 +4255,22 @@
         updateHold: updateHoldDrone,
         stopHold: stopHoldDrone,
         target() {
-          playBell(587.33, 0, 0.22, 1.3);
-          playBell(880, 0.09, 0.18, 1.1);
+          playBell(587.33, 0, 0.2, 0.75);
+          playBell(739.99, 0.06, 0.2, 0.85);
+          playBell(880, 0.12, 0.22, 1.15);
         },
         release(deep = false) {
           stopHoldDrone(false);
-          playSweep(deep ? 523.25 : 440, 261.63, deep ? 1.15 : 0.92, 0.18, "sine");
-          if (deep) playBell(659.25, 0.06, 0.11, 1.0);
+          playSweep(deep ? 587.33 : 493.88, 246.94, deep ? 1.05 : 0.82, 0.2, "sine");
+          playBell(deep ? 659.25 : 523.25, 0.06, 0.12, 0.9);
         },
         invalid() {
           stopHoldDrone(true);
-          playSweep(246.94, 185, 0.28, 0.12, "sine");
+          // Comedy cartoon deflate "wah-wah"
+          playSweep(330, 277.18, 0.2, 0.16, "triangle");
+          window.setTimeout(() => {
+            playSweep(261.63, 174.61, 0.34, 0.15, "triangle");
+          }, 150);
         },
         restReady() {
           playBell(587.33, 0, 0.11, 0.72);
@@ -4471,10 +4677,9 @@
       if (!el.petalArt || el.petalArt.childElementCount) return;
 
       const layers = [
-        { className: "layer-guard", insetPct: 0, count: 20, offset: 0, width: 14.2, height: 37, opacity: 0.68, bend: 3.2 },
-        { className: "layer-mid", insetPct: 4, count: 20, offset: 9, width: 13.2, height: 30, opacity: 0.79, bend: 3.0 },
-        { className: "layer-inner", insetPct: 9, count: 16, offset: 4, width: 11.8, height: 24, opacity: 0.87, bend: 2.5 },
-        { className: "layer-heart", insetPct: 14, count: 12, offset: 14, width: 10.2, height: 18, opacity: 0.92, bend: 2.0 }
+        { className: "layer-guard", insetPct: 0, count: 16, offset: 0, width: 19.5, height: 42, opacity: 0.94, bend: 2.8 },
+        { className: "layer-mid", insetPct: 5, count: 14, offset: 11, width: 18.2, height: 35, opacity: 0.96, bend: 2.5 },
+        { className: "layer-inner", insetPct: 11, count: 12, offset: 5, width: 16.5, height: 28, opacity: 0.98, bend: 2.0 }
       ];
 
       petalSpecs = [];
@@ -4488,12 +4693,12 @@
         for (let i = 0; i < spec.count; i += 1) {
           const petal = document.createElement("span");
           const leaf = document.createElement("span");
-          const angle = spec.offset + (360 / spec.count) * i + (Math.random() - 0.5) * 5;
+          const angle = spec.offset + (360 / spec.count) * i + (Math.random() - 0.5) * 4.5;
           const bendDir = i % 2 === 0 ? 1 : -1;
-          const bend = bendDir * (spec.bend + Math.random() * 3.2);
-          const w = spec.width + (Math.random() - 0.5) * 1.1;
-          const h = spec.height + (Math.random() - 0.5) * 7;
-          const opacity = Math.max(0.3, spec.opacity + (Math.random() - 0.5) * 0.16);
+          const bend = bendDir * (spec.bend + Math.random() * 2.4);
+          const w = spec.width + (Math.random() - 0.5) * 1.4;
+          const h = spec.height + (Math.random() - 0.5) * 5;
+          const opacity = Math.min(1, Math.max(0.84, spec.opacity + (Math.random() - 0.5) * 0.08));
 
           petal.className = "petal";
           petal.style.setProperty("--a", `${angle}deg`);
@@ -4516,10 +4721,11 @@
     }
 
     function clearHoldUI() {
-      el.arena.classList.remove("is-active", "is-target", "is-overhold", "is-resting");
+      el.arena.classList.remove("is-active", "is-strain", "is-target", "is-overhold", "is-resting", "is-oops");
+      el.arena.style.setProperty("--blush", "0");
       el.bloom.setAttribute("aria-pressed", "false");
       el.bloom.setAttribute("aria-disabled", "false");
-      el.bloom.setAttribute("aria-label", `按住蓄气 ${holdTarget} 秒，等光环满后松开`);
+      el.bloom.setAttribute("aria-label", `按住往上提 ${holdTarget} 秒，等光环满后松开`);
       el.actionText.textContent = "按住";
       el.actionHint.textContent = "HOLD";
       setHoldProgress(0);
@@ -4666,6 +4872,15 @@
       el.shareDate.textContent = `${now.getMonth() + 1}月${now.getDate()}日 · 密报`;
       el.posterStamp.textContent = count >= DAILY_GOAL ? "神" : (challengeCount > 0 && count > challengeCount ? "胜" : "密");
 
+      if (el.posterFace) {
+        const faceKey = (count >= 10 || (challengeCount > 0 && count > challengeCount))
+          ? "shades"
+          : count > 0
+            ? "smirk"
+            : "gloom";
+        el.posterFace.innerHTML = POSTER_FACE_SVG[faceKey];
+      }
+
       const metaParts = [BRAND.posterMetaPrefix];
       if (streak >= 2) metaParts.push(`连练 ${streak} 天`);
       if (bestHoldToday >= 3) metaParts.push(`最久 ${bestHoldToday.toFixed(1)}s`);
@@ -4803,10 +5018,9 @@
       ctx.stroke();
       ctx.restore();
 
-      // 68 layered chrysanthemum petals matching DOM specs
-      petalSpecs.forEach((layerSpec, layerIdx) => {
+      // Layered comic chrysanthemum petals matching DOM specs
+      petalSpecs.forEach((layerSpec) => {
         const layerSize = flowerSize * (1 - (layerSpec.insetPct * 2) / 100);
-        const isHeart = layerIdx === 3;
 
         layerSpec.petals.forEach((p) => {
           const pw = (p.w / 100) * layerSize;
@@ -4818,14 +5032,9 @@
           ctx.globalAlpha = p.opacity;
 
           const grad = ctx.createLinearGradient(0, 0, 0, -ph);
-          grad.addColorStop(0, "#7c4d08");
-          if (isHeart) {
-            grad.addColorStop(0.55, "rgba(255, 203, 87, 0.58)");
-            grad.addColorStop(1, "rgba(255, 239, 176, 0.04)");
-          } else {
-            grad.addColorStop(0.58, "rgba(242, 184, 57, 0.92)");
-            grad.addColorStop(1, "rgba(255, 239, 176, 0.28)");
-          }
+          grad.addColorStop(0, "#df8b0c");
+          grad.addColorStop(0.56, "#ffca3a");
+          grad.addColorStop(1, "#ffef99");
 
           ctx.beginPath();
           ctx.moveTo(0, 0);
@@ -4835,21 +5044,19 @@
           ctx.fillStyle = grad;
           ctx.fill();
 
-          if (!isHeart) {
-            ctx.strokeStyle = "rgba(255, 248, 218, 0.34)";
-            ctx.lineWidth = 1.2;
-            ctx.stroke();
-          }
+          ctx.strokeStyle = "rgba(74, 42, 6, 0.42)";
+          ctx.lineWidth = 2.4;
+          ctx.stroke();
           ctx.restore();
         });
       });
 
-      // Golden core disc
-      const coreR = 92;
-      const coreGrad = ctx.createRadialGradient(cx - 28, cy - 30, 8, cx, cy, coreR);
-      coreGrad.addColorStop(0, "#f8dfa0");
-      coreGrad.addColorStop(0.75, "#c58e23");
-      coreGrad.addColorStop(1, "#9d6c14");
+      // Golden comic core disc
+      const coreR = 112;
+      const coreGrad = ctx.createRadialGradient(cx - 32, cy - 36, 10, cx, cy, coreR);
+      coreGrad.addColorStop(0, "#fff2ad");
+      coreGrad.addColorStop(0.7, "#f2b82d");
+      coreGrad.addColorStop(1, "#cb8314");
       ctx.save();
       ctx.shadowColor = "rgba(0, 0, 0, 0.55)";
       ctx.shadowBlur = 32;
@@ -4862,28 +5069,86 @@
 
       ctx.beginPath();
       ctx.arc(cx, cy, coreR, 0, Math.PI * 2);
-      ctx.strokeStyle = "rgba(43, 26, 4, 0.22)";
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = "rgba(58, 31, 4, 0.65)";
+      ctx.lineWidth = 4;
       ctx.stroke();
 
-      // Core count text (strictly centered)
+      // Cute comic face perched above the count inside the core disc
+      const posterFaceKey = (count >= 10 || (challengeCount > 0 && count > challengeCount))
+        ? "shades"
+        : count > 0
+          ? "smirk"
+          : "gloom";
+      ctx.save();
+      if (posterFaceKey === "shades") {
+        // Iconic Deal-With-It sunglasses!
+        const sy = cy - 52;
+        ctx.fillStyle = "#181410";
+        drawRoundRect(ctx, cx - 54, sy, 48, 28, 8);
+        ctx.fill();
+        drawRoundRect(ctx, cx + 6, sy, 48, 28, 8);
+        ctx.fill();
+        ctx.fillRect(cx - 8, sy + 5, 16, 7);
+        ctx.strokeStyle = "rgba(255,255,255,0.75)";
+        ctx.lineWidth = 3.5;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(cx - 44, sy + 6); ctx.lineTo(cx - 34, sy + 20);
+        ctx.moveTo(cx + 16, sy + 6); ctx.lineTo(cx + 26, sy + 20);
+        ctx.stroke();
+      } else if (posterFaceKey === "smirk") {
+        const sy = cy - 38;
+        ctx.fillStyle = "#2b1a04";
+        ctx.beginPath();
+        ctx.arc(cx - 26, sy, 7, 0, Math.PI * 2);
+        ctx.arc(cx + 26, sy, 7, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(cx - 23.5, sy - 2.5, 2.4, 0, Math.PI * 2);
+        ctx.arc(cx + 28.5, sy - 2.5, 2.4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = "rgba(228, 94, 64, 0.45)";
+        ctx.beginPath();
+        ctx.ellipse(cx - 42, sy + 12, 10, 6, 0, 0, Math.PI * 2);
+        ctx.ellipse(cx + 42, sy + 12, 10, 6, 0, 0, Math.PI * 2);
+        ctx.fill();
+      } else {
+        const sy = cy - 38;
+        ctx.strokeStyle = "rgba(58, 51, 36, 0.6)";
+        ctx.lineWidth = 3;
+        ctx.lineCap = "round";
+        ctx.beginPath();
+        ctx.moveTo(cx - 52, sy - 16); ctx.lineTo(cx - 52, sy + 2);
+        ctx.moveTo(cx - 44, sy - 19); ctx.lineTo(cx - 44, sy - 1);
+        ctx.moveTo(cx - 36, sy - 16); ctx.lineTo(cx - 36, sy + 1);
+        ctx.stroke();
+        ctx.fillStyle = "#2b1a04";
+        ctx.beginPath();
+        ctx.arc(cx - 22, sy, 6, 0, Math.PI * 2);
+        ctx.arc(cx + 22, sy, 6, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+
+      // Core count text (nicely seated below the comic face)
       const countStr = String(count);
-      const numSize = count >= 100 ? 60 : 78;
+      const numSize = count >= 100 ? 54 : 68;
       ctx.fillStyle = "#2b1a04";
       ctx.textBaseline = "middle";
       ctx.font = `600 ${numSize}px "Space Grotesk", "Noto Sans SC", sans-serif`;
       const numWidth = ctx.measureText(countStr).width;
-      ctx.font = '500 24px "Noto Sans SC", sans-serif';
+      ctx.font = '500 22px "Noto Sans SC", sans-serif';
       const unitWidth = ctx.measureText(BRAND.unit).width;
-      const gap = 6;
+      const gap = 5;
       const startX = cx - (numWidth + gap + unitWidth) / 2;
 
       ctx.textAlign = "left";
       ctx.font = `600 ${numSize}px "Space Grotesk", "Noto Sans SC", sans-serif`;
-      ctx.fillText(countStr, startX, cy + 2);
-      ctx.font = '500 24px "Noto Sans SC", sans-serif';
-      ctx.globalAlpha = 0.78;
-      ctx.fillText(BRAND.unit, startX + numWidth + gap, cy + 16);
+      ctx.fillText(countStr, startX, cy + 28);
+      ctx.font = '500 22px "Noto Sans SC", sans-serif';
+      ctx.globalAlpha = 0.8;
+      ctx.fillText(BRAND.unit, startX + numWidth + gap, cy + 40);
       ctx.globalAlpha = 1;
 
       // Rank title
@@ -5316,8 +5581,9 @@
       squeezeBase = motionReduced() ? 0 : Math.max(0, Math.min(1, squeezeValue));
       if (motionReduced()) setSqueeze(1);
 
-      el.arena.classList.remove("is-resting", "is-target", "is-overhold");
+      el.arena.classList.remove("is-resting", "is-strain", "is-target", "is-overhold", "is-oops");
       el.arena.classList.add("is-active");
+      el.arena.style.setProperty("--blush", "0.18");
       el.bloom.setAttribute("aria-pressed", "true");
       el.bloom.setAttribute("aria-disabled", "false");
       el.bloom.setAttribute("aria-label", "正在暗中发力，保持到光环满");
@@ -5345,14 +5611,18 @@
 
       if (!motionReduced()) {
         const eased = 1 - Math.pow(1 - progress, 2.25);
-        const extraTension = overholdRatio * 0.08;
+        const extraTension = overholdRatio * 0.1;
         setSqueeze(squeezeBase + (1 - squeezeBase) * eased + extraTension);
 
-        // Playful subtle effort jitter as tension builds
-        if (progress > 0.35) {
-          const amp = (progress - 0.35) * 2.1 + overholdRatio * 2.2;
-          const t = performance.now() * 0.048;
-          setJitter(Math.sin(t) * amp, Math.cos(t * 1.37) * amp * 0.72);
+        // Flush face redder as you strain, cool slightly when cool shades drop on target!
+        const blush = targetReached ? (overholdReached ? 0.45 : 0.25) : Math.min(1, 0.15 + progress * 0.95);
+        el.arena.style.setProperty("--blush", blush.toFixed(3));
+
+        // Playful comedy effort jitter as tension builds
+        if (progress > 0.3) {
+          const amp = (progress - 0.3) * 3.2 + overholdRatio * 3.0;
+          const t = performance.now() * 0.056;
+          setJitter(Math.sin(t) * amp, Math.cos(t * 1.43) * amp * 0.78);
         } else {
           setJitter(0, 0);
         }
@@ -5362,8 +5632,15 @@
         sound.updateHold(progress, overholdRatio);
       }
 
+      if (!targetReached && progress >= 0.62 && currentFace !== "strain") {
+        el.arena.classList.add("is-strain");
+        setFace("strain");
+        setStatus("快顶住了");
+      }
+
       if (!targetReached && elapsed >= holdTarget) {
         targetReached = true;
+        el.arena.classList.remove("is-strain");
         el.arena.classList.add("is-target");
         el.actionText.textContent = BRAND.actionTarget;
         el.bloom.setAttribute("aria-label", "光环满了，可以松开");
@@ -5371,8 +5648,8 @@
         setStatus(BRAND.statusTarget);
         setFeedback(pickFrom("target", COPY_POOL.target));
         setHoldProgress(100);
-        triggerShake(2.4);
-        spawnPopTag("稳了！", "gold");
+        triggerShake(2.8);
+        spawnPopTag("墨镜一戴，谁也不爱！", "gold");
         if (sound) sound.target();
         vibrate([8, 22, 10]);
       }
@@ -5383,7 +5660,7 @@
         el.actionText.textContent = BRAND.actionDeep;
         setFace("deep");
         setStatus(BRAND.statusDeep);
-        spawnPopTag("狠人加码！", "gold");
+        spawnPopTag("超级赛亚菊！", "gold");
       }
 
       if (!longHoldNoted && elapsed >= MAX_HOLD_REF) {
@@ -5420,7 +5697,8 @@
       holdFrame = 0;
       setJitter(0, 0);
 
-      el.arena.classList.remove("is-active", "is-target", "is-overhold");
+      el.arena.classList.remove("is-active", "is-strain", "is-target", "is-overhold");
+      el.arena.style.setProperty("--blush", "0");
       el.bloom.setAttribute("aria-pressed", "false");
 
       if (!shouldCount) {
@@ -5438,12 +5716,14 @@
         if (moteField) moteField.burst(0.55);
         emitExhale(0.55);
         clearHoldUI();
+        el.arena.classList.add("is-oops");
         setFace("oops");
         triggerWobble();
-        spawnPopTag("太快了！", "oops");
+        spawnPopTag(pickFrom("popOops", COPY_POOL.popOops), "oops");
         oopsTimer = window.setTimeout(() => {
+          el.arena.classList.remove("is-oops");
           if (!pressing && !resting) setFace("idle");
-        }, 1250);
+        }, 1450);
         setStatus(BRAND.statusShort);
         setFeedback(pickFrom("invalid", COPY_POOL.invalid));
         if (sound) sound.invalid();
